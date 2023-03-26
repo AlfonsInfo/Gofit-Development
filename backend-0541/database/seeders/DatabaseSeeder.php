@@ -8,6 +8,9 @@ use App\Models\User\pengguna;
 use App\Models\User\instruktur;
 use App\Models\User\pegawai;
 use App\Models\User\member;
+use App\Models\promo;
+use App\Models\sesi_gym;
+use App\Models\kelas;
 
 class DatabaseSeeder extends Seeder
 {
@@ -65,6 +68,52 @@ class DatabaseSeeder extends Seeder
                 'alamat_pegawai' => $params[5],
             ]);
         }
+
+        function createPromo($params){
+            // $table->string('jenis_promo');
+            // $table->double('minimal_deposit');
+            // $table->double('bonus_promo');
+            // $table->integer('masa_berlaku')->nullable();
+            promo::create([
+                'jenis_promo' => $params[0],
+                'minimal_deposit' => $params[1],
+                'bonus_promo' => $params[2],
+                'masa_berlaku' => $params[3],
+            ]);
+        }
+
+        function createKelas($params,$foreign)
+        {
+            // $table->integer('id_kelas', true);
+            // $table->string('jenis_kelas');
+            // $table->double('harga_kelas');
+            // $table->text('deskripsi_kelas');
+            // $table->string('id_instruktur')->nullable();
+            // $table->timestamp('created_at')->nullable()->useCurrent();
+            // $table->timestamp('updated_at')->nullable();
+            // $table->softDeletes();
+
+            kelas::create([
+                'jenis_kelas' => $params[0],
+                'harga_kelas' => $params[1],
+                'deskripsi_kelas' => $params[2],
+                'id_instruktur' => $foreign,
+        ]);
+        }
+
+        function createSesiGym($params){
+                sesi_gym::create([
+                    'tanggal_sesi_gym' => date("Y/m/d",strtotime("today + {$params[0]}")) ,
+                    'waktu_mulai' => date("h:i",strtotime($params[1])),
+                    'waktu_selesai' => date("h:i",strtotime($params[2])),
+                    // $table->integer('id_sesi')->primary();
+                    // $table->date('tanggal_sesi_gym')->nullable();
+                    // $table->timestamp('waktu_mulai')->nullable();
+                    // $table->timestamp('waktu_selesai')->nullable();
+                ]);
+        }
+
+        //! DUMMY USER
         //*Dummy Pengguna role member
         createPengguna(['alfonsus','member']);
         createPengguna(['ucup_surucup','member']);
@@ -125,5 +174,29 @@ class DatabaseSeeder extends Seeder
         createPegawai(['P01','Yunita','kasir','21-01-2000','082132133213','Seturan no 42 Yogya'],21);
         createPegawai(['P02','Putri','kasir','23-05-2003','08212121312','Tambak Boyo no 42 Yogya'],22);
         createPegawai(['P03','Yuna','kasir','24-03-2001','085398244443','Sergodadi no 42 Yogya'],23);    
+        //! DUMMY PROMO
+        //*jenis,minimal,bonus,masa berlaku
+        createPromo(['promo_reguler',3000000,300000,null]);
+        createPromo(['promo_paket1',5,1,1]);
+        createPromo(['promo_paket2',10,3,2]);       
+
+        //! DUMMY SESI GYM
+        // 7-9, 9-11, 11-13, 13-15, 15-17, 17-19, dan 19-21. //*datenya di bookingan ?
+        createSesiGym(["1 days", "7:00","9:00"]);
+        createSesiGym(["1 days", "9:00","11:00"]);
+        createSesiGym(["1 days", "11:00","13:00"]);
+        createSesiGym(["1 days", "13:00","15:00"]);
+        createSesiGym(["1 days", "15:00","17:00"]);
+        createSesiGym(["1 days", "17:00","19:00"]);
+        createSesiGym(["1 days", "19:00","21:00"]);
+
+        //! DUMMY KELAS
+        createKelas([
+            'SPINE Corrector',
+            150000,
+            "The Spine Corrector is an essential Pilates tool that can be used to perform exercises that lengthen and strengthen the torso, shoulders, back and legs while correcting or restoring the spine's natural curvature."
+        ],'ins-1');
     }
+
 }
+

@@ -14,11 +14,13 @@ return new class extends Migration
     public function up()
     {
         Schema::create('sesi_gym', function (Blueprint $table) {
-            $table->integer('id_sesi')->primary();
+            $table->integer('id_sesi',true);
             $table->date('tanggal_sesi_gym')->nullable();
-            $table->timestamp('waktu_mulai')->nullable();
-            $table->timestamp('waktu_selesai')->nullable();
-        });
+            $table->time('waktu_mulai')->nullable();
+            $table->time('waktu_selesai')->nullable();
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable();
+            $table->softDeletes();    });
     }
 
     /**

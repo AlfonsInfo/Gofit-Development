@@ -19,6 +19,10 @@ return new class extends Migration
             $table->double('minimal_deposit');
             $table->double('bonus_promo');
             $table->integer('masa_berlaku')->nullable();
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable();
+            $table->softDeletes();
+
         });
     }
 

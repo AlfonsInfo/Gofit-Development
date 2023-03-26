@@ -19,6 +19,11 @@ class instruktur extends Model
     {
         return $this->hasOne('\pengguna');
     }
+
+    public function kelas()
+    {
+        return $this->hasMany('..\kelas');
+    }
 }
 
 
