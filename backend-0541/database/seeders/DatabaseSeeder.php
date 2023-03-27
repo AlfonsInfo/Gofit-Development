@@ -251,7 +251,9 @@ class DatabaseSeeder extends Seeder
             ijin_instruktur::create([
                 'status_ijin' => $status,
                 'tanggal' => date("Y/m/d",strtotime($tanggal)),
-
+                'id_instruktur' => $instruktur,
+                'id_instruktur_pengganti' => $instrukturPengganti,
+                'id_kelas_jadwal' => $kelasjadwal
             ]);
         }
 

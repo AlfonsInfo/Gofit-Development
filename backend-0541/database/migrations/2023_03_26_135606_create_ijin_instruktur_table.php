@@ -14,12 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ijin_instruktur', function (Blueprint $table) {
-            $table->integer('id_ijin', true);
+            // $table->integer('id_ijin', true);
+            $table->integer('id_kelas_jadwal')->primary();
             $table->string('status_ijin');
             $table->date('tanggal_pengajuan');
             $table->string('id_instruktur');
             $table->string('id_instruktur_pengganti');
-            $table->foreignId('id_kelas_jadwal')->references('id_kelas_jadwal')->on('kelas_jadwal');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
