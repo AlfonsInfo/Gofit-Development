@@ -14,8 +14,8 @@ class member extends Model
     // public const CREATED_AT = 'created_timestamp';
     // public const UPDATED_AT = 'updated_timestamp';
 
-    public function pengguna()
-    {
-        return $this->hasOne('\pengguna');
-    }
+public function pengguna()
+{
+    return $this->hasOne('\pengguna');
+}
 }

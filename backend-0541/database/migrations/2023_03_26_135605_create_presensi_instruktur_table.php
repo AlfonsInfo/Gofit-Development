@@ -16,8 +16,12 @@ return new class extends Migration
         Schema::create('presensi_instruktur', function (Blueprint $table) {
             $table->integer('id_presensi', true);
             $table->timestamp('waktu_presensi')->useCurrent();
-            $table->integer('waktu_selesai')->nullable();
+            $table->timestamp('waktu_selesai')->nullable();
             $table->string('status_presensi');
+            $table->foreignUlid('id_instruktur')->references('id_instruktur')->on('instruktur');
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable();
+            $table->softDeletes();
         });
     }
 

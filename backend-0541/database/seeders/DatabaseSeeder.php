@@ -14,7 +14,13 @@ use App\Models\transaksi_member;
 use App\Models\transaksi_aktivasi;
 use App\Models\transaksi_deposit_reguler;
 use App\Models\transaksi_deposit_paket;
-
+use App\Models\jadwal_umum;
+use App\Models\jadwal_harian;
+use App\Models\kelas_jadwal;
+use App\Models\presensi_instruktur;
+use App\Models\booking_gym;
+use App\Models\booking_kelas;
+use App\Models\ijin_instruktur;
 
 class DatabaseSeeder extends Seeder
 {
@@ -161,6 +167,93 @@ class DatabaseSeeder extends Seeder
                 
             ]);
         }
+        function createJadwalUmum($hari,$mulai,$selesai)
+        {
+        //     $table->integer('id_jadwal_umum', true);
+        //     $table->string('hari');
+        //     $table->time('jam_mulai')->nullable();
+        //     $table->time('jam_selesai')->nullable();
+        //     $table->timestamp('created_at')->nullable()->useCurrent();
+        //     $table->timestamp('updated_at')->nullable();
+        //     $table->softDeletes();
+            jadwal_umum::create([
+                'hari' => $hari,
+                'jam_mulai' => date("h:i",strtotime($mulai)),
+                'jam_selesai' => date("h:i",strtotime($selesai)),
+            ]);
+        }
+
+        function createJadwalHarian($tanggal,$jadwalUmum)
+        {
+            // $table->integer('id_jadwal_harian', true);
+            // $table->date('tanggal_jadwal_harian');
+            // $table->integer('id_jadwal_umum')->index('id_jadwal_umum');
+            jadwal_harian::create([
+                'tanggal_jadwal_harian' =>date("Y/m/d",strtotime($tanggal)),
+                'id_jadwal_umum' =>$jadwalUmum,
+
+            ]);
+        }
+
+        function presensiInstruktur($mulai,$selesai,$status,$instruktur){
+            // $table->timestamp('waktu_presensi')->useCurrent();
+            // $table->integer('waktu_selesai')->nullable();
+            // $table->string('status_presensi');
+            presensi_instruktur::create([
+                'waktu_presensi'=> date("Y-m-d H:i:s",strtotime($mulai)),
+                'waktu_selesai' => date("Y-m-d H:i:s",strtotime($selesai)),
+                'status_presensi' => $status,
+                'id_instruktur' => $instruktur
+            ]);
+
+        }
+
+        function createBookingGym($tanggalbooking, $statuskehadiran = false , $sesi, $member, $struk)
+        {
+            booking_gym::create([
+                'tanggal_booking' => date("Y-m-d H:i:s",strtotime($tanggalbooking)),
+                'status_kehadiran' => $statuskehadiran,
+                'id_sesi' => $sesi,
+                'id_member' => $member,
+                'no_struk' => $struk  
+            ]);
+        }
+        function createBookingKelas($tanggalbooking, $statuskehadiran = false, $kelasjadwal, $member, $struk)
+        {
+            // $table->integer('no_booking')->default(0);
+            // $table->integer('tanggal_booking');
+            // $table->boolean('is_canceled')->default(false);
+            // $table->boolean('status_kehadiran')->default(false);
+            // $table->string('no_struk')->index('no_struk');
+            // $table->timestamp('created_at')->nullable()->useCurrent();
+            // $table->timestamp('updated_at')->nullable();
+            // $table->softDeletes();
+            booking_kelas::create([
+                'tanggal_booking' => date("Y-m-d H:i:s",strtotime($tanggalbooking)),
+                'status_kehadiran' => $statuskehadiran,
+                'id_kelas_jadwal' => $kelasjadwal,
+                'id_member' => $member,
+                'no_struk' => $struk  
+            ]);
+        }
+
+        function createIjin($status,$tanggal,$instruktur,$instrukturPengganti,$kelasjadwal)
+        {
+            // $table->integer('id_ijin', true);
+            // $table->string('status_ijin');
+            // $table->date('tanggal_pengajuan');
+            // $table->string('id_instruktur');
+            // $table->string('id_instruktur_pengganti');
+            // $table->foreignId('id_kelas_jadwal')->references('id_kelas_jadwal')->on('kelas_jadwal');
+            // $table->timestamp('created_at')->nullable()->useCurrent();
+            // $table->timestamp('updated_at')->nullable();ktur')->references('id_instruktur')->on('instruktur');
+
+            ijin_instruktur::create([
+                'status_ijin' => $status,
+                'tanggal' => date("Y/m/d",strtotime($tanggal)),
+
+            ]);
+        }
 
         //! DUMMY USER
         //*Dummy Pengguna role member
@@ -271,6 +364,9 @@ class DatabaseSeeder extends Seeder
         createTransaksiMember(['transaksi-aktivasi'],'P01','23.03.001');
         createTransaksiMember(['transaksi-deposit-reguler'],'P02','23.03.002');
         createTransaksiMember(['transaksi-deposit-kelas'],'P03','23.03.003');
+        createTransaksiMember(['transaksi-booking-gym'],'P01','23.03.001');
+        createTransaksiMember(['transaksi-booking-kelas'],'P01','23.03.001');
+        createTransaksiMember(['transaksi-booking-kelas'],'P01','23.03.001');
         //!Data Dummy Aktivasi
         createAktivasi('23.03.001');
         //!Data Dummy Deposit reguler
@@ -280,16 +376,87 @@ class DatabaseSeeder extends Seeder
         // createDepositPaket([6,750000,'next month'],2,'23.03.003',3);
         // createDepositPaket([6,750000,'next month'],2,'23.03.003',3);
         //!Jadwal Jadwal Umum
-
+        //*Morning Classes
+        createJadwalUmum('senin','8:00','9:00');
+        createJadwalUmum('senin','9:30','10:30');
+        createJadwalUmum('selasa','8:00','9:00');
+        createJadwalUmum('selasa','9:30','10:30');
+        createJadwalUmum('rabu','8:00','9:00');
+        createJadwalUmum('rabu','9:30','10:30');
+        createJadwalUmum('kamis','8:00','9:00');
+        createJadwalUmum('kamis','9:30','10:30');
+        createJadwalUmum('jumat','8:00','9:00');
+        createJadwalUmum('jumat','9:30','10:30');
+        createJadwalUmum('sabtu','9:00','10:00');
+        createJadwalUmum('sabtu','9:30','10:30');
+        //*Evening Classes
+        createJadwalUmum('senin','17:00','18:00');
+        createJadwalUmum('senin','18:30','19:30');
+        createJadwalUmum('selasa','17:00','18:00');
+        createJadwalUmum('selasa','18:30','19:30');
+        createJadwalUmum('rabu','17:00','18:00');
+        createJadwalUmum('rabu','18:30','19:30');
+        createJadwalUmum('kamis','17:00','18:00');
+        createJadwalUmum('kamis','18:30','19:30');
+        createJadwalUmum('jumat','17:00','18:00');
+        createJadwalUmum('jumat','18:30','19:30');
+        createJadwalUmum('sabtu','17:00','18:00');
+        createJadwalUmum('sabtu','18:30','19:30');
         //!Jadwal Harian
-        //!Data Booking Gym
-        
+        createJadwalHarian('3 April 2023','1');
+        createJadwalHarian('3 April 2023','2');
+        createJadwalHarian('4 April 2023','3');
+        createJadwalHarian('4 April 2023','4');
+        createJadwalHarian('5 April 2023','5');
+        createJadwalHarian('5 April 2023','6');
+        createJadwalHarian('6 April 2023','7');
+        createJadwalHarian('6 April 2023','8');
+        createJadwalHarian('7 April 2023','9');
+        createJadwalHarian('7 April 2023','10');
+        createJadwalHarian('8 April 2023','11');
+        createJadwalHarian('8 April 2023','12');
+        createJadwalHarian('3 April 2023','13');
+        createJadwalHarian('3 April 2023','14');
+        createJadwalHarian('4 April 2023','15');
+        createJadwalHarian('4 April 2023','16');
+        createJadwalHarian('5 April 2023','17');
+        createJadwalHarian('5 April 2023','18');
+        createJadwalHarian('6 April 2023','19');
+        createJadwalHarian('6 April 2023','20');
+        createJadwalHarian('7 April 2023','21');
+        createJadwalHarian('7 April 2023','22');
+        createJadwalHarian('8 April 2023','23');
+        createJadwalHarian('8 April 2023','24');
+        //!kelas_jadwal
+        // $table->integer('id_kelas_jadwal', true);
+        // $table->integer('jumlah_peserta');
+        // $table->string('status');
+        // $table->integer('id_ijin')->index('id_ijin');
+        // $table->integer('id_presensi')->index('id_presensi');
+        // $table->integer('id_kelas')->nullable()->index('id_kelas');
+        // $table->integer('id_jadwal_harian')->index('id_jadwal_harian');
+        kelas_jadwal::create([
+            'status' => 'berjalan',
+            'id_kelas' => '1',
+            'id_jadwal_harian' => '1'
+        ]);
+        //!Presensi instruktur
+        presensiInstruktur("01-03-2023 07:00:00","2023-03-01 09:00:00", "hadir","ins-1");
+        presensiInstruktur("02-03-2023 07:00:00","2023-03-02 09:00:00", "hadir","ins-1");
+        presensiInstruktur("03-03-2023 07:00:00","2023-03-02 09:00:00", "hadir","ins-1");
+        presensiInstruktur("04-03-2023 07:00:00","2023-03-03 09:00:00", "hadir","ins-1");
+        presensiInstruktur("05-03-2023 07:00:00","2023-03-03 09:00:00", "hadir","ins-1");
+        presensiInstruktur("06-03-2023 07:00:00","2023-03-27 09:00:00", "hadir","ins-1");
         //!Data Booking Kelas
-
+        createBookingKelas("28-03-2023",TRUE,1,"23.03.001","23.03.005");
         //!Data Instruktur
-
+        
         //!Ijin Instruktur
-
+        
+        //!Data Booking Gym
+        createBookingGym("28-03-2023",TRUE,1,"23.03.001","23.03.004");
+        
+        
 
 
 

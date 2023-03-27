@@ -15,12 +15,15 @@ return new class extends Migration
     {
         Schema::create('kelas_jadwal', function (Blueprint $table) {
             $table->integer('id_kelas_jadwal', true);
-            $table->integer('jumlah_peserta');
+            $table->integer('jumlah_peserta')->default(0);
             $table->string('status');
-            $table->integer('id_ijin')->index('id_ijin');
-            $table->integer('id_presensi')->index('id_presensi');
+            $table->integer('id_ijin')->nullable()->index('id_ijin');
+            $table->integer('id_presensi')->nullable()->index('id_presensi');
             $table->integer('id_kelas')->nullable()->index('id_kelas');
             $table->integer('id_jadwal_harian')->index('id_jadwal_harian');
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable();
+            $table->softDeletes();
         });
     }
 

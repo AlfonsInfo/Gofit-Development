@@ -16,3 +16,4 @@ class kelas extends Model
         return $this->hasOne('User\instruktur');
     }
 }
+    

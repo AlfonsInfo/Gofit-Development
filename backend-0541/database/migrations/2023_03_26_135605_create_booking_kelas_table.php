@@ -15,10 +15,12 @@ return new class extends Migration
     {
         Schema::create('booking_kelas', function (Blueprint $table) {
             $table->integer('no_booking')->default(0);
-            $table->integer('tanggal_booking');
+            $table->timestamp('tanggal_booking');
             $table->boolean('is_canceled')->default(false);
             $table->boolean('status_kehadiran')->default(false);
             $table->string('no_struk')->index('no_struk');
+            $table->integer('id_kelas_jadwal')->index('id_kelas_jadwal');
+            $table->string('id_member')->index('id_member');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
