@@ -14,10 +14,14 @@ return new class extends Migration
     public function up()
     {
         Schema::create('transaksi_aktivasi', function (Blueprint $table) {
-            $table->integer('id_aktivasi')->primary();
-            $table->integer('tanggal_aktivasi');
+            $table->integer('id_aktivasi',true);
+            $table->timestamp('tanggal_aktivasi')->nullable();
             $table->double('nominal_aktivasi')->default(3000000);
             $table->string('no_struk')->index('no_struk');
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable();
+            $table->softDeletes();
+
         });
     }
 

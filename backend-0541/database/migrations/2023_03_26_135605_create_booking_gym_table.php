@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('booking_gym', function (Blueprint $table) {
             $table->integer('no_booking', true);
-            $table->integer('tanggal_booking');
+            $table->integer('tanggal_booking'); //* Diubah nanti ? date ? 
             $table->boolean('is_canceled')->default(false);
             $table->boolean('status_kehadiran')->default(false);
             $table->integer('id_sesi')->nullable()->index('id_sesi');

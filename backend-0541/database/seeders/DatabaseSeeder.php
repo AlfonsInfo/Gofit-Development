@@ -11,6 +11,9 @@ use App\Models\User\member;
 use App\Models\promo;
 use App\Models\sesi_gym;
 use App\Models\kelas;
+use App\Models\transaksi_member;
+use App\Models\transaksi_aktivasi;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -84,15 +87,6 @@ class DatabaseSeeder extends Seeder
 
         function createKelas($params,$foreign)
         {
-            // $table->integer('id_kelas', true);
-            // $table->string('jenis_kelas');
-            // $table->double('harga_kelas');
-            // $table->text('deskripsi_kelas');
-            // $table->string('id_instruktur')->nullable();
-            // $table->timestamp('created_at')->nullable()->useCurrent();
-            // $table->timestamp('updated_at')->nullable();
-            // $table->softDeletes();
-
             kelas::create([
                 'jenis_kelas' => $params[0],
                 'harga_kelas' => $params[1],
@@ -106,11 +100,31 @@ class DatabaseSeeder extends Seeder
                     'tanggal_sesi_gym' => date("Y/m/d",strtotime("today + {$params[0]}")) ,
                     'waktu_mulai' => date("h:i",strtotime($params[1])),
                     'waktu_selesai' => date("h:i",strtotime($params[2])),
-                    // $table->integer('id_sesi')->primary();
-                    // $table->date('tanggal_sesi_gym')->nullable();
-                    // $table->timestamp('waktu_mulai')->nullable();
-                    // $table->timestamp('waktu_selesai')->nullable();
                 ]);
+        }
+        
+        function createTransaksiMember($params,$pegawai)
+        {
+            // Schema::create('transaksi_member', function (Blueprint $table) {
+            //     $table->string('no_struk_transaksi')->primary();
+            //     $table->string('jenis_transaksi');
+            //     $table->string('id_pegawai')->index('id_pegawai');
+            //     $table->timestamp('created_at')->nullable()->useCurrent();
+            //     $table->timestamp('updated_at')->nullable();
+            //     $table->softDeletes();
+            transaksi_member::create([
+                'jenis_transaksi' => $params[0],
+                'id_pegawai' => $pegawai,
+            ]);
+        }
+
+        function createAktivasi($params)
+        {
+            transaksi_aktivasi::create([
+                'tanggal_aktivasi' => date("Y-m-d H:i:s",strtotime('now')),
+                // 'nominal_transaksi' => $params,
+                'no_struk' => $params
+            ]);
         }
 
         //! DUMMY USER
@@ -120,6 +134,7 @@ class DatabaseSeeder extends Seeder
         createPengguna(['udin_saprudin','member']);
         createPengguna(['faizah_nugraha','member']);
         createPengguna(['nadya','member']);
+        createPengguna(['henri','member']);
         //*Dummy Pengguna role instruktur
         createPengguna(['Joon','instruktur']);
         createPengguna(['JK','instruktur']);
@@ -151,6 +166,7 @@ class DatabaseSeeder extends Seeder
         createMember(['Udin Saprudin','21-05-2003','0821232314214'],3);
         createMember(['Faizah Nugraha','21-05-2001','082123231111'],4);
         createMember(['Nadya','13-05-2000','082123231111'],5);
+        createMember(['Henri Deeeee','13-05-2002','082123231111'],6);
 
         //* Detail data instruktur
         createInstruktur(['ins-1','Joon Sitanggang','Yadara Blok 27 Yogya','0828332813213'],6);
@@ -196,6 +212,37 @@ class DatabaseSeeder extends Seeder
             150000,
             "The Spine Corrector is an essential Pilates tool that can be used to perform exercises that lengthen and strengthen the torso, shoulders, back and legs while correcting or restoring the spine's natural curvature."
         ],'ins-1');
+        createKelas([
+            'MUAYTHAI',
+            150000,
+            "Muaythai merupakan suatu belah diri berasal dari Thailand."
+        ],'ins-2');
+        createKelas([
+            'PILATES',
+            150000,
+            "Pilates biar bisa kayang"
+        ],'ins-3');
+        createKelas([
+            'ASTHANGA',
+            150000,
+            "Pilates biar bisa kayang"
+        ],'ins-4');
+        createKelas([
+            'Body Combat',
+            150000,
+            "Pilates biar bisa kayang"
+        ],'ins-5');
+        //!Data Transaksi
+        createTransaksiMember('transaksi-aktivasi','P01');
+        createTransaksiMember('transaksi-aktivasi','P02');
+        createTransaksiMember('transaksi-aktivasi','P03');
+        //!Data Dummy Aktivasi
+        createAktivasi('23.03.001');
+        //!Data Dummy Deposit kelas
+
+        //!Data Dummy Deposit paket
+        
+        
     }
 
 }
