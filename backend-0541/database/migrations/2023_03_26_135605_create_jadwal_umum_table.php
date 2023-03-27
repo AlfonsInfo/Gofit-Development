@@ -16,8 +16,11 @@ return new class extends Migration
         Schema::create('jadwal_umum', function (Blueprint $table) {
             $table->integer('id_jadwal_umum', true);
             $table->string('hari');
-            $table->timestamp('jam_mulai')->nullable();
-            $table->timestamp('jam_selesai')->nullable();
+            $table->time('jam_mulai')->nullable();
+            $table->time('jam_selesai')->nullable();
+            $table->timestamp('created_at')->nullable()->useCurrent();
+            $table->timestamp('updated_at')->nullable();
+            $table->softDeletes();
         });
     }
 

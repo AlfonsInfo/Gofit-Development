@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('no_struk_transaksi')->primary();
             $table->string('jenis_transaksi');
             $table->string('id_pegawai')->index('id_pegawai');
+            $table->string('id_member')->index('id_member');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();

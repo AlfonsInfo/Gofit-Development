@@ -21,6 +21,7 @@ return new class extends Migration
             $table->timestamp('tanggal_kadeluarsa')->nullable();
             $table->integer('id_promo')->index('id_promo');
             $table->string('no_struk')->index('no_struk');
+            $table->integer('id_kelas')->index('id_kelas');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();

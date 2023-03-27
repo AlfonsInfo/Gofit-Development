@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User\pengguna;
 use App\Models\User\instruktur;
@@ -13,6 +12,8 @@ use App\Models\sesi_gym;
 use App\Models\kelas;
 use App\Models\transaksi_member;
 use App\Models\transaksi_aktivasi;
+use App\Models\transaksi_deposit_reguler;
+use App\Models\transaksi_deposit_paket;
 
 
 class DatabaseSeeder extends Seeder
@@ -103,7 +104,7 @@ class DatabaseSeeder extends Seeder
                 ]);
         }
         
-        function createTransaksiMember($params,$pegawai)
+        function createTransaksiMember($params,$pegawai,$member)
         {
             // Schema::create('transaksi_member', function (Blueprint $table) {
             //     $table->string('no_struk_transaksi')->primary();
@@ -115,6 +116,7 @@ class DatabaseSeeder extends Seeder
             transaksi_member::create([
                 'jenis_transaksi' => $params[0],
                 'id_pegawai' => $pegawai,
+                'id_member' => $member
             ]);
         }
 
@@ -124,6 +126,39 @@ class DatabaseSeeder extends Seeder
                 'tanggal_aktivasi' => date("Y-m-d H:i:s",strtotime('now')),
                 // 'nominal_transaksi' => $params,
                 'no_struk' => $params
+            ]);
+        }
+
+        function createDepositReguler($params,$promo,$struk)
+        {
+            transaksi_deposit_reguler::create([
+                'nominal_deposit'=>$params[0],
+                'nominal_total' => $params[1],
+                'id_promo' => $promo,
+                'no_struk' => $struk
+            ]);
+        }
+
+    function createDepositPaket($params,$promo,$struk,$kelas)
+        {
+            // $table->integer('id_deposit_paket', true);
+            // $table->timestamp('tanggal_deposit')->useCurrent();
+            // $table->double('nominal_deposit_kelas');
+            // $table->double('nominal_uang');
+            // $table->timestamp('tanggal_kadeluarsa')->nullable();
+            // $table->integer('id_promo')->index('id_promo');
+            // $table->string('no_struk')->index('no_struk');
+            // $table->timestamp('created_at')->useCurrent();
+            // $table->timestamp('updated_at')->nullable();
+            // $table->softDeletes();
+            transaksi_deposit_paket::create([
+                'nominal_deposit_kelas'=>$params[0],
+                'nominal_uang' => $params[1],
+                'tanggal_kadeluarsa' => date("Y-m-d H:i:s",strtotime($params[2])),
+                'id_promo' => $promo,
+                'no_struk' => $struk,
+                'id_kelas' => $kelas
+                
             ]);
         }
 
@@ -166,7 +201,7 @@ class DatabaseSeeder extends Seeder
         createMember(['Udin Saprudin','21-05-2003','0821232314214'],3);
         createMember(['Faizah Nugraha','21-05-2001','082123231111'],4);
         createMember(['Nadya','13-05-2000','082123231111'],5);
-        createMember(['Henri Deeeee','13-05-2002','082123231111'],6);
+        createMember(['Henri Teja','13-05-2002','082123231111'],6);
 
         //* Detail data instruktur
         createInstruktur(['ins-1','Joon Sitanggang','Yadara Blok 27 Yogya','0828332813213'],6);
@@ -233,16 +268,31 @@ class DatabaseSeeder extends Seeder
             "Pilates biar bisa kayang"
         ],'ins-5');
         //!Data Transaksi
-        createTransaksiMember('transaksi-aktivasi','P01');
-        createTransaksiMember('transaksi-aktivasi','P02');
-        createTransaksiMember('transaksi-aktivasi','P03');
+        createTransaksiMember(['transaksi-aktivasi'],'P01','23.03.001');
+        createTransaksiMember(['transaksi-deposit-reguler'],'P02','23.03.002');
+        createTransaksiMember(['transaksi-deposit-kelas'],'P03','23.03.003');
         //!Data Dummy Aktivasi
         createAktivasi('23.03.001');
-        //!Data Dummy Deposit kelas
-
+        //!Data Dummy Deposit reguler
+        createDepositReguler(['30000000',3300000],1,'23.03.002');
         //!Data Dummy Deposit paket
+        createDepositPaket([6,750000,'next month'],2,'23.03.003',3);
+        // createDepositPaket([6,750000,'next month'],2,'23.03.003',3);
+        // createDepositPaket([6,750000,'next month'],2,'23.03.003',3);
+        //!Jadwal Jadwal Umum
+
+        //!Jadwal Harian
+        //!Data Booking Gym
         
-        
+        //!Data Booking Kelas
+
+        //!Data Instruktur
+
+        //!Ijin Instruktur
+
+
+
+
     }
 
 }
