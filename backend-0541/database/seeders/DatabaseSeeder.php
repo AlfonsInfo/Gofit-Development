@@ -80,10 +80,6 @@ class DatabaseSeeder extends Seeder
         }
 
         function createPromo($params){
-            // $table->string('jenis_promo');
-            // $table->double('minimal_deposit');
-            // $table->double('bonus_promo');
-            // $table->integer('masa_berlaku')->nullable();
             promo::create([
                 'jenis_promo' => $params[0],
                 'minimal_deposit' => $params[1],
@@ -112,13 +108,6 @@ class DatabaseSeeder extends Seeder
         
         function createTransaksiMember($params,$pegawai,$member)
         {
-            // Schema::create('transaksi_member', function (Blueprint $table) {
-            //     $table->string('no_struk_transaksi')->primary();
-            //     $table->string('jenis_transaksi');
-            //     $table->string('id_pegawai')->index('id_pegawai');
-            //     $table->timestamp('created_at')->nullable()->useCurrent();
-            //     $table->timestamp('updated_at')->nullable();
-            //     $table->softDeletes();
             transaksi_member::create([
                 'jenis_transaksi' => $params[0],
                 'id_pegawai' => $pegawai,
@@ -147,16 +136,6 @@ class DatabaseSeeder extends Seeder
 
     function createDepositPaket($params,$promo,$struk,$kelas)
         {
-            // $table->integer('id_deposit_paket', true);
-            // $table->timestamp('tanggal_deposit')->useCurrent();
-            // $table->double('nominal_deposit_kelas');
-            // $table->double('nominal_uang');
-            // $table->timestamp('tanggal_kadeluarsa')->nullable();
-            // $table->integer('id_promo')->index('id_promo');
-            // $table->string('no_struk')->index('no_struk');
-            // $table->timestamp('created_at')->useCurrent();
-            // $table->timestamp('updated_at')->nullable();
-            // $table->softDeletes();
             transaksi_deposit_paket::create([
                 'nominal_deposit_kelas'=>$params[0],
                 'nominal_uang' => $params[1],
@@ -169,13 +148,6 @@ class DatabaseSeeder extends Seeder
         }
         function createJadwalUmum($hari,$mulai,$selesai)
         {
-        //     $table->integer('id_jadwal_umum', true);
-        //     $table->string('hari');
-        //     $table->time('jam_mulai')->nullable();
-        //     $table->time('jam_selesai')->nullable();
-        //     $table->timestamp('created_at')->nullable()->useCurrent();
-        //     $table->timestamp('updated_at')->nullable();
-        //     $table->softDeletes();
             jadwal_umum::create([
                 'hari' => $hari,
                 'jam_mulai' => date("h:i",strtotime($mulai)),
@@ -185,9 +157,6 @@ class DatabaseSeeder extends Seeder
 
         function createJadwalHarian($tanggal,$jadwalUmum)
         {
-            // $table->integer('id_jadwal_harian', true);
-            // $table->date('tanggal_jadwal_harian');
-            // $table->integer('id_jadwal_umum')->index('id_jadwal_umum');
             jadwal_harian::create([
                 'tanggal_jadwal_harian' =>date("Y/m/d",strtotime($tanggal)),
                 'id_jadwal_umum' =>$jadwalUmum,
@@ -239,15 +208,6 @@ class DatabaseSeeder extends Seeder
 
         function createIjin($status,$tanggal,$instruktur,$instrukturPengganti,$kelasjadwal)
         {
-            // $table->integer('id_ijin', true);
-            // $table->string('status_ijin');
-            // $table->date('tanggal_pengajuan');
-            // $table->string('id_instruktur');
-            // $table->string('id_instruktur_pengganti');
-            // $table->foreignId('id_kelas_jadwal')->references('id_kelas_jadwal')->on('kelas_jadwal');
-            // $table->timestamp('created_at')->nullable()->useCurrent();
-            // $table->timestamp('updated_at')->nullable();ktur')->references('id_instruktur')->on('instruktur');
-
             ijin_instruktur::create([
                 'status_ijin' => $status,
                 'tanggal' => date("Y/m/d",strtotime($tanggal)),
@@ -285,12 +245,9 @@ class DatabaseSeeder extends Seeder
         createPengguna(['Yunita','pegawai']);
         createPengguna(['Putri','pegawai']);
         createPengguna(['Yuna','pegawai']);
-        // createPengguna(['V','pegawai']);
-        // \App\Models\User::factory(10)->create();
 
         //*Detail Data Member
         //*nama_member,tgl_lahir_member,no_telp_member,tgl_kadeluarsa_aktivasi, total_deposit_uang,total_deposit_paket
-        // createPengguna(['alfonsus','member']);
         createMember(['Alfonsus Setiawan Jacub','21-05-2002','082284990864'],1);
         createMember(['Ucup Surucup','21-05-2000','0821232314214'],2);
         createMember(['Udin Saprudin','21-05-2003','0821232314214'],3);
