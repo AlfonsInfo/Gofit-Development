@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::create('ijin_instruktur', function (Blueprint $table) {
-            // $table->integer('id_ijin', true);
-            $table->integer('id_kelas_jadwal')->primary();
+            $table->integer('id_ijin', true);
+            $table->integer('id_kelas_jadwal')->index();
             $table->string('status_ijin');
             $table->date('tanggal_pengajuan');
             $table->string('id_instruktur');

@@ -22,8 +22,11 @@ use App\Models\booking_gym;
 use App\Models\booking_kelas;
 use App\Models\ijin_instruktur;
 
+// import jadwal;
+
 class DatabaseSeeder extends Seeder
 {
+
     /**
      * Seed the application's database.
      *
@@ -43,8 +46,9 @@ class DatabaseSeeder extends Seeder
         }
 
         //*id_member,nama_member,tgl_lahir_member,no_telp_member,tgl_kadeluarsa_aktivasi, total_deposit_uang,total_deposit_paket
-        function createMember($params,$foreign)
+        function createMember($pengguna,$params,$foreign)
         {
+            createPengguna([$pengguna[0],$pengguna[1]]);
             member::create([
                 'nama_member' => $params[0],
                 'id_pengguna' => $foreign,
@@ -56,7 +60,8 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        function createInstruktur($params, $foreign){
+        function createInstruktur($pengguna,$params, $foreign){
+            createPengguna([$pengguna[0],$pengguna[1]]);
             instruktur::create([
                 'id_instruktur' => $params[0],
                 'id_pengguna' => $foreign,
@@ -65,9 +70,9 @@ class DatabaseSeeder extends Seeder
                 'no_telp_instruktur' => $params[3],
             ]);
         }
-        function createPegawai($params, $foreign){
+        function createPegawai($pengguna,$params, $foreign){
             //* id pegawai, nama pegawai, jabatan, tgl lahir, no telp, alamat 
-        
+            createPengguna([$pengguna[0],$pengguna[1]]);
             Pegawai::create([
                 'id_pegawai' => $params[0],
                 'id_pengguna' => $foreign,
@@ -106,42 +111,39 @@ class DatabaseSeeder extends Seeder
                 ]);
         }
         
-        function createTransaksiMember($jenistransaksi,$pegawai,$member)
+        function createTransaksiMember($jenis,$pegawai,$member)
         {
             transaksi_member::create([
-                'jenis_transaksi' => $jenistransaksi[0],
+                'jenis_transaksi' => $jenis,
                 'id_pegawai' => $pegawai,
                 'id_member' => $member
             ]);
-            if($jenistransaksi[0] == "transaksi-aktivasi"){                    
-                    $data = transaksi_member::all('no_struk_transaksi');
-                    foreach($data as $p){
-                    createAktivasi($p['no_struk_transaksi']);
-                    }
-            }
         }
 
-        function createAktivasi($params)
+        function createAktivasi($jenis,$pegawai,$member,$nostruk)
         {
+            createTransaksiMember($jenis, $pegawai, $member);
             transaksi_aktivasi::create([
                 'tanggal_aktivasi' => date("Y-m-d H:i:s",strtotime('now')),
                 // 'nominal_transaksi' => $params,
-                'no_struk' => $params
+                'no_struk' => $nostruk
             ]);
         }
 
-        function createDepositReguler($params,$promo,$struk)
+        function createDepositReguler($jenis,$pegawai, $member, $nominalDeposit,$nominalTotal,$promo,$struk)
         {
+            createTransaksiMember($jenis, $pegawai, $member);
             transaksi_deposit_reguler::create([
-                'nominal_deposit'=>$params[0],
-                'nominal_total' => $params[1],
+                'nominal_deposit'=>$nominalDeposit,
+                'nominal_total' => $nominalTotal,
                 'id_promo' => $promo,
                 'no_struk' => $struk
             ]);
         }
 
-    function createDepositPaket($params,$promo,$struk,$kelas)
+        function createDepositPaket($jenis,$pegawai,$member,$params,$promo,$struk,$kelas)
         {
+            createTransaksiMember($jenis,$pegawai,$member);
             transaksi_deposit_paket::create([
                 'nominal_deposit_kelas'=>$params[0],
                 'nominal_uang' => $params[1],
@@ -152,38 +154,20 @@ class DatabaseSeeder extends Seeder
                 
             ]);
         }
-        function createJadwalUmum($hari,$mulai,$selesai)
-        {
-            jadwal_umum::create([
-                'hari' => $hari,
-                'jam_mulai' => date("h:i",strtotime($mulai)),
-                'jam_selesai' => date("h:i",strtotime($selesai)),
-            ]);
-        }
 
-        function createJadwalHarian($tanggal,$jadwalUmum)
-        {
-            jadwal_harian::create([
-                'tanggal_jadwal_harian' =>date("Y/m/d",strtotime($tanggal)),
-                'id_jadwal_umum' =>$jadwalUmum,
-
-            ]);
-        }
-
-        function presensiInstruktur($mulai,$selesai,$status,$instruktur){
-            // $table->timestamp('waktu_presensi')->useCurrent();
-            // $table->integer('waktu_selesai')->nullable();
-            // $table->string('status_presensi');
+    
+        function presensiInstruktur($mulai,$selesai,$status,$instruktur,$kelasjadwal){
             presensi_instruktur::create([
                 'waktu_presensi'=> date("Y-m-d H:i:s",strtotime($mulai)),
                 'waktu_selesai' => date("Y-m-d H:i:s",strtotime($selesai)),
                 'status_presensi' => $status,
-                'id_instruktur' => $instruktur
+                'id_instruktur' => $instruktur,
+                'id_kelas_jadwal' => $kelasjadwal
             ]);
 
         }
 
-        function createBookingGym($tanggalbooking, $statuskehadiran = false , $sesi, $member, $struk)
+        function createBookingGym($tanggalbooking, $statuskehadiran = false , $sesi, $member, $struk = null)
         {
             booking_gym::create([
                 'tanggal_booking' => date("Y-m-d H:i:s",strtotime($tanggalbooking)),
@@ -193,16 +177,8 @@ class DatabaseSeeder extends Seeder
                 'no_struk' => $struk  
             ]);
         }
-        function createBookingKelas($tanggalbooking, $statuskehadiran = false, $kelasjadwal, $member, $struk)
+        function createBookingKelas($tanggalbooking, $statuskehadiran = false, $kelasjadwal, $member, $struk = null)
         {
-            // $table->integer('no_booking')->default(0);
-            // $table->integer('tanggal_booking');
-            // $table->boolean('is_canceled')->default(false);
-            // $table->boolean('status_kehadiran')->default(false);
-            // $table->string('no_struk')->index('no_struk');
-            // $table->timestamp('created_at')->nullable()->useCurrent();
-            // $table->timestamp('updated_at')->nullable();
-            // $table->softDeletes();
             booking_kelas::create([
                 'tanggal_booking' => date("Y-m-d H:i:s",strtotime($tanggalbooking)),
                 'status_kehadiran' => $statuskehadiran,
@@ -223,84 +199,39 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        //! DUMMY USER
-        //*Dummy Pengguna role member
-        createPengguna(['alfonsus','member']);
-        createPengguna(['ucup_surucup','member']);
-        createPengguna(['udin_saprudin','member']);
-        createPengguna(['faizah_nugraha','member']);
-        createPengguna(['nadya','member']);
-        createPengguna(['henry','member']);
-        //*Dummy Pengguna role instruktur
-        createPengguna(['Joon','instruktur']);
-        createPengguna(['JK','instruktur']);
-        createPengguna(['Lisa','instruktur']);
-        createPengguna(['Hobby','instruktur']);
-        createPengguna(['V','instruktur']);
-        createPengguna(['Jenny','instruktur']);
-        createPengguna(['Suga','instruktur']);
-        createPengguna(['Jin','instruktur']);
-        createPengguna(['Jiso','instruktur']);
-        createPengguna(['Jimin','instruktur']);
-        createPengguna(['Lisa','instruktur']);
-        createPengguna(['JK','instruktur']);
-        //*Dummy Pengguna role pegawai;
-        createPengguna(['admin','pegawai']);
-        createPengguna(['admin_ganteng1','pegawai']);
-        createPengguna(['mo_ganteng1','pegawai']);
-        createPengguna(['Yunita','pegawai']);
-        createPengguna(['Putri','pegawai']);
-        createPengguna(['Yuna','pegawai']);
-        //* Dummy Pengguna untuk member lagi
-        createPengguna(['eric-fm','member']);
-        createPengguna(['fiona-gd','member']);
-        createPengguna(['CohenPowers','member']);
-        createPengguna(['HughW','member']);
-        createPengguna(['Landinbc','member']);
-        createPengguna(['MariamLivingston','member']);
-        createPengguna(['MagdalenaKelly','member']);
-        createPengguna(['KaidenW','member']);
 
         //*Detail Data Member
         //*nama_member,tgl_lahir_member,no_telp_member,tgl_kadeluarsa_aktivasi, total_deposit_uang,total_deposit_paket
-        createMember(['Alfonsus Setiawan Jacub','21-05-2002','082284990864'],1);
-        createMember(['Ucup Surucup','21-05-2000','0821232314214'],2);
-        createMember(['Udin Saprudin','21-05-2003','0821232314214'],3);
-        createMember(['Faizah Nugraha','21-05-2001','082123231111'],4);
-        createMember(['Nadya','13-05-2000','082123231111'],5);
-        createMember(['Henri Teja','13-05-2002','082123131111'],6);
+        createMember(['alfonsus','member'],['Alfonsus Setiawan Jacub','21-05-2002','082284990864'],1);
+        createMember(['ucup_surucup','member'],['Ucup Surucup','21-05-2000','0821232314214'],2);
+        createMember(['udin_saprudin','member'],['Udin Saprudin','21-05-2003','0821232314214'],3);
+        createMember(['faizah_nugraha','member'],['Faizah Nugraha','21-05-2001','082123231111'],4);
+        createMember(['nadya','member'],['Nadya','13-05-2000','082123231111'],5);
+        createMember(['henry','member'],['Henri Teja','13-05-2002','0821231311/11'],6);
 
         //* Detail data instruktur
-        createInstruktur(['ins-1','Joon Sitanggang','Yadara Blok 27 Yogya','0828332813213'],7);
-        createInstruktur(['ins-2','JK Bagaskara','Bekasi','+62 894-2212-919'],8);
-        createInstruktur(['ins-3','Lisa Blackpink','Amarta no 4Y,Condong Catur, Jogja','+62 874-3379-57385'],9);
-        createInstruktur(['ins-4','Hobby Sanjaya','Amarta no 6Y,Condong Catur, Jogja','+62 815-2075-864'],10);
-        createInstruktur(['ins-5','Veeee Putra','Amarta no 7Y,Condong Catur, Jogja','+62 853-8762-203'],11);
-        createInstruktur(['ins-6','Jenny Mullen','Amarta no 3Y,Condong Catur, Jogja','+62 856-6734-887'],12);
-        createInstruktur(['ins-7','Suga Yudhistira','Amarta no 1Y,Condong Catur, Jogja','+62 825-8689-211'],13);
-        createInstruktur(['ins-8','Jin Winoto','Amarta no 42Y,Condong Catur, Jogja','+62 821-7559-145'],14);
-        createInstruktur(['ins-9','Kim Ji Soo','Amarta no 41Y,Condong Catur, Jogja','+62 858-436-596'],15);
-        createInstruktur(['ins-10','Park Jiminnn','Amarta no 14Y,Condong Catur, Jogja','+62 880-0828-3863'],16);
-        createInstruktur(['ins-11','Lisa Lalisa','Amarta no 34Y,Condong Catur, Jogja','+62 893-0244-83650'],17);
-        createInstruktur(['ins-12','JK Rowling','Amarta no 14Y,Condong Catur, Jogja','+62 824-3239-54991'],18);
+        createInstruktur(['Joon','instruktur'],['ins-1','Joon Sitanggang','Yadara Blok 27 Yogya','0828332813213'],7);
+        createInstruktur(['JK','instruktur'],['ins-2','JK Bagaskara','Bekasi','+62 894-2212-919'],8);
+        createInstruktur(['Lisa','instruktur'],['ins-3','Lisa Blackpink','Amarta no 4Y,Condong Catur, Jogja','+62 874-3379-57385'],9);
+        createInstruktur(['Hobby','instruktur'],['ins-4','Hobby Sanjaya','Amarta no 6Y,Condong Catur, Jogja','+62 815-2075-864'],10);
+        createInstruktur(['V','instruktur'],['ins-5','Veeee Putra','Amarta no 7Y,Condong Catur, Jogja','+62 853-8762-203'],11);
+        createInstruktur(['Jenny','instruktur'],['ins-6','Jenny Mullen','Amarta no 3Y,Condong Catur, Jogja','+62 856-6734-887'],12);
+        createInstruktur(['Suga','instruktur'],['ins-7','Suga Yudhistira','Amarta no 1Y,Condong Catur, Jogja','+62 825-8689-211'],13);
+        createInstruktur(['Jin','instruktur'],['ins-8','Jin Winoto','Amarta no 42Y,Condong Catur, Jogja','+62 821-7559-145'],14);
+        createInstruktur(['Jiso','instruktur'],['ins-9','Kim Ji Soo','Amarta no 41Y,Condong Catur, Jogja','+62 858-436-596'],15);
+        createInstruktur(['Jimin','instruktur'],['ins-10','Park Jiminnn','Amarta no 14Y,Condong Catur, Jogja','+62 880-0828-3863'],16);
+        createInstruktur(['Lisa','instruktur'],['ins-11','Lisa Lalisa','Amarta no 34Y,Condong Catur, Jogja','+62 893-0244-83650'],17);
+        createInstruktur(['JK','instruktur'],['ins-12','JK Rowling','Amarta no 14Y,Condong Catur, Jogja','+62 824-3239-54991'],18);
 
         //*Detail Data pegawai
         //* id pegawai, nama pegawai, jabatan, tgl lahir, no telp, alamat 
-        createPegawai(['ADM-1','Yusup','Admin','21-03-1995','08123456789','Tambak Bayan no 41 Yogya'],19);
-        createPegawai(['ADM-2','Mamang','Admin','22-01-1996','08213232321','Tambak Bayan no 42 Yogya'],20);
-        createPegawai(['MO-1','Adee','MO','22-01-1998',20,'0811123232321','Tambak Bayan no 41 Yogya'],21);
-        createPegawai(['P01','Yunita','kasir','21-01-2000','082132133213','Seturan no 42 Yogya'],22);
-        createPegawai(['P02','Putri','kasir','23-05-2003','08212121312','Tambak Boyo no 42 Yogya'],23);
-        createPegawai(['P03','Yuna','kasir','24-03-2001','085398244443','Sergodadi no 42 Yogya'],24);    
+        createPegawai(['admin','pegawai'],['ADM-1','Yusup','Admin','21-03-1995','08123456789','Tambak Bayan no 41 Yogya'],19);
+        createPegawai(['admin_ganteng1','pegawai'],['ADM-2','Mamang','Admin','22-01-1996','08213232321','Tambak Bayan no 42 Yogya'],20);
+        createPegawai(['mo_ganteng1','pegawai'],['MO-1','Adee','MO','22-01-1998',20,'0811123232321','Tambak Bayan no 41 Yogya'],21);
+        createPegawai(['Yunita','pegawai'],['P01','Yunita','kasir','21-01-2000','082132133213','Seturan no 42 Yogya'],22);
+        createPegawai(['Putri','pegawai'],['P02','Putri','kasir','23-05-2003','08212121312','Tambak Boyo no 42 Yogya'],23);
+        createPegawai(['Yuna','pegawai'],['P03','Yuna','kasir','24-03-2001','085398244443','Sergodadi no 42 Yogya'],24);    
 
-        //*+ Pegawai
-        createMember(['Eric Farmer','13-05-2000','081122939231'],25);
-        createMember(['Fiona Gordon','13-06-2002','081122939231'],26);
-        createMember(['Cohen Powers','13-06-2001','081122939231'],27);
-        createMember(['Hugh Weis','13-06-2004','081122939111'],28);
-        createMember(['Landin Blevins','13-06-2001','081122939111'],29);
-        createMember(['Mariam Livingston','13-01-1999','081122939111'],30);
-        createMember(['Kaydence Wright','13-01-1995','081122930111'],31);
 
         //! DUMMY PROMO
         //*jenis,minimal,bonus,masa berlaku
@@ -309,7 +240,6 @@ class DatabaseSeeder extends Seeder
         createPromo(['promo_paket2',10,3,2]);       
 
         //! DUMMY SESI GYM
-        // 7-9, 9-11, 11-13, 13-15, 15-17, 17-19, dan 19-21. //*datenya di bookingan ?
         createSesiGym(["1 days", "7:00","9:00"]);
         createSesiGym(["1 days", "9:00","11:00"]);
         createSesiGym(["1 days", "11:00","13:00"]);
@@ -344,41 +274,37 @@ class DatabaseSeeder extends Seeder
             150000,
             "Pilates biar bisa kayang"
         ],'ins-5');
-        //!Data Transaksi
-        //* [JenisTransaksi], Pegawai, id member yang melakuakn transaksi
-        createTransaksiMember(['transaksi-aktivasi'],'P01','23.03.001');
-        createTransaksiMember(['transaksi-aktivasi'],'P01','23.03.001');
-        createTransaksiMember(['transaksi-aktivasi'],'P01','23.03.001');
-                
+        //!Badminton
+        $this->call([
+            jadwal::class
+        ]);
+        //!Presensi instruktur
+        // presensiInstruktur();
+        //!Perijinan Instruktur
 
-        // createTransaksiMember(['transaksi-aktivasi'],'P02','23.03.002');
-        // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.003');
-        // createTransaksiMember(['transaksi-aktivasi'],'P02','23.03.004');
-        // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.005');
-        // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.006');
-        // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.007');
-        // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.008');
-        // *member 1 melakukan deposit reguler, depos kelas , booking gym dan booking kelas
+        //!Data Transaksi
+        //* transaksi dan booking
+        createAktivasi('transaksi-aktivasi','P01','23.03.001','23.03.001');
+        createAktivasi('transaksi-aktivasi','P02','23.03.002','23.03.002');
+        createAktivasi('transaksi-aktivasi','P02','23.03.003','23.03.003');
+        createAktivasi('transaksi-aktivasi','P02','23.03.004','23.03.004');
+        createDepositReguler('transaksi-deposit-reguler','P02','23.03.001',4000000,4300000,1,'23.03.005');
+        createDepositReguler('transaksi-deposit-reguler','P01','23.03.001',4000000,4300000,1,'23.03.006');
+        createDepositPaket('transaksi-deposit-paket','P03','23.03.002',[6,750000,'next month'],2,'23.03.007',2);
+        createAktivasi('transaksi-aktivasi','P03','23.03.004','23.03.008');
+        createAktivasi('transaksi-aktivasi','P01','23.03.004','23.03.009');
+        //*member 1 melakukan deposit reguler, depos kelas , booking gym dan booking kelas
         // createTransaksiMember(['transaksi-deposit-reguler'],'P02','23.03.001');
         // createTransaksiMember(['transaksi-deposit-kelas'],'P03','23.03.001');
         // createTransaksiMember(['transaksi-booking-gym'],'P01','23.03.001');
         // createTransaksiMember(['transaksi-booking-kelas'],'P01','23.03.001');
         // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.008');
         // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.010');
-        // createTransaksiMember(['transaksi-deposit-reguler'],'P02','23.03.002');
-        // createTransaksiMember(['transaksi-deposit-kelas'],'P03','23.03.002');
-        // createTransaksiMember(['transaksi-booking-kelas'],'P01','23.03.003');
-        // createTransaksiMember(['transaksi-booking-gym'],'P01','23.03.003');
-        // createTransaksiMember(['transaksi-booking-gym'],'P01','23.03.004');
-        // createTransaksiMember(['transaksi-booking-kelas'],'P01','23.03.005');
-        // createTransaksiMember(['transaksi-booking-kelas'],'P01','23.03.006');
-        // createTransaksiMember(['transaksi-booking-kelas'],'P01','23.03.004');
-
         // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.011');
         // createTransaksiMember(['transaksi-aktivasi'],'P01','23.03.001');
         //* Masing-masing user melakukan deposit reguler, booing kelas, booking gym
         //!Data Dummy Aktivasi
-        // createAktivasi('23.03.001');
+        // createAktivasi('transaksi-aktivasi','P01','23.03.001','23.03.001');
         // createAktivasi('23.03.002');
         // createAktivasi('23.03.003');
         // createAktivasi('23.03.004');
@@ -391,78 +317,15 @@ class DatabaseSeeder extends Seeder
         //!Data Dummy Deposit paket
         // createDepositPaket([6,750000,'next month'],2,'23.03.003',3);
         //!Jadwal Jadwal Umum
-        //*Morning Classes
-        createJadwalUmum('senin','8:00','9:00');
-        createJadwalUmum('senin','9:30','10:30');
-        createJadwalUmum('selasa','8:00','9:00');
-        createJadwalUmum('selasa','9:30','10:30');
-        createJadwalUmum('rabu','8:00','9:00');
-        createJadwalUmum('rabu','9:30','10:30');
-        createJadwalUmum('kamis','8:00','9:00');
-        createJadwalUmum('kamis','9:30','10:30');
-        createJadwalUmum('jumat','8:00','9:00');
-        createJadwalUmum('jumat','9:30','10:30');
-        createJadwalUmum('sabtu','9:00','10:00');
-        createJadwalUmum('sabtu','9:30','10:30');
-        //*Evening Classes
-        createJadwalUmum('senin','17:00','18:00');
-        createJadwalUmum('senin','18:30','19:30');
-        createJadwalUmum('selasa','17:00','18:00');
-        createJadwalUmum('selasa','18:30','19:30');
-        createJadwalUmum('rabu','17:00','18:00');
-        createJadwalUmum('rabu','18:30','19:30');
-        createJadwalUmum('kamis','17:00','18:00');
-        createJadwalUmum('kamis','18:30','19:30');
-        createJadwalUmum('jumat','17:00','18:00');
-        createJadwalUmum('jumat','18:30','19:30');
-        createJadwalUmum('sabtu','17:00','18:00');
-        createJadwalUmum('sabtu','18:30','19:30');
-        //!Jadwal Harian
-        createJadwalHarian('3 April 2023','1');
-        createJadwalHarian('3 April 2023','2');
-        createJadwalHarian('4 April 2023','3');
-        createJadwalHarian('4 April 2023','4');
-        createJadwalHarian('5 April 2023','5');
-        createJadwalHarian('5 April 2023','6');
-        createJadwalHarian('6 April 2023','7');
-        createJadwalHarian('6 April 2023','8');
-        createJadwalHarian('7 April 2023','9');
-        createJadwalHarian('7 April 2023','10');
-        createJadwalHarian('8 April 2023','11');
-        createJadwalHarian('8 April 2023','12');
-        createJadwalHarian('3 April 2023','13');
-        createJadwalHarian('3 April 2023','14');
-        createJadwalHarian('4 April 2023','15');
-        createJadwalHarian('4 April 2023','16');
-        createJadwalHarian('5 April 2023','17');
-        createJadwalHarian('5 April 2023','18');
-        createJadwalHarian('6 April 2023','19');
-        createJadwalHarian('6 April 2023','20');
-        createJadwalHarian('7 April 2023','21');
-        createJadwalHarian('7 April 2023','22');
-        createJadwalHarian('8 April 2023','23');
-        createJadwalHarian('8 April 2023','24');
-        //!kelas_jadwal
-        // $table->integer('id_kelas_jadwal', true);
-        // $table->integer('jumlah_peserta');
-        // $table->string('status');
-        // $table->integer('id_ijin')->index('id_ijin');
-        // $table->integer('id_presensi')->index('id_presensi');
-        // $table->integer('id_kelas')->nullable()->index('id_kelas');
-        // $table->integer('id_jadwal_harian')->index('id_jadwal_harian');
-        kelas_jadwal::create([
-            'status' => 'berjalan',
-            'id_kelas' => '1',
-            'id_jadwal_harian' => '1'
-        ]);
+       
         //!Presensi instruktur
-        presensiInstruktur("01-03-2023 07:00:00","2023-03-01 09:00:00", "hadir","ins-1");
-        presensiInstruktur("02-03-2023 07:00:00","2023-03-02 09:00:00", "hadir","ins-1");
-        presensiInstruktur("03-03-2023 07:00:00","2023-03-02 09:00:00", "hadir","ins-1");
-        presensiInstruktur("04-03-2023 07:00:00","2023-03-03 09:00:00", "hadir","ins-1");
-        presensiInstruktur("05-03-2023 07:00:00","2023-03-03 09:00:00", "hadir","ins-1");
-        presensiInstruktur("06-03-2023 07:00:00","2023-03-27 09:00:00", "hadir","ins-1");
-        //!Data Booking Kelas
+        presensiInstruktur("03-04-2023 08:00:00","03-04-2023 09:00:00", "hadir","ins-1",1);
+        presensiInstruktur("03-04-2023 09:31:00","03-04-2023 09:00:00", "hadir","ins-2",2);
+        presensiInstruktur("04-04-2023 08:00:00","04-04-2023 09:00:00", "hadir","ins-3",3);
+        presensiInstruktur("04-04-2023 09:32:00","04-04-2023 09:00:00", "hadir","ins-4",4);
+        presensiInstruktur("05-04-2023 08:10:00","05-04-2023 09:00:00", "hadir","ins-5",5);
+        // presensiInstruktur("06-03-2023 07:00:00","2023-03-27 09:00:00", "hadir","ins-1",5);
+        // !Data Booking Kelas
         // createBookingKelas("28-03-2023",TRUE,1,"23.03.001","23.03.005");
         //!Data Instruktur
         

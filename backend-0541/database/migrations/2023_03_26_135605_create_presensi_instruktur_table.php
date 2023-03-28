@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('presensi_instruktur', function (Blueprint $table) {
+        Schema::create('presensi_instruktur', function (Blueprint $table) { 
             $table->integer('id_presensi', true);
             $table->timestamp('waktu_presensi')->useCurrent();
             $table->timestamp('waktu_selesai')->nullable();
             $table->string('status_presensi');
             $table->foreignUlid('id_instruktur')->references('id_instruktur')->on('instruktur');
+            $table->integer('id_kelas_jadwal')->index('id_kelas_jadwal');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
