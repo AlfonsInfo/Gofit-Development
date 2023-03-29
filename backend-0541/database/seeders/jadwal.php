@@ -37,83 +37,75 @@
 
                 ]);
             }
-    // Array of days and times
-    $days = array('senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu','minggu');
-    $times = array('8:00', '9:30', '17:00', '18:30');
-
-    // Counter for jadwal_umum ID
-    $jum_id = 1;
-
-    // Loop through days and times to create jadwal_umum records
-    foreach ($days as $day) {
-    foreach ($times as $time) {
-        if($day != 'minggu'){
-            createJadwalUmum($day, $time, date('H:i', strtotime("$time + 1 hour")), $jum_id);
-            $jum_id++;
-        }else{
-            createJadwalUmum($day, "9:00", "10:00",$jum_id);
-            $jum_id++;
-            break;
-        }
-    }
-    }
-
-    function createJadwal($start,$finish){
-        $begin = new DateTime($start);
-        $end = new DateTime($finish);
-        $daterange = new DatePeriod($begin, new DateInterval('P1D'), $end);
-        $jadwal = 1;
-        foreach($daterange as $date){
-            for($i = 1 ; $i<=4; $i++)
-            {
-                if($jadwal > 25)
-                {
-                    break;
+            
+            function createJadwal($start,$finish){
+                $begin = new DateTime($start);
+                $end = new DateTime($finish);
+                $daterange = new DatePeriod($begin, new DateInterval('P1D'), $end);
+                $jadwal = 1;
+                foreach($daterange as $date){
+                    for($i = 1 ; $i<=4; $i++)
+                    {
+                        if($jadwal > 25)
+                        {
+                            break;
+                        }
+                        createJadwalHarian(date($date->format("Y/m/d")) ,$jadwal);
+                        $jadwal++;
+                    }
                 }
-                createJadwalHarian(date($date->format("Y/m/d")) ,$jadwal);
-                $jadwal++;
             }
-        }
-    }
 
-          
-                //*create jadwal
+            function createKelasJadwal($status, $kelas, $jadwal){
+                kelas_jadwal::create([
+                    'status' => $status,
+                    'id_kelas' => $kelas,
+                    'id_jadwal_harian' => $jadwal
+                ]);
+            }
 
-                createJadwal('2023-02-27','2023-03-06');
-                createJadwal('2023-03-06','2023-03-13');
-                createJadwal('2023-03-13','2023-03-20');
-            //!kelas_jadwal
-            kelas_jadwal::create([
-                'status' => 'berjalan',
-                'id_kelas' => 1,
-                'id_jadwal_harian' => 1
-            ]);
-            kelas_jadwal::create([
-                'status' => 'berjalan',
-                'id_kelas' => 2,
-                'id_jadwal_harian' => '2'
-            ]);
-            kelas_jadwal::create([
-                'status' => 'berjalan',
-                'id_kelas' => 3,
-                'id_jadwal_harian' => '3'
-            ]);
-            kelas_jadwal::create([
-                'status' => 'berjalan',
-                'id_kelas' => 4,
-                'id_jadwal_harian' => '4'
-            ]);
-            kelas_jadwal::create([
-                'status' => 'berjalan',
-                'id_kelas' => 5,
-                'id_jadwal_harian' => '4'
-            ]);
-        }
-    }
-
-
-
+            // Array of days and times
+            $days = array('senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu','minggu');
+            $times = array('8:00', '9:30', '17:00', '18:30');
         
+            // Counter for jadwal_umum ID
+            $jum_id = 1;
+        
+            // Loop through days and times to create jadwal_umum records
+            foreach ($days as $day) {
+                foreach ($times as $time) {
+                    if($day != 'minggu'){
+                        createJadwalUmum($day, $time, date('H:i', strtotime("$time + 1 hour")), $jum_id);
+                        $jum_id++;
+                    }else{
+                        createJadwalUmum($day, "9:00", "10:00",$jum_id);
+                        $jum_id++;
+                        break;
+                    }
+                }
+            }
+            //*create jadwal
+            createJadwal('2023-02-27','2023-03-06');
+            createJadwal('2023-03-06','2023-03-13');
+            createJadwal('2023-03-13','2023-03-20');
+            //!kelas_jadwal
+            
+             createKelasJadwal('berjalan','1','1');
+             createKelasJadwal('dibatalkan', '2','2');
+             createKelasJadwal('berjalan','3','5');
+             createKelasJadwal('dibatalkan','4','6');
+             createKelasJadwal('berjalan','5','9');
+
+        }
+    }
+
+
+
+
+
+
+    
+            //!CODE AWAL - TIDAK DIGUNAKAN LG    
             // createJadwalUmum('senin','8:00','9:00');
             // createJadwalUmum('senin','9:30','10:30');
             // createJadwalUmum('selasa','8:00','9:00');

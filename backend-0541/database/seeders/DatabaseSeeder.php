@@ -220,17 +220,19 @@ class DatabaseSeeder extends Seeder
         createInstruktur(['Jin','instruktur'],['ins-8','Jin Winoto','Amarta no 42Y,Condong Catur, Jogja','+62 821-7559-145'],14);
         createInstruktur(['Jiso','instruktur'],['ins-9','Kim Ji Soo','Amarta no 41Y,Condong Catur, Jogja','+62 858-436-596'],15);
         createInstruktur(['Jimin','instruktur'],['ins-10','Park Jiminnn','Amarta no 14Y,Condong Catur, Jogja','+62 880-0828-3863'],16);
-        createInstruktur(['Lisa','instruktur'],['ins-11','Lisa Lalisa','Amarta no 34Y,Condong Catur, Jogja','+62 893-0244-83650'],17);
-        createInstruktur(['JK','instruktur'],['ins-12','JK Rowling','Amarta no 14Y,Condong Catur, Jogja','+62 824-3239-54991'],18);
+        createInstruktur(['Rose','instruktur'],['ins-11','Rosieee Rose','Amarta no 21Y,Condong Catur, Jogja','+62 880-021-0002'],17);
+        createInstruktur(['Rose','instruktur'],['ins-11','Rosieee Rose','Amarta no 21Y,Condong Catur, Jogja','+62 880-021-0002'],17);
+        // createInstruktur(['Lisa','instruktur'],['ins-11','Lisa Lalisa','Amarta no 34Y,Condong Catur, Jogja','+62 893-0244-83650'],17);
+        // createInstruktur(['JK','instruktur'],['ins-12','JK Rowling','Amarta no 14Y,Condong Catur, Jogja','+62 824-3239-54991'],18);
 
         //*Detail Data pegawai
         //* id pegawai, nama pegawai, jabatan, tgl lahir, no telp, alamat 
-        createPegawai(['admin','pegawai'],['ADM-1','Yusup','Admin','21-03-1995','08123456789','Tambak Bayan no 41 Yogya'],19);
-        createPegawai(['admin_ganteng1','pegawai'],['ADM-2','Mamang','Admin','22-01-1996','08213232321','Tambak Bayan no 42 Yogya'],20);
-        createPegawai(['mo_ganteng1','pegawai'],['MO-1','Adee','MO','22-01-1998',20,'0811123232321','Tambak Bayan no 41 Yogya'],21);
-        createPegawai(['Yunita','pegawai'],['P01','Yunita','kasir','21-01-2000','082132133213','Seturan no 42 Yogya'],22);
-        createPegawai(['Putri','pegawai'],['P02','Putri','kasir','23-05-2003','08212121312','Tambak Boyo no 42 Yogya'],23);
-        createPegawai(['Yuna','pegawai'],['P03','Yuna','kasir','24-03-2001','085398244443','Sergodadi no 42 Yogya'],24);    
+        createPegawai(['admin','pegawai'],['ADM-1','Yusup','Admin','21-03-1995','08123456789','Tambak Bayan no 41 Yogya'],18);
+        createPegawai(['admin_ganteng1','pegawai'],['ADM-2','Mamang','Admin','22-01-1996','08213232321','Tambak Bayan no 42 Yogya'],19);
+        createPegawai(['mo_ganteng1','pegawai'],['MO-1','Adee','MO','22-01-1998',20,'0811123232321','Tambak Bayan no 41 Yogya'],20);
+        createPegawai(['Yunita','pegawai'],['P01','Yunita','kasir','21-01-2000','082132133213','Seturan no 42 Yogya'],21);
+        createPegawai(['Putri','pegawai'],['P02','Putri','kasir','23-05-2003','08212121312','Tambak Boyo no 42 Yogya'],22);
+        createPegawai(['Yuna','pegawai'],['P03','Yuna','kasir','24-03-2001','085398244443','Sergodadi no 42 Yogya'],23);    
 
 
         //! DUMMY PROMO
@@ -249,31 +251,29 @@ class DatabaseSeeder extends Seeder
         createSesiGym(["1 days", "19:00","21:00"]);
 
         //! DUMMY KELAS
-        createKelas([
-            'SPINE Corrector',
-            150000,
-            "The Spine Corrector is an essential Pilates tool that can be used to perform exercises that lengthen and strengthen the torso, shoulders, back and legs while correcting or restoring the spine's natural curvature."
-        ],'ins-1');
-        createKelas([
-            'MUAYTHAI',
-            150000,
-            "Muaythai merupakan suatu belah diri berasal dari Thailand."
-        ],'ins-2');
-        createKelas([
-            'PILATES',
-            150000,
-            "Pilates biar bisa kayang"
-        ],'ins-3');
-        createKelas([
-            'ASTHANGA',
-            150000,
-            "Pilates biar bisa kayang"
-        ],'ins-4');
-        createKelas([
-            'Body Combat',
-            150000,
-            "Pilates biar bisa kayang"
-        ],'ins-5');
+        //* Dummy kelas pagi
+        createKelas(['SPINE Corrector',150000,"-"],'ins-1'); //* Kelas Joon
+        createKelas(['MUAYTHAI',150000,"-"],'ins-2'); //* Kelas JK
+        createKelas(['PILATES',150000, "-"],'ins-3'); //* Kelas Lisa
+        createKelas(['ASTHANGA',150000,"-"],'ins-4'); //* Kelas Hobby
+        createKelas(['Body Combat',150000,"-"],'ins-5'); //*Kelas Vee Putra
+        createKelas(['Zumba',150000,"-"],'ins-6'); //*Kelas Jenny Mullen
+        createKelas(['Suga',150000,"-"],'ins-7'); //*Kelas Suga
+        createKelas(['Wall Swing',150000,"-"],'ins-11'); //*Rosiee
+        createKelas(['Basic Swing',150000,"-"],'ins-8'); //*Jin
+        createKelas(['HATHA',150000,"-"],'ins-8'); //*Kelas Jin
+        createKelas(['Bellydance',150000,"-"],'ins-9'); //*Kelas Jisoo
+        createKelas(['BUNGEE',200000,"-"],'ins-10'); //*Kelas jimin
+        createKelas(['Yogalates',150000,"-"],'ins-3'); //*Kelas jimin
+        createKelas(['BOXING',150000,"-"],'ins-2'); //*Kelas jimin
+        createKelas(['Calistenic',150000,"-"],'ins-1'); //*Kelas joon
+        //* Dummy kelas malam
+        createKelas(['Pound Fit',150000,"-"],'ins-4');
+        createKelas(['Trampoline Workout',200000,"-"],'ins-11');
+        createKelas(['Yoga For Kids',150000,"-"],'ins-11');
+        // createKelas(['Bellydance',150000,"-"],'ins-9');
+        // createKelas(['Calisthenic',150000,"-"],'ins-1');
+        
         //!Badminton
         $this->call([
             jadwal::class
