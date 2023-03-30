@@ -8,6 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class jadwal_harian extends Model
 {
     use HasFactory;
-    protected $table = 'jadwal_harian';  
+    protected $table = 'jadwal_harian';
+    protected $primaryKey = 'id_jadwal_harian';
+
+    public function jadwal_umum(){
+        return $this->hasOne(jadwal_umum::class,'id_jadwal_umum','id_jadwal_umum');
+    }
 
 }

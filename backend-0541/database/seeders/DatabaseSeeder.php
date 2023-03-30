@@ -21,6 +21,8 @@ use App\Models\presensi_instruktur;
 use App\Models\booking_gym;
 use App\Models\booking_kelas;
 use App\Models\ijin_instruktur;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
 
 // import jadwal;
 
@@ -93,21 +95,20 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        function createKelas($params,$foreign)
+        function createKelas($params)
         {
             kelas::create([
                 'jenis_kelas' => $params[0],
                 'harga_kelas' => $params[1],
                 'deskripsi_kelas' => $params[2],
-                'id_instruktur' => $foreign,
         ]);
         }
 
         function createSesiGym($params){
                 sesi_gym::create([
                     'tanggal_sesi_gym' => date("Y/m/d",strtotime("today + {$params[0]}")) ,
-                    'waktu_mulai' => date("h:i",strtotime($params[1])),
-                    'waktu_selesai' => date("h:i",strtotime($params[2])),
+                    'waktu_mulai' => $params[1],//date("h:i",strtotime($params[1])),
+                    'waktu_selesai' => $params[2]//date("h:i",strtotime($params[2])),
                 ]);
         }
         
@@ -156,13 +157,13 @@ class DatabaseSeeder extends Seeder
         }
 
     
-        function presensiInstruktur($mulai,$selesai,$status,$instruktur,$kelasjadwal){
+        function presensiInstruktur($mulai,$selesai,$status,$instruktur,$jadwalharian){
             presensi_instruktur::create([
                 'waktu_presensi'=> date("Y-m-d H:i:s",strtotime($mulai)),
                 'waktu_selesai' => date("Y-m-d H:i:s",strtotime($selesai)),
                 'status_presensi' => $status,
                 'id_instruktur' => $instruktur,
-                'id_kelas_jadwal' => $kelasjadwal
+                'id_jadwal_harian' => $jadwalharian
             ]);
 
         }
@@ -221,18 +222,18 @@ class DatabaseSeeder extends Seeder
         createInstruktur(['Jiso','instruktur'],['ins-9','Kim Ji Soo','Amarta no 41Y,Condong Catur, Jogja','+62 858-436-596'],15);
         createInstruktur(['Jimin','instruktur'],['ins-10','Park Jiminnn','Amarta no 14Y,Condong Catur, Jogja','+62 880-0828-3863'],16);
         createInstruktur(['Rose','instruktur'],['ins-11','Rosieee Rose','Amarta no 21Y,Condong Catur, Jogja','+62 880-021-0002'],17);
-        createInstruktur(['Rose','instruktur'],['ins-11','Rosieee Rose','Amarta no 21Y,Condong Catur, Jogja','+62 880-021-0002'],17);
+        createInstruktur(['Jessi','instruktur'],['ins-12','Jessii','Amarta no 21Y,Condong Catur, Jogja','+62 880-021-0002'],18);
         // createInstruktur(['Lisa','instruktur'],['ins-11','Lisa Lalisa','Amarta no 34Y,Condong Catur, Jogja','+62 893-0244-83650'],17);
         // createInstruktur(['JK','instruktur'],['ins-12','JK Rowling','Amarta no 14Y,Condong Catur, Jogja','+62 824-3239-54991'],18);
 
         //*Detail Data pegawai
         //* id pegawai, nama pegawai, jabatan, tgl lahir, no telp, alamat 
-        createPegawai(['admin','pegawai'],['ADM-1','Yusup','Admin','21-03-1995','08123456789','Tambak Bayan no 41 Yogya'],18);
-        createPegawai(['admin_ganteng1','pegawai'],['ADM-2','Mamang','Admin','22-01-1996','08213232321','Tambak Bayan no 42 Yogya'],19);
-        createPegawai(['mo_ganteng1','pegawai'],['MO-1','Adee','MO','22-01-1998',20,'0811123232321','Tambak Bayan no 41 Yogya'],20);
-        createPegawai(['Yunita','pegawai'],['P01','Yunita','kasir','21-01-2000','082132133213','Seturan no 42 Yogya'],21);
-        createPegawai(['Putri','pegawai'],['P02','Putri','kasir','23-05-2003','08212121312','Tambak Boyo no 42 Yogya'],22);
-        createPegawai(['Yuna','pegawai'],['P03','Yuna','kasir','24-03-2001','085398244443','Sergodadi no 42 Yogya'],23);    
+        createPegawai(['admin','pegawai'],['P01','Yusup','Admin','21-03-1995','08123456789','Tambak Bayan no 41 Yogya'],19);
+        createPegawai(['admin_ganteng1','pegawai'],['P02','Mamang','Admin','22-01-1996','08213232321','Tambak Bayan no 42 Yogya'],20);
+        createPegawai(['mo_ganteng1','pegawai'],['P03','Adee','MO','22-01-1998',20,'0811123232321','Tambak Bayan no 41 Yogya'],21);
+        createPegawai(['Yunita','pegawai'],['P04','Yunita','kasir','21-01-2000','082132133213','Seturan no 42 Yogya'],22);
+        createPegawai(['Putri','pegawai'],['P05','Putri','kasir','23-05-2003','08212121312','Tambak Boyo no 42 Yogya'],23);
+        createPegawai(['Yuna','pegawai'],['P06','Yuna','kasir','24-03-2001','085398244443','Sergodadi no 42 Yogya'],24);    
 
 
         //! DUMMY PROMO
@@ -252,25 +253,27 @@ class DatabaseSeeder extends Seeder
 
         //! DUMMY KELAS
         //* Dummy kelas pagi
-        createKelas(['SPINE Corrector',150000,"-"],'ins-1'); //* Kelas Joon
-        createKelas(['MUAYTHAI',150000,"-"],'ins-2'); //* Kelas JK
-        createKelas(['PILATES',150000, "-"],'ins-3'); //* Kelas Lisa
-        createKelas(['ASTHANGA',150000,"-"],'ins-4'); //* Kelas Hobby
-        createKelas(['Body Combat',150000,"-"],'ins-5'); //*Kelas Vee Putra
-        createKelas(['Zumba',150000,"-"],'ins-6'); //*Kelas Jenny Mullen
-        createKelas(['Suga',150000,"-"],'ins-7'); //*Kelas Suga
-        createKelas(['Wall Swing',150000,"-"],'ins-11'); //*Rosiee
-        createKelas(['Basic Swing',150000,"-"],'ins-8'); //*Jin
-        createKelas(['HATHA',150000,"-"],'ins-8'); //*Kelas Jin
-        createKelas(['Bellydance',150000,"-"],'ins-9'); //*Kelas Jisoo
-        createKelas(['BUNGEE',200000,"-"],'ins-10'); //*Kelas jimin
-        createKelas(['Yogalates',150000,"-"],'ins-3'); //*Kelas jimin
-        createKelas(['BOXING',150000,"-"],'ins-2'); //*Kelas jimin
-        createKelas(['Calistenic',150000,"-"],'ins-1'); //*Kelas joon
+        createKelas(['SPINE Corrector',150000,"-"]); //* Kelas Joon
+        createKelas(['MUAYTHAI',150000,"-"]); //* Kelas JK
+        createKelas(['PILATES',150000, "-"]); //* Kelas Lisa
+        createKelas(['ASTHANGA',150000,"-"]); //* Kelas Hobby
+        createKelas(['Body Combat',150000,"-"]); //*Kelas Vee Putra
+        createKelas(['Zumba',150000,"-"]); //*Kelas Jenny Mullen
+        createKelas(['Suga',150000,"-"]); //*Kelas Suga
+        createKelas(['Wall Swing',150000,"-"]); //*Rosiee
+        createKelas(['Basic Swing',150000,"-"]); //*Jin
+        createKelas(['HATHA',150000,"-"]); //*Kelas Jin
+        createKelas(['Bellydance',150000,"-"]); //*Kelas Jisoo
+        createKelas(['BUNGEE',200000,"-"]); //*Kelas jimin
+        createKelas(['Yogalates',150000,"-"]); //*Kelas jimin
+        createKelas(['BOXING',150000,"-"]); //*Kelas jimin
+        createKelas(['Calistenic',150000,"-"]); //*Kelas joon
         //* Dummy kelas malam
-        createKelas(['Pound Fit',150000,"-"],'ins-4');
-        createKelas(['Trampoline Workout',200000,"-"],'ins-11');
-        createKelas(['Yoga For Kids',150000,"-"],'ins-11');
+        createKelas(['Pound Fit',150000,"-"]);
+        createKelas(['Trampoline Workout',200000,"-"]);
+        createKelas(['Yoga For Kids',150000,"-"]);
+        createKelas(['ABS Pilates',150000,"-"]);
+        createKelas(['Swing For Kids',150000,"-"]);
         // createKelas(['Bellydance',150000,"-"],'ins-9');
         // createKelas(['Calisthenic',150000,"-"],'ins-1');
         
@@ -317,14 +320,100 @@ class DatabaseSeeder extends Seeder
         //!Data Dummy Deposit paket
         // createDepositPaket([6,750000,'next month'],2,'23.03.003',3);
         //!Jadwal Jadwal Umum
+
+        //!
+        for($jadwalharian_id = 1 ; $jadwalharian_id<150;$jadwalharian_id++)
+        {
+            $jadwalharian = jadwal_harian::latest()
+            ->where('id_jadwal_harian',$jadwalharian_id)
+            ->with(['jadwal_umum'])
+            ->get()
+            ->first();
+        // system("echo ".$jadwalharian->jadwal_umum->id_instruktur);
+
+            if($jadwalharian->status == "Instruktur Pengganti"){
+                $instrukturId = $jadwalharian->jadwal_umum->id_instruktur;
+                $tanggalPengajuan = $jadwalharian->tanggal_jadwal_harian;
+                        system("echo ".$tanggalPengajuan);
+
+                ijin_instruktur::create([
+                    "id_jadwal_harian" => $jadwalharian->id_jadwal_harian,
+                    "status_ijin" => "dikonfirmasi",
+                    "tanggal_pengajuan" => date('Y-m-d', strtotime('-2 days', strtotime($tanggalPengajuan))),
+                    "id_instruktur" => $instrukturId,
+                    "id_instruktur_pengganti" => 'ins-1'
+                ]);
+                // system("echo ".$instrukturId);               
+            }
+        }
        
-        //!Presensi instruktur
-        presensiInstruktur("03-04-2023 08:00:00","03-04-2023 09:00:00", "hadir","ins-1",1);
-        presensiInstruktur("03-04-2023 09:31:00","03-04-2023 09:00:00", "hadir","ins-2",2);
-        presensiInstruktur("04-04-2023 08:00:00","04-04-2023 09:00:00", "hadir","ins-3",3);
-        presensiInstruktur("04-04-2023 09:32:00","04-04-2023 09:00:00", "hadir","ins-4",4);
-        presensiInstruktur("05-04-2023 08:10:00","05-04-2023 09:00:00", "hadir","ins-5",5);
-        // presensiInstruktur("06-03-2023 07:00:00","2023-03-27 09:00:00", "hadir","ins-1",5);
+    //!Presensi instruktur
+        //Presensi
+        for($presensiInstruktur_id = 1;$presensiInstruktur_id<=150;$presensiInstruktur_id++){
+            $jadwalharian = DB::table('jadwal_harian')->where('id_jadwal_harian',$presensiInstruktur_id)->get()->first();
+            // system("echo ".$jadwalharian->status);
+            if($jadwalharian->status == "Diliburkan"){
+                continue;
+            }
+            $jadwalUmum = DB::table('jadwal_umum')->where('id_jadwal_umum', $jadwalharian->id_jadwal_umum)->get()->first();
+            $instruktur = $jadwalUmum->id_instruktur;
+
+            // if($jadwalharian->status == "Instruktur Pengganti")
+            // {
+            //     // system("echo ".$jadwalharian->status);
+            //     DB::table('ijin_instruktur')->insert([[
+
+            //     ]]);
+            //     $izinInstruktur = DB::table('ijin_instruktur')->where('id_jadwal_harian',$presensiInstruktur_id)->get()->first();
+            //     $instruktur = $izinInstruktur->first()->id_instruktur_pengganti;
+            // }
+            $rand = rand(1,10);
+            if($rand <= 7){
+                $controlledRandMasukTime = rand(-15,0);
+            }else{
+                $controlledRandMasukTime = rand(1,30);
+            }
+
+            $masukTime = Carbon::parse($jadwalUmum->jam_mulai)->subMinutes($controlledRandMasukTime);
+            $selesaiTime = Carbon::parse($jadwalUmum->jam_mulai)->addHours(2)->subMinutes(rand(-30, 15));
+
+            
+            DB::table('presensi_instruktur')->insert([[
+                'id_instruktur' => $instruktur,
+                'id_jadwal_harian' => $presensiInstruktur_id,
+                'status_presensi' => 'hadir',
+                'waktu_presensi' => $masukTime, //$masukTime,
+                'waktu_selesai' => $selesaiTime ]//, $selesaiTime ],
+                ]);
+
+            
+            // $jadwalharian->
+        }
+        // / presensiInstruktur("27-02-2023 08:00:00","27-02-2023 09:00:00", "hadir","ins-1",1);
+        // presensiInstruktur("27-02-2023 09:31:00","27-02-2023 09:00:00", "hadir","ins-2",2);
+        // presensiInstruktur("28-02-2023 08:00:00","28-02-2023 09:00:00", "hadir","ins-3",3);
+        // presensiInstruktur("28-02-2023 09:32:00","28-02-2023 09:00:00", "hadir","ins-4",4);
+        // presensiInstruktur("01-03-2023 08:10:00","01-03-2023 09:00:00", "hadir","ins-5",5);
+        // presensiInstruktur("01-03-2023 07:00:00","01-03-2023 09:00:00", "hadir","ins-6",6);
+        // presensiInstruktur("02-03-2023 08:20:00","2023-03-02 09:00:00", "hadir", "ins-11",8);
+        // presensiInstruktur("02-03-2023 9:20:00","2023-03-02 09:00:00", "hadir", "ins-8",9);
+        // //*literasi 2
+        // presensiInstruktur("06-03-2023 08:00:00","06-03-2023 09:00:00", "hadir","ins-1",1);
+        // presensiInstruktur("06-03-2023 09:31:00","06-03-2023 09:00:00", "hadir","ins-2",2);
+        // presensiInstruktur("07-03-2023 08:00:00","07-03-2023 09:00:00", "hadir","ins-3",3);
+        // presensiInstruktur("07-03-2023 09:32:00","28-02-2023 09:00:00", "hadir","ins-4",4);
+        // presensiInstruktur("08-03-2023 08:10:00","08-03-2023 09:00:00", "hadir","ins-5",5);
+        // presensiInstruktur("08-03-2023 07:00:00","01-03-2023 09:00:00", "hadir","ins-6",6);
+        // presensiInstruktur("02-03-2023 08:20:00","2023-03-02 09:00:00", "hadir", "ins-11",8);
+        // presensiInstruktur("02-03-2023 9:20:00","2023-03-02 09:00:00", "hadir", "ins-8",9);
+        // createJadwalHarian(['kamis','8:00','9:00','ins-11',8],"02-03-2023",8,true);
+        // createJadwalHarian(['kamis','9:30','10:30','ins-8',9],"02-03-2023",9,true);
+        // createJadwalHarian(['jumat','8:00','9:00','ins-9',10],"03-03-2023",10,true);
+        // createJadwalHarian(['jumat','9:30','10:30','ins-9',11],"03-03-2023",11,true);
+        // createJadwalHarian(['sabtu','8:00','10:00','ins-10',12],"04-03-2023",12,true);
+        // createJadwalHarian(['sabtu','9:30','10:30','ins-3',13],"04-03-2023",13,true);
+        // createJadwalHarian(['sabtu','9:30','10:30','ins-2',14],"04-03-2023",14,true);
+        // createJadwalHarian(['minggu','9:00','10:00','ins-1',15],"05-03-2023",15,true);
         // !Data Booking Kelas
         // createBookingKelas("28-03-2023",TRUE,1,"23.03.001","23.03.005");
         //!Data Instruktur
@@ -338,7 +427,7 @@ class DatabaseSeeder extends Seeder
 
 
 
-    }
+        }
 
 }
 

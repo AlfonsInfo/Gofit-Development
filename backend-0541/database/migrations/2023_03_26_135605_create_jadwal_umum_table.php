@@ -16,6 +16,11 @@ return new class extends Migration
         Schema::create('jadwal_umum', function (Blueprint $table) {
             $table->integer('id_jadwal_umum', true);
             $table->string('hari');
+            //*kelas
+            //*instruktur
+            // $table->foreignUuid('id_instruktur')->references('id_instruktur')->on('instruktur')->nullable();
+            $table->string('id_instruktur')->index('id_instruktur')->nullable();
+            $table->integer('id_kelas')->nullable()->index('id_kelas');
             $table->time('jam_mulai')->nullable();
             $table->time('jam_selesai')->nullable();
             $table->timestamp('created_at')->nullable()->useCurrent();

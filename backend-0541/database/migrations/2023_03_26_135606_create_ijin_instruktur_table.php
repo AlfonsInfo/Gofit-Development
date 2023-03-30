@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::create('ijin_instruktur', function (Blueprint $table) {
             $table->integer('id_ijin', true);
-            $table->integer('id_kelas_jadwal')->index();
+            $table->integer('id_jadwal_harian')->index();
             $table->string('status_ijin');
             $table->date('tanggal_pengajuan');
             $table->string('id_instruktur');

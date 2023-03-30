@@ -13,7 +13,7 @@ class kelas extends Model
 
     public function instruktur()
     {
-        return $this->hasOne('User\instruktur');
+    return $this->hasOne('User\instruktur');
     }
 }
     

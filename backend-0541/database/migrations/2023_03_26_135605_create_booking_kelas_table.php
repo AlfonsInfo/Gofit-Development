@@ -19,7 +19,7 @@ return new class extends Migration
             $table->boolean('is_canceled')->default(false);
             $table->boolean('status_kehadiran')->default(false);
             $table->string('no_struk')->index('no_struk');
-            $table->integer('id_kelas_jadwal')->index('id_kelas_jadwal');
+            $table->integer('id_jadwal_harian')->index('id_jadwal_harian');
             $table->string('id_member')->index('id_member');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();

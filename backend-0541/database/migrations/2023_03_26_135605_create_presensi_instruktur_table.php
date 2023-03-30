@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('waktu_selesai')->nullable();
             $table->string('status_presensi');
             $table->foreignUlid('id_instruktur')->references('id_instruktur')->on('instruktur');
-            $table->integer('id_kelas_jadwal')->index('id_kelas_jadwal');
+            $table->integer('id_jadwal_harian')->index('id_jadwal_harian');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
