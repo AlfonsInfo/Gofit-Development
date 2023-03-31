@@ -17,6 +17,7 @@ return new class extends Migration
             $table->integer('no_booking', true);
             $table->date('tanggal_booking'); //* Diubah nanti ? date ? 
             $table->boolean('is_canceled')->default(false);
+            $table->date('tanggal_sesi_gym');
             $table->boolean('status_kehadiran')->default(false);
             $table->integer('id_sesi')->nullable()->index('id_sesi');
             $table->foreignUlid('id_member')->index('id_member');

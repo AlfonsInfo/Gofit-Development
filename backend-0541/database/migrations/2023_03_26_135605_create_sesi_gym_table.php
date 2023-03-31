@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('sesi_gym', function (Blueprint $table) {
             $table->integer('id_sesi',true);
-            $table->date('tanggal_sesi_gym')->nullable();
             $table->time('waktu_mulai')->nullable();
             $table->time('waktu_selesai')->nullable();
             $table->timestamp('created_at')->nullable()->useCurrent();

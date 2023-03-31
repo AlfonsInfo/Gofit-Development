@@ -106,9 +106,8 @@ class DatabaseSeeder extends Seeder
 
         function createSesiGym($params){
                 sesi_gym::create([
-                    'tanggal_sesi_gym' => date("Y/m/d",strtotime("today + {$params[0]}")) ,
-                    'waktu_mulai' => $params[1],//date("h:i",strtotime($params[1])),
-                    'waktu_selesai' => $params[2]//date("h:i",strtotime($params[2])),
+                    'waktu_mulai' => $params[0],//date("h:i",strtotime($params[1])),
+                    'waktu_selesai' => $params[1]//date("h:i",strtotime($params[2])),
                 ]);
         }
         
@@ -121,11 +120,12 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        function createAktivasi($jenis,$pegawai,$member,$nostruk)
+        function createAktivasi($jenis,$pegawai,$member,$nostruk,$tanggalAktivasi)
         {
             createTransaksiMember($jenis, $pegawai, $member);
+            // $randomstringMonth = rand(0,1) ? '2 month ago' : '3 month ago';
             transaksi_aktivasi::create([
-                'tanggal_aktivasi' => date("Y-m-d H:i:s",strtotime('now')),
+                'tanggal_aktivasi' => date("Y-m-d H:i:s",strtotime($tanggalAktivasi)),
                 // 'nominal_transaksi' => $params,
                 'no_struk' => $nostruk
             ]);
@@ -168,10 +168,11 @@ class DatabaseSeeder extends Seeder
 
         }
 
-        function createBookingGym($tanggalbooking, $statuskehadiran = false , $sesi, $member, $struk = null)
+        function createBookingGym($tanggalbooking, $statuskehadiran = false , $sesi, $member, $struk = null,$tanggalSesiGym)
         {
             booking_gym::create([
                 'tanggal_booking' => date("Y-m-d H:i:s",strtotime($tanggalbooking)),
+                'tanggal_sesi_gym' => date("Y/m/d",strtotime($tanggalSesiGym)) ,
                 'status_kehadiran' => $statuskehadiran,
                 'id_sesi' => $sesi,
                 'id_member' => $member,
@@ -211,7 +212,7 @@ class DatabaseSeeder extends Seeder
         createMember(['henry','member'],['Henri Teja','13-05-2002','0821231311/11'],6);
 
         //* Detail data instruktur
-        createInstruktur(['Joon','instruktur'],['ins-1','Joon Sitanggang','Yadara Blok 27 Yogya','0828332813213'],7);
+        createInstruktur(['Alfonsus','instruktur'],['ins-1','Alfonsus Setiawan J - Instruktur','Yadara Blok 27 Yogya','0828332813213'],7);
         createInstruktur(['JK','instruktur'],['ins-2','JK Bagaskara','Bekasi','+62 894-2212-919'],8);
         createInstruktur(['Lisa','instruktur'],['ins-3','Lisa Blackpink','Amarta no 4Y,Condong Catur, Jogja','+62 874-3379-57385'],9);
         createInstruktur(['Hobby','instruktur'],['ins-4','Hobby Sanjaya','Amarta no 6Y,Condong Catur, Jogja','+62 815-2075-864'],10);
@@ -228,12 +229,15 @@ class DatabaseSeeder extends Seeder
 
         //*Detail Data pegawai
         //* id pegawai, nama pegawai, jabatan, tgl lahir, no telp, alamat 
-        createPegawai(['admin','pegawai'],['P01','Yusup','Admin','21-03-1995','08123456789','Tambak Bayan no 41 Yogya'],19);
+        createPegawai(['admin','pegawai'],['P01','Alfonsus Setiawan J - Pegawai','Admin','21-03-1995','08123456789','Tambak Bayan no 41 Yogya'],19);
         createPegawai(['admin_ganteng1','pegawai'],['P02','Mamang','Admin','22-01-1996','08213232321','Tambak Bayan no 42 Yogya'],20);
         createPegawai(['mo_ganteng1','pegawai'],['P03','Adee','MO','22-01-1998',20,'0811123232321','Tambak Bayan no 41 Yogya'],21);
         createPegawai(['Yunita','pegawai'],['P04','Yunita','kasir','21-01-2000','082132133213','Seturan no 42 Yogya'],22);
         createPegawai(['Putri','pegawai'],['P05','Putri','kasir','23-05-2003','08212121312','Tambak Boyo no 42 Yogya'],23);
         createPegawai(['Yuna','pegawai'],['P06','Yuna','kasir','24-03-2001','085398244443','Sergodadi no 42 Yogya'],24);    
+        createMember(['Bambang','member'],['Bambang Teja','13-05-2002','0821231311/11'],25);
+        createMember(['Tono','member'],['Tono Teja','13-05-2002','0821231311/11'],26);
+        createMember(['Adi','member'],['Adi Teja','13-05-2002','0821231311/11'],26);
 
 
         //! DUMMY PROMO
@@ -243,13 +247,13 @@ class DatabaseSeeder extends Seeder
         createPromo(['promo_paket2',10,3,2]);       
 
         //! DUMMY SESI GYM
-        createSesiGym(["1 days", "7:00","9:00"]);
-        createSesiGym(["1 days", "9:00","11:00"]);
-        createSesiGym(["1 days", "11:00","13:00"]);
-        createSesiGym(["1 days", "13:00","15:00"]);
-        createSesiGym(["1 days", "15:00","17:00"]);
-        createSesiGym(["1 days", "17:00","19:00"]);
-        createSesiGym(["1 days", "19:00","21:00"]);
+        createSesiGym([ "7:00","9:00"]);
+        createSesiGym([ "9:00","11:00"]);
+        createSesiGym([ "11:00","13:00"]);
+        createSesiGym([ "13:00","15:00"]);
+        createSesiGym([ "15:00","17:00"]);
+        createSesiGym([ "17:00","19:00"]);
+        createSesiGym([ "19:00","21:00"]);
 
         //! DUMMY KELAS
         //* Dummy kelas pagi
@@ -281,45 +285,213 @@ class DatabaseSeeder extends Seeder
         $this->call([
             jadwal::class
         ]);
-        //!Presensi instruktur
-        // presensiInstruktur();
-        //!Perijinan Instruktur
 
-        //!Data Transaksi
         //* transaksi dan booking
-        createAktivasi('transaksi-aktivasi','P01','23.03.001','23.03.001');
-        createAktivasi('transaksi-aktivasi','P02','23.03.002','23.03.002');
-        createAktivasi('transaksi-aktivasi','P02','23.03.003','23.03.003');
-        createAktivasi('transaksi-aktivasi','P02','23.03.004','23.03.004');
+        createAktivasi('transaksi-aktivasi','P01','23.03.001','23.03.001','2 month ago');
+        createAktivasi('transaksi-aktivasi','P02','23.03.002','23.03.002','2 month ago');
+        createAktivasi('transaksi-aktivasi','P02','23.03.003','23.03.003','2 month ago');
+        createAktivasi('transaksi-aktivasi','P02','23.03.004','23.03.004','2 month ago');
         createDepositReguler('transaksi-deposit-reguler','P02','23.03.001',4000000,4300000,1,'23.03.005');
         createDepositReguler('transaksi-deposit-reguler','P01','23.03.001',4000000,4300000,1,'23.03.006');
         createDepositPaket('transaksi-deposit-paket','P03','23.03.002',[6,750000,'next month'],2,'23.03.007',2);
-        createAktivasi('transaksi-aktivasi','P03','23.03.004','23.03.008');
-        createAktivasi('transaksi-aktivasi','P01','23.03.004','23.03.009');
-        //*member 1 melakukan deposit reguler, depos kelas , booking gym dan booking kelas
-        // createTransaksiMember(['transaksi-deposit-reguler'],'P02','23.03.001');
-        // createTransaksiMember(['transaksi-deposit-kelas'],'P03','23.03.001');
-        // createTransaksiMember(['transaksi-booking-gym'],'P01','23.03.001');
-        // createTransaksiMember(['transaksi-booking-kelas'],'P01','23.03.001');
-        // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.008');
-        // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.010');
-        // createTransaksiMember(['transaksi-aktivasi'],'P03','23.03.011');
-        // createTransaksiMember(['transaksi-aktivasi'],'P01','23.03.001');
-        //* Masing-masing user melakukan deposit reguler, booing kelas, booking gym
-        //!Data Dummy Aktivasi
-        // createAktivasi('transaksi-aktivasi','P01','23.03.001','23.03.001');
-        // createAktivasi('23.03.002');
-        // createAktivasi('23.03.003');
-        // createAktivasi('23.03.004');
-        // createAktivasi('23.03.005');
-        // createAktivasi('23.03.006');
-        // createAktivasi('23.03.007');
-        // createAktivasi('23.03.008');
-        //!Data Dummy Deposit reguler
-        // createDepositReguler(['30000000',3300000],1,'23.03.002');
-        //!Data Dummy Deposit paket
-        // createDepositPaket([6,750000,'next month'],2,'23.03.003',3);
-        //!Jadwal Jadwal Umum
+        createDepositPaket('transaksi-deposit-paket','P03','23.03.003',[6,750000,'next month'],2,'23.03.008',2);
+        createDepositPaket('transaksi-deposit-paket','P03','23.03.004',[6,750000,'next month'],2,'23.03.009',2);
+        createDepositPaket('transaksi-deposit-paket','P03','23.03.005',[6,750000,'next month'],2,'23.03.010',2);
+        createAktivasi('transaksi-aktivasi','P03','23.03.005','23.03.011','1 week ago');
+        createAktivasi('transaksi-aktivasi','P01','23.03.006','23.03.012','1 week ago');
+        createTransaksiMember('transaksi-booking-gym','P03','23.03.001'); //23.03.013
+        createTransaksiMember('transaksi-booking-gym','P03','23.03.002'); //23.03.014
+        createTransaksiMember('transaksi-booking-gym','P03','23.03.003'); //23.03.015
+        createTransaksiMember('transaksi-booking-gym','P03','23.03.005'); //23.03.016
+        createTransaksiMember('transaksi-booking-gym','P03','23.03.006'); //23.03.017
+        createTransaksiMember('transaksi-booking-gym','P03','23.03.001'); //23.03.018
+        createTransaksiMember('transaksi-booking-gym','P03','23.03.002'); //23.03.019
+        createTransaksiMember('transaksi-booking-gym','P03','23.03.003'); //23.03.020
+        // createTransaksiMember('transaksi-booking-gym','P03','23.03.004'); //23.03.018
+        // createAktivasi('transaksi-aktivasi','P04','23.03.007',);
+        createAktivasi('transaksi-aktivasi','P03','23.03.007','23.03.021','3 days ago');
+        createAktivasi('transaksi-aktivasi','P01','23.03.008','23.03.022', '3 days ago');
+        createDepositReguler('transaksi-deposit-reguler','P02','23.03.007',4000000,4300000,1,'23.03.023');
+        createDepositReguler('transaksi-deposit-reguler','P01','23.03.008',4000000,4300000,1,'23.03.024');
+        //*Transaksi booking sesi
+        createTransaksiMember('transaksi-booking-kelas','P01','23.03.001');
+        createTransaksiMember('transaksi-booking-kelas','P01','23.03.002');
+        createTransaksiMember('transaksi-booking-kelas','P01','23.03.003');
+        createTransaksiMember('transaksi-booking-kelas','P01','23.03.004');
+        createTransaksiMember('transaksi-booking-kelas','P01','23.03.005');
+        createTransaksiMember('transaksi-booking-kelas','P01','23.03.006');
+        //*30
+        createTransaksiMember('transaksi-booking-kelas','P01','23.03.001');
+        createTransaksiMember('transaksi-booking-kelas','P01','23.03.001');
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-02"),
+            'tanggal_sesi_gym' =>  date("2023-03-05"),
+            'status_kehadiran' => true,
+            'id_sesi' => 1,
+            'id_member' => "23.03.001",
+            'no_struk' => "23.03.013"
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-02"),
+            'tanggal_sesi_gym' =>  date("2023-03-05"),
+            'status_kehadiran' => true,
+            'id_sesi' => 1,
+            'id_member' => "23.03.002",
+            'no_struk' => "23.03.014"
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-02"),
+            'tanggal_sesi_gym' =>  date("2023-03-05"),
+            'status_kehadiran' => true,
+            'id_sesi' => 1,
+            'id_member' => "23.03.003",
+            'no_struk' => "23.03.015"
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-03"),
+            'tanggal_sesi_gym' =>  date("2023-03-05"),
+            'status_kehadiran' => false,
+            'id_sesi' => 1,
+            'id_member' => "23.03.004",
+            'no_struk' => null
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-03"),
+            'tanggal_sesi_gym' =>  date("2023-03-05"),
+            'status_kehadiran' => false,
+            'id_sesi' => 1,
+            'id_member' => "23.03.005",
+            'no_struk' => null
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-04"),
+            'tanggal_sesi_gym' =>  date("2023-03-05"),
+            'status_kehadiran' => true,
+            'id_sesi' => 1,
+            'id_member' => "23.03.006",
+            'no_struk' => "23.03.016"
+        ]);
+        //* booking lain
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-05"),
+            'tanggal_sesi_gym' =>  date("2023-03-10"),
+            'status_kehadiran' => true,
+            'id_sesi' => 3,
+            'id_member' => "23.03.001",
+            'no_struk' => "23.03.017"
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-05"),
+            'tanggal_sesi_gym' =>  date("2023-03-10"),
+            'status_kehadiran' => true,
+            'id_sesi' => 3,
+            'id_member' => "23.03.002",
+            'no_struk' => "23.03.018"
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-05"),
+            'tanggal_sesi_gym' =>  date("2023-03-10"),
+            'status_kehadiran' => true,
+            'id_sesi' => 3,
+            'id_member' => "23.03.003",
+            'no_struk' => "23.03.019"
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-05"),
+            'tanggal_sesi_gym' =>  date("2023-03-10"),
+            'status_kehadiran' => false,
+            'id_sesi' => 3,
+            'id_member' => "23.03.004",
+            'no_struk' => null
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-05"),
+            'tanggal_sesi_gym' =>  date("2023-03-10"),
+            'status_kehadiran' => false,
+            'id_sesi' => 3,
+            'id_member' => "23.03.005",
+            'no_struk' => null
+        ]);
+        booking_gym::create([
+            'tanggal_booking' => date("2023-03-05"),
+            'tanggal_sesi_gym' =>  date("2023-03-10"),
+            'status_kehadiran' => false,
+            'id_sesi' => 3,
+            'id_member' => "23.03.006",
+            'no_struk' => null
+        ]);
+        //*25
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-02"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 1,
+            'id_member' => "23.03.001",
+            'no_struk' => '23.03.025'  
+        ]);
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-02"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 1,
+            'id_member' => "23.03.002",
+            'no_struk' => '23.03.026'  
+        ]);
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-02"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 1,
+            'id_member' => "23.03.003",
+            'no_struk' => '23.03.027'  
+        ]);
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-28"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 1,
+            'id_member' => "23.03.004",
+            'no_struk' => '23.03.028'  
+        ]);
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-02"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 1,
+            'id_member' => "23.03.005",
+            'no_struk' => '23.03.029'  
+        ]);
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-02"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 1,
+            'id_member' => "23.03.006",
+            'no_struk' => '23.03.030'  
+        ]);
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-02"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 2,
+            'id_member' => "23.03.006",
+            'no_struk' => '23.03.030'  
+        ]);
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-02"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 3,
+            'id_member' => "23.03.006",
+            'no_struk' => '23.03.030'  
+        ]);
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-02"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 5,
+            'id_member' => "23.03.006",
+            'no_struk' => '23.03.030'  
+        ]);
+        booking_kelas::create([
+            'tanggal_booking' => date("2023-02-02"),
+            'status_kehadiran' => true,
+            'id_jadwal_harian' => 6,
+            'id_member' => "23.03.006",
+            'no_struk' => '23.03.030'  
+        ]);
+        //* jadwal lain
 
         //!
         for($jadwalharian_id = 1 ; $jadwalharian_id<150;$jadwalharian_id++)
@@ -357,16 +529,12 @@ class DatabaseSeeder extends Seeder
             }
             $jadwalUmum = DB::table('jadwal_umum')->where('id_jadwal_umum', $jadwalharian->id_jadwal_umum)->get()->first();
             $instruktur = $jadwalUmum->id_instruktur;
-
-            // if($jadwalharian->status == "Instruktur Pengganti")
-            // {
-            //     // system("echo ".$jadwalharian->status);
-            //     DB::table('ijin_instruktur')->insert([[
-
-            //     ]]);
-            //     $izinInstruktur = DB::table('ijin_instruktur')->where('id_jadwal_harian',$presensiInstruktur_id)->get()->first();
-            //     $instruktur = $izinInstruktur->first()->id_instruktur_pengganti;
-            // }
+        
+            if($jadwalharian->status == "Instruktur Pengganti")
+            {
+                $izinInstruktur = DB::table('ijin_instruktur')->where('id_jadwal_harian',$presensiInstruktur_id)->get()->first();
+                $instruktur = $izinInstruktur->id_instruktur_pengganti;
+            }
             $rand = rand(1,10);
             if($rand <= 7){
                 $controlledRandMasukTime = rand(-15,0);
@@ -385,10 +553,9 @@ class DatabaseSeeder extends Seeder
                 'waktu_presensi' => $masukTime, //$masukTime,
                 'waktu_selesai' => $selesaiTime ]//, $selesaiTime ],
                 ]);
-
+            }
             
             // $jadwalharian->
-        }
         // / presensiInstruktur("27-02-2023 08:00:00","27-02-2023 09:00:00", "hadir","ins-1",1);
         // presensiInstruktur("27-02-2023 09:31:00","27-02-2023 09:00:00", "hadir","ins-2",2);
         // presensiInstruktur("28-02-2023 08:00:00","28-02-2023 09:00:00", "hadir","ins-3",3);
@@ -414,13 +581,8 @@ class DatabaseSeeder extends Seeder
         // createJadwalHarian(['sabtu','9:30','10:30','ins-3',13],"04-03-2023",13,true);
         // createJadwalHarian(['sabtu','9:30','10:30','ins-2',14],"04-03-2023",14,true);
         // createJadwalHarian(['minggu','9:00','10:00','ins-1',15],"05-03-2023",15,true);
-        // !Data Booking Kelas
-        // createBookingKelas("28-03-2023",TRUE,1,"23.03.001","23.03.005");
-        //!Data Instruktur
         
-        //!Ijin Instruktur
         
-        //!Data Booking Gym
         // createBookingGym("28-03-2023",TRUE,1,"23.03.001","23.03.004");
         
         
