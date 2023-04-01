@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign(['id_member'], 'booking_gym_ibfk_3')->references(['id_member'])->on('member');
             $table->foreign(['id_sesi'], 'booking_gym_ibfk_2')->references(['id_sesi'])->on('sesi_gym');
             $table->foreign(['no_struk'], 'booking_gym_ibfk_1')->references(['no_struk_transaksi'])->on('transaksi_member');
-        });
+        }); 
     }
 
     /**

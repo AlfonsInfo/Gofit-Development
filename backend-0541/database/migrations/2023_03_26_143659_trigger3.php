@@ -37,6 +37,6 @@ END;
      */
     public function down()
     {
-        DB::unprepared('DROP TRIGGER `increment_member_id`');
+        DB::unprepared('DROP TRIGGER `tambah_deposit`');
     }
 };

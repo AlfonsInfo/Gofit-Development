@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('booking_kelas', function (Blueprint $table) {
-            $table->integer('no_booking')->default(0);
+            $table->integer('no_booking',true);
             $table->timestamp('tanggal_booking');
             $table->boolean('is_canceled')->default(false);
             $table->boolean('status_kehadiran')->default(false);
