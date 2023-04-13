@@ -33,6 +33,8 @@ class loginController extends Controller
         $user = Auth::user(); //* tetap user
         $token = $user->createToken('Authentication Token')->accessToken;
         
+
+        //* Role Cek backend atau frontend ?
         return response([
             'message' => 'Autenthicated',
             'user' => $user,

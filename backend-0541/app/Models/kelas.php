@@ -9,11 +9,5 @@ class kelas extends Model
 {
     use HasFactory;
     protected $table = 'kelas';
-
-
-    public function instruktur()
-    {
-    return $this->hasOne('User\instruktur');
-    }
 }
     
