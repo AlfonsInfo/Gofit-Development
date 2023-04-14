@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Validator;
 
 class ValidatorHelper{
 
+    //*Validasi Instruktur
     public static function validateInstruktur($data)
     {
                 $validator = Validator::make($data ,[
@@ -17,6 +18,18 @@ class ValidatorHelper{
                     'no_telp_instruktur' => 'required',
                     'username' => 'required',
                     'password' => 'required'
+                ]);
+                return $validator; 
+    }
+
+    public static function validateJadwalUmum($data)
+    {
+                $validator = Validator::make($data ,[
+                    'hari' => 'required',
+                    'id_instruktur' => 'required',
+                    'id_kelas' => 'required',
+                    'jam_mulai'=> 'required',
+                    'jam_selesai' => 'required'
                 ]);
                 return $validator; 
     }

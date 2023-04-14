@@ -3,51 +3,117 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Models\jadwal_umum;
-use Illuminate\Support\Facades\DB;
+use App\Helpers\ValidatorHelper;
 class jadwalController extends Controller
 {
 
     public function index()
     {
-        $jadwal_umum = jadwal_umum::latest()->with(['instruktur'])->get();
+        //* find all data
+        $jadwal_umum = jadwal_umum::latest()->with(['instruktur','kelas'])->get();
+        
+        //* return response
         return response([
             'message'=>'Success Tampil Data',
             'data' => $jadwal_umum
         ],200); 
 
-        //*Debugging
-        // dd($jadwal_umum->toSql());
     }
 
     public function show($id_jadwal_umum)
     {
+        //* find data based on params
         $jadwal_umum = jadwal_umum::where('id_jadwal_umum', $id_jadwal_umum)->with(['instruktur'])->first();
         
-        //* Debugging SQL
-        // dd($jadwal_umum->toSql());
-        // DB::enableQueryLog();
-        // dd(DB::enableQueryLog());
-        // $sql =$jadwal_umum->toSql();
-        
-        //*Response
+        //* not found
+        if($jadwal_umum == null)
+        {
+            return response([
+                'Jadwal Umum Not Found'
+            ],404);
+        }
+
+        //* return response
         return response([
             'message'=>'Success Tampil Data',
             'data' => $jadwal_umum
         ],200);
     }
+
+
     public function store(Request $request)
     {
+        //*Validasi
+        $validator = ValidatorHelper::validateJadwalUmum($request->all());
+        
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
+        //* Create Jadwal Umum
+        $jadwal_umum = jadwal_umum::create([
+            'hari' => $request->hari,
+            'id_instruktur' => $request->id_instruktur,
+            'id_kelas' => $request->id_kelas,
+            'jam_mulai' => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+        ]);
+        
+        //*return response
+        return response([
+            'message'=> 'success tambah data instruktur',
+            'data' => $jadwal_umum,
+        ]);
+
 
     }
 
     public function update(Request $request, $id)
     {
+        //* Validasi
+        $validator = ValidatorHelper::validateJadwalUmum($request->all());
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 422);
+        }
 
+        //*Data yang ingin di update
+        $temp = jadwal_umum::Where('id_jadwal_umum',$id)->get();
+
+        //* Update
+        $temp->update([
+            'hari' => $request->hari,
+            'id_instruktur' => $request->id_instruktur,
+            'id_kelas' => $request->id_kelas,
+            'jam_mulai' => $request->jam_mulai,
+            'jam_selesai' => $request->jam_selesai,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Instruktur Updated',
+            'data'    => $temp  
+        ], 200);
     }
+
     public function destroy($id)
     {
-        //
+        //* Find Data based on params $id
+        $jadwal_umum = jadwal_umum::Where('id_jadwal_umum',$id)->first();
+        //*found
+        if($jadwal_umum){
+            $jadwal_umum->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'jadwal_umum Deleted',
+            ], 200);
+
+        //*not found
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'jadwal_umum Not Found',
+            ], 404);
+        }   
     }
 }
