@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\instrukturController;
 use App\Http\Controllers\kelasController;
 use App\Http\Controllers\sesiGymController;
 use App\Models\kelas;
@@ -19,8 +20,14 @@ use Spatie\FlareClient\Api;
 */
 
 Route::post('/login', loginController::class);
-Route::post('/sesiGym', [sesiGymController::class, 'index']);
+// Route::post('/sesiGym', [sesiGymController::class, 'index']);
+// Route::post('/kelas', [kelasController::class, 'index']);
+// Route::post('/promo', [kelasController::class, 'index']);
+Route::post('/sesiGym', 'sesiGymController@index');
 Route::post('/kelas', [kelasController::class, 'index']);
+Route::post('/instruktur', [instrukturController::class, 'index']);
+// Route::post('/instruktur', [instrukturController::class, 'index']);
+// Route::post('/promo', [kelasController::class, '']);
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });

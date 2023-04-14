@@ -24,12 +24,6 @@ class pengguna extends Authenticatable
     ];
 
 
-
-    // protected $primaryKey = 'id_pengguna';
-
-    // public const CREATED_AT = 'created_timestamp';
-    // public const UPDATED_AT = 'updated_timestamp';
-
     public function getCreatedAttribute()
     {
         if(!is_null($this->attributes['created_at']))

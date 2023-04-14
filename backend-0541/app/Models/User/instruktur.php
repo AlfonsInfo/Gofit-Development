@@ -15,15 +15,13 @@ class instruktur extends Model
     // public const CREATED_AT = 'created_timestamp';
     // public const UPDATED_AT = 'updated_timestamp';
 
+
+
     public function pengguna()
     {
-        return $this->hasOne('\pengguna');
+        return $this->hasOne(pengguna::class,'id_pengguna','id_pengguna');
     }
 
-    public function kelas()
-    {
-        return $this->hasMany('..\kelas');
-    }
 }
 
 
