@@ -20,14 +20,12 @@ use Spatie\FlareClient\Api;
 */
 
 Route::post('/login', loginController::class);
-// Route::post('/sesiGym', [sesiGymController::class, 'index']);
-// Route::post('/kelas', [kelasController::class, 'index']);
-// Route::post('/promo', [kelasController::class, 'index']);
 Route::post('/sesiGym', 'sesiGymController@index');
-Route::post('/kelas', [kelasController::class, 'index']);
-Route::post('/instruktur', [instrukturController::class, 'index']);
-// Route::post('/instruktur', [instrukturController::class, 'index']);
-// Route::post('/promo', [kelasController::class, '']);
+Route::post('/kelas', 'kelasController@index');
+Route::post('/instruktur', 'instrukturController@index');
+// Route::post('/instruktur/{id}', 'instrukturController@show');
+Route::apiResource('/instruktur', 'instrukturController');
+Route::post('/promo', 'kelasController@index');
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });

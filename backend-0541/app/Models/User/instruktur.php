@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class instruktur extends Model
 {
     use HasFactory;
-    // protected $guarded = ['id_pengguna'];
+    protected $guarded = ['id_instruktur'];
     protected $table = 'instruktur';
     // protected $primaryKey = 'id_pengguna';
 
