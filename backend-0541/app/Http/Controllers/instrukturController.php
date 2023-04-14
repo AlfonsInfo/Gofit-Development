@@ -7,6 +7,9 @@ use App\Models\User\instruktur;
 use App\Http\Controllers\penggunaController;
 use Exception;
 use App\Helpers\ValidatorHelper;
+use App\Models\User\pengguna;
+
+
 class instrukturController extends Controller
 {
 
@@ -31,13 +34,12 @@ class instrukturController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
+        //* Register Akun Pengguna dan simpan id_pengguna pada variable local untuk dihubungkan
+        $idPengguna =   penggunaController::register($request->all('username'),$request->all('password'),'instruktur');
 
-        //*akhir dari validasi
-
-        //* Buat Pengguna dan simpan id_pengguna
-        $idPengguna =   penggunaController::register($request->all('username'),$request->all('password'),' instruktur');
-
+        
         try{
+            //* Create Instruktur
             $instruktur = instruktur::create([
                 // 'id_instruktur' => req
                 'id_pengguna' => $idPengguna,
@@ -66,7 +68,8 @@ class instrukturController extends Controller
         return response([
             'message'=>'Success Tampil Data',
             'data' => $instruktur
-        ],200);     }
+        ],200);     
+    }
 
 
 
@@ -99,8 +102,26 @@ class instrukturController extends Controller
     }
 
     //* Remove the specified resource from storage.
+    //TODO belum tau apakah saat menghapus instruktur pengguna ikut terhapus atau tidak, masalah cascadenya juga
+    //TODO perlu diperhitungkan kedepannya
     public function destroy($id)
     {
-        //
+        $instruktur = instruktur::Where('id_instruktur',$id)->first();
+
+        if($instruktur){
+            $idPengguna = $instruktur->pluck('id_pengguna');
+            $instruktur->delete();
+            penggunaController::destroyPenggunaOnly($idPengguna);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'instruktur Deleted',
+            ], 200);
+        }else{
+            return response()->json([
+                'success' => false,
+                'message' => 'instruktur Not Found',
+            ], 404);
+        }    
     }
 }

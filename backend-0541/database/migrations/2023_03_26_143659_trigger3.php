@@ -69,3 +69,6 @@ END;
   
 //   SET NEW.id_instruktur = next_number;
 //   END
+
+
+//* ondlete cascade pada tabel child

@@ -10,7 +10,7 @@ class instruktur extends Model
     use HasFactory;
     protected $guarded = ['id_instruktur'];
     protected $table = 'instruktur';
-    // protected $primaryKey = 'id_pengguna';
+    protected $primaryKey = 'id_pengguna';
 
     // public const CREATED_AT = 'created_timestamp';
     // public const UPDATED_AT = 'updated_timestamp';

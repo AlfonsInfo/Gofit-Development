@@ -13,13 +13,13 @@ class penggunaController extends Controller
         $registrationData['password'] = bcrypt($registrationData['password']);
         $pengguna = pengguna::create($registrationData);
 
-        return $pengguna['id']; //* id untuk dihubungkan ke member,pegawai,instruktur   
+        return $pengguna['id_pengguna']; //* id untuk dihubungkan ke member,pegawai,instruktur   
     }
 
     public static function destroyPenggunaOnly($id)
     {
-        $pengguna = pengguna::Where('id_pengguna',$id)->get();
-
+        $pengguna = pengguna::find($id)->first();
+        // dd($pengguna);
         if($pengguna){
             $pengguna->delete();
             return response()->json([
