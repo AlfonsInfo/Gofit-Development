@@ -1,75 +1,66 @@
 <script>
 import axios from 'axios' ;
-import { reactive } from 'vue';
+import { defineComponent, reactive } from 'vue';
 import { useRouter} from 'vue-router';
 
- //script setup apa bedanya bangg
-export default{
-  data(){
-    return{
-      //* Toggle Password
-      showPassword: false,
-      // invalidMessage: 'Please Input'
-    }
-  },
-
+export default defineComponent({
   setup(){
     const inputLogin = reactive({
       username : "",
       password : "",
     });
+    
+    const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+    let showPassword = false;
 
-    function Login(){
-      console.log('Fungsi Login');
-      //Data yang ingin di kirim melalui Api
+    const Login = () => {
+      // console.log('Fungsi Login');
       let username = inputLogin.username;
       let password = inputLogin.password;
-      //Debugging
-      // console.log(username,password);
 
-      //State validation
-      // const validation = ref([]);
-
-      //Vue router
-      const router = useRouter()
-      
-      axios.post('http://127.0.0.1:8000/api/login',{
+      const request = {
         username : username,
-        password : password},)
-        .then(response => response.data)
-        .then(response=>
-        {
-          let {user,access_token} = response
-          
-          console.log(access_token)
-          localStorage.setItem('token', access_token);
-          localStorage.setItem('user', user);
+        password : password
+      }
+  
+      const postUrl ='http://127.0.0.1:8000/api/login' 
 
-          //route sesuai dengan role
-          router.push({name: "Home"})
-        }).catch(error => {
-          console.log(error);
-          alert('Gagal Login'); 
-        })
+      //Request
+      axios.post(postUrl,request)
+      .then(response => response.data)
+      .then(response=>{
+        let {user,access_token} = response
+        // console.log(access_token)
+        localStorage.setItem('token', access_token);
+        localStorage.setItem('user', user);
+        
+        router.push({name: "Home"})
+      }).catch(error => {
+        console.log(error);
+        alert('Gagal Login'); 
+      })
+    }
+
+    const togglePassword = () => {
+      return showPassword ? 'text' : 'password'
+    }
+
+    const toggleIconPassword = () => {
+      return showPassword ? 'mdi mdi-eye-off' : ''
     }
 
     return{
       Login,
-      inputLogin
-    }
-  },
-
-  methods: {
-    togglePassword(){
-      return this.showPassword ? 'text' : 'password'
-    },
-    toggleIconPassword()
-    {
-      return this.showPassword ? 'mdi mdi-eye-off' : ''
+      inputLogin,
+      togglePassword,
+      toggleIconPassword,
+      showPassword,
     }
   }
-}
+})
 </script>
+
+ 
 
 
 <template class="template">
