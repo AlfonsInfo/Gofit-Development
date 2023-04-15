@@ -26,7 +26,8 @@ Route::post('/instruktur', 'instrukturController@index');
 // Route::post('/instruktur/{id}', 'instrukturController@show');
 Route::apiResource('/instruktur', 'instrukturController');
 Route::apiResource('/jadwalumum', 'jadwalController');
-Route::post('/promo', 'kelasController@index');
+// Route::post('/promo', 'promoController@index');
+Route::apiResource('/member', 'memberController');
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();
 // });

@@ -34,6 +34,18 @@ class ValidatorHelper{
                 return $validator; 
     }
     
+
+    public static function validateMember($data)
+    {
+                //* username dan password saat di frontend diisikan data yang sama dengan id_member dan tanggal_lahir
+                $validator = Validator::make($data ,[
+                    'nama_member' => 'required',
+                    'tgl_lahir_member' => 'required',
+                    'no_telp_member' => 'required',
+                    // 'username' => 'required',
+                ]);
+                return $validator; 
+    }
     
 }
 

@@ -16,6 +16,21 @@ class penggunaController extends Controller
         return $pengguna['id_pengguna']; //* id untuk dihubungkan ke member,pegawai,instruktur   
     }
 
+    public static function updateUsername($key,$username)
+    {
+        // dd($key,$username);
+        $temp = pengguna::where('id_pengguna',$key)->first();
+        // dd($temp);
+        $temp->update([
+            'username' => $username,
+        ]);
+    }
+
+    public static function updatePassword()
+    {
+
+    }
+
     public static function destroyPenggunaOnly($id)
     {
         $pengguna = pengguna::find($id)->first();

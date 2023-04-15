@@ -10,14 +10,20 @@ class member extends Model
 {
     use HasFactory;
     protected $table = 'member';
-    // protected $primaryKey = 'id_pengguna';
+    protected $guarded = ['id_member'];
+    protected $primaryKey = 'id_member';
 
     // public const CREATED_AT = 'created_timestamp';
     // public const UPDATED_AT = 'updated_timestamp';
+
+    protected $casts = [
+        'id_member' => 'string'
+    ];
     
 
-public function pengguna()
-{
-    return $this->hasOne('\pengguna');
-}
+    public function pengguna()
+    {
+        return $this->hasOne('App\Models\User\Pengguna','id_pengguna','id_pengguna');
+    }
+
 }
