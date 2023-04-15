@@ -21,12 +21,15 @@ class loginController extends Controller
         $loginDataForm = $request->only(['username','password']);
         //* Validasi
         // $validate = Validator::make($loginDataForm,[]);
-
+        
         //* vaildate fails
+        // dd(Auth::guard('api')->attempt($loginDataForm));
         // if($validate->fails())
             // return response()->json($validate->errors(),422);
 
+        // dd($loginDataForm);
         //* if without attempt
+
         if(!Auth::guard('api')->attempt($loginDataForm))
             return response(['message' => 'invalid credentials'],400);
 
@@ -39,7 +42,7 @@ class loginController extends Controller
             'message' => 'Autenthicated',
             'user' => $user,
             'token_type' => 'Bearer',
-            'acces_token' => $token
+            'access_token' => $token
         ]);
         
     }

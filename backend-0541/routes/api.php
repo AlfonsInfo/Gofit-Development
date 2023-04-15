@@ -19,7 +19,7 @@ use Spatie\FlareClient\Api;
 |
 */
 
-Route::post('/login', loginController::class);
+Route::post('login', loginController::class)->middleware('cors');
 Route::post('/sesiGym', 'sesiGymController@index');
 Route::post('/kelas', 'kelasController@index');
 Route::post('/instruktur', 'instrukturController@index');
