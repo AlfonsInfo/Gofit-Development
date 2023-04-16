@@ -4,6 +4,9 @@ import { defineComponent, reactive } from 'vue';
 import { useRouter} from 'vue-router';
 
 export default defineComponent({
+  mounted(){
+    document.body.classList.add('body-center');
+  },
   setup(){
     const inputLogin = reactive({
       username : "",
@@ -14,7 +17,7 @@ export default defineComponent({
     let showPassword = false;
 
     const Login = () => {
-      // console.log('Fungsi Login');
+      console.log('Fungsi Login');
       let username = inputLogin.username;
       let password = inputLogin.password;
 
@@ -33,6 +36,7 @@ export default defineComponent({
         // console.log(access_token)
         localStorage.setItem('token', access_token);
         localStorage.setItem('user', user);
+        console.log(localStorage.getItem('token'))
         
         router.push({name: "Home"})
       }).catch(error => {
@@ -48,7 +52,6 @@ export default defineComponent({
     const toggleIconPassword = () => {
       return showPassword ? 'mdi mdi-eye-off' : ''
     }
-
     return{
       Login,
       inputLogin,
@@ -60,14 +63,12 @@ export default defineComponent({
 })
 </script>
 
- 
+<template style>
 
-
-<template class="template">
   <div class="welcome-message">
-    <h1>Selamat Datang Di Aplikasi Gofit</h1>
-  </div>
-  <div class="login-form">
+      <h1>Selamat Datang Di Aplikasi Gofit</h1>
+    </div>
+    <div class="login-form">
     <!--  @submit.prevent = "Login" -->
     <form class="needs-validation" @submit.prevent = "Login">
       <div class="has-validation mb-3">
@@ -93,8 +94,9 @@ export default defineComponent({
 
 <style scoped>
   .welcome-message, .login-form{
+    max-width: 95%;
     margin-left: 20px;
-    padding: 35px;
+    padding: 40px;
     border-radius: 5px;
     background-color: rgba(0,0,0,0.8);
     color: white;
@@ -112,4 +114,7 @@ export default defineComponent({
 .icon-blue{
   color: darkblue;
 }
+
+
+
 </style>

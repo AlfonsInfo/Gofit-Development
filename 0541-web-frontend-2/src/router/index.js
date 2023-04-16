@@ -8,7 +8,14 @@ const router = createRouter({
     {
       path: '/',
       name: 'login',
-      component: LoginView
+      component: LoginView,
+      beforeEnter: (to, from, next) => {
+        if (isLoggedIn()) { // fungsi isLoggedIn() akan mengembalikan true jika pengguna sudah terautentikasi
+          next('/Home'); // redirect ke halaman Home jika pengguna sudah terautentikasi
+        } else {
+          next(); 
+        }
+      }
     },
     {
       path: '/Home',
@@ -26,24 +33,25 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
+      component: () => import('../views/HomeView.vue')
     },
       // route fallback
     {
       path: '/:pathMatch(.*)*',
       redirect: '/'
     }
-  ]
+  ],
 })
 
 //Munkin nanti dipindahkan ke helper function
 function isLoggedIn()
 {
-    let token  =localStorage.getItem('access_token')
-    console.log(token)
+    let token  =localStorage.getItem('token')
     if(token != null)
       return true;
     return false;
 }
 
 export default router
+
+//* Tombol logout 

@@ -12,9 +12,7 @@ export default defineConfig({
     }
   },
  
-})
-
-
+      
 // betterComments: {
 //   // highlightPlainText: true,
 //   // sortBy: 'alphabetical',
@@ -39,3 +37,4 @@ export default defineConfig({
 //     },
 //   ],
 // },
+})

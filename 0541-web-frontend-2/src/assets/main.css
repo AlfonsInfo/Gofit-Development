@@ -1,18 +1,21 @@
 @import './base.css';
 
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-
-  font-weight: normal;
-}
 
 a, .green {
   text-decoration: none;
   color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
 }
+
+
+#app {
+  max-width: 1600px;
+  margin: 0 auto;
+  /* padding: 2rem; */
+
+  font-weight: normal;
+}
+
 
 @media (hover: hover) {
   a:hover {
@@ -21,14 +24,25 @@ a, .green {
 }
 
 @media (min-width: 1024px) {
-  body {
+  body.body-center {
     display: flex;
     place-items: center;
   }
 
-  #app {
+  body.body-normalflow{
+    /* padding: 0 2rem; */
+    display: flex,
+  }
+
+  .body-center #app  {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    /* padding: 3rem 2rem; */
+  }
+
+  .body-normalflow #app  {
+    display: grid;
+    /* grid-template-columns: 1fr 1fr; */
+    /* padding: 3rem 2rem; */
   }
 }
