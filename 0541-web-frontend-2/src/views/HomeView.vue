@@ -60,17 +60,17 @@
 </script>
 <template >
   <header>
-    <home-navbar></home-navbar>
+    <home-navbar :message = "'Selamat Datang Di Aplikasi Gofit'"></home-navbar>
   </header>
   <main>
-    <div class="pegawai-admin" v-show="showMenuAdmin">Admin</div>
-    <div class="pegawai-mo" v-show="showMenuMO">MO</div>
-    <!-- <div class="pegawai-kasir" v-show="showMenuKasir">Kasir</div> -->
-    <div class="" v-show="showMenuKasir">
-      <div class="d-flex flex-row justify-content-evenly" >
-        <menu-card :data ="functionalKasir"></menu-card>
+      <div class="pegawai-admin" v-show="showMenuAdmin">Admin</div>
+      <div class="pegawai-mo" v-show="showMenuMO">MO</div>
+      <!-- <div class="pegawai-kasir" v-show="showMenuKasir">Kasir</div> -->
+      <div class="pegawai-kasir mt-5 mx-2 p-5" v-show="showMenuKasir">
+        <div class="d-flex flex-row justify-content-evenly" >
+          <menu-card :data ="functionalKasir"></menu-card>
+        </div>
       </div>
-    </div>
   </main>
 </template>
 
@@ -91,10 +91,11 @@
   background-color: blue;
 }
 .pegawai-kasir{
-  margin: 10px 10px;
-  height: 200px;
-  width: 100%;
-  background-color: blue;
+  /* margin-top: 4em; */
+  /* margin-left: 2em; */
+  height: 100%;
+  /* width: 100%; */
+  background-color: rgba(0,0,0,0.7  );
 }
 
 </style>

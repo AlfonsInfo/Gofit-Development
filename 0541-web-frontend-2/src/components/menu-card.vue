@@ -1,8 +1,11 @@
 <script>
 import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router';
+// import VTooltip from 'v-tooltip';
+
 
 export default defineComponent({
+    // directives : {'tooltip' :VTooltip.directives},
     name: 'menu-card',
     props : ['data'],
     setup(){
@@ -14,26 +17,37 @@ export default defineComponent({
             // Redirect kehalaman luar
             router.push({name:'login'})
         }
+        const hoverEvent = ($event) => {
+          console.log($event)
+        }
+
+        const clickNavigateEvent = ($event) => {
+          console.log('click')
+          console.log($event)
+        }
         
         return{
-            navigateToPage
+            navigateToPage,
+            clickNavigateEvent,
+            hoverEvent
         }
     }
     });
 </script>
 <template>
-    <div v-for="(items,key) in data" :key = "key" class="card text-dark mt-5" style="width: 18rem;">
-    <img src="../../src/assets/image/background-1.jpg" class="card-img-top" alt="...">
+    <div v-for="(items,key) in data"  @hover="hoverEvent($event)" v-tooltip="'testing text'"  :key = "key" @click="clickNavigateEvent" class="card text-dark mt-5" style="width: 18rem;">
+        <!-- items.imageLink -->
+        <img   :src="items.imageLink" class="card-img-top " style="height: 40%;" alt="...">
     <div class="card-body">
       <h5 class="card-title ">
         {{items.title}}
       </h5>
       <p class="card-text">
-        {{ items.description }}
+        {{items.description}}
         </p>
-      <a href="#" class="btn btn-primary">
-        Go somewhere
-      </a>
+        <div class="mt-auto d-flex justify-content-start">
+          <a :href="items.route"  class="mdi mdi-location-enter mt-auto"> Masuk</a>
+        </div>
     </div>
   </div>
 </template>

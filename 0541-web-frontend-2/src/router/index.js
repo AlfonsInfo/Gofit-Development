@@ -2,6 +2,15 @@ import { createRouter, createWebHistory , } from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 
 
+const beforeEnter = (to, from, next) => {
+  if (isLoggedIn()) { // fungsi isLoggedIn() akan mengembalikan true jika pengguna sudah terautentikasi
+    next();
+  } else {
+    next('/'); // redirect ke halaman login jika pengguna belum terautentikasi
+  }
+}
+
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -20,20 +29,20 @@ const router = createRouter({
     {
       path: '/Home',
       name: 'Home',
-      meta : {
-        requiresAuth : true
-      },
-      beforeEnter: (to, from, next) => {
-        if (isLoggedIn()) { // fungsi isLoggedIn() akan mengembalikan true jika pengguna sudah terautentikasi
-          next();
-        } else {
-          next('/'); // redirect ke halaman login jika pengguna belum terautentikasi
-        }
-      },
+      // meta : {
+      //   requiresAuth : true
+      // },
+      beforeEnter: beforeEnter,
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/HomeView.vue')
+    },
+    {
+      path:'/member',
+      name : 'Member',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/member/index-member.vue')
     },
       // route fallback
     {
@@ -55,3 +64,12 @@ function isLoggedIn()
 export default router
 
 //* Tombol logout 
+
+
+
+// const dynamicImport = (path) => import(path)
+// const importPath = async (suffixLink) => {
+//     const path = `../views/${suffixLink}`
+//     console.log(path)
+//     return dynamicImport(path)
+// }
