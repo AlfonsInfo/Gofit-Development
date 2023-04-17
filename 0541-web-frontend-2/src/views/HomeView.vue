@@ -1,15 +1,16 @@
 <script>
   // import LogoutButton from '../components/LogoutButton.vue';
   import HomeNavbar from '../components/HomeNavbar.vue';
-  
+  import MenuCard from '../components/menu-card.vue'  
+  import {functionalKasir} from '../data/staticData'
   export default{
     data(){
       return {
         showMenuAdmin : false,
         showMenuMO : false,
         showMenuKasir : false,
-        
-        functionalKasir : ['Olah Member','Reset Password Member','Transaksi','Presensi Member Gym'],
+        functionalKasir,        
+
         functionalAdmin : ['Olah Instruktur',],
         functionalMO : [''],
       }
@@ -52,7 +53,8 @@
 
     components : {
       // LogoutButton,
-      HomeNavbar
+      HomeNavbar,
+      MenuCard
     }
   }
 </script>
@@ -66,21 +68,8 @@
     <!-- <div class="pegawai-kasir" v-show="showMenuKasir">Kasir</div> -->
     <div class="" v-show="showMenuKasir">
       <div class="d-flex flex-row justify-content-evenly" >
-  <div v-for="(items,key) in functionalKasir" :key = "key" class="card text-dark mt-5" style="width: 18rem;">
-    <img src="../../src/assets/image/background-1.jpg" class="card-img-top" alt="...">
-    <div class="card-body">
-      <h5 class="card-title ">
-        {{items}}
-      </h5>
-      <p class="card-text">
-        Some quick example text to build on the card title and make up the bulk of the card's content.
-      </p>
-      <a href="#" class="btn btn-primary">
-        Go somewhere
-      </a>
-    </div>
-  </div>
-</div>
+        <menu-card :data ="functionalKasir"></menu-card>
+      </div>
     </div>
   </main>
 </template>
