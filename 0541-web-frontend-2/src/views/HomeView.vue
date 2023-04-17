@@ -1,5 +1,5 @@
 <script>
-  import LogoutButton from '../components/LogoutButton.vue';
+  // import LogoutButton from '../components/LogoutButton.vue';
   import HomeNavbar from '../components/HomeNavbar.vue';
   
   export default{
@@ -7,7 +7,11 @@
       return {
         showMenuAdmin : false,
         showMenuMO : false,
-        showMenuKasir : false 
+        showMenuKasir : false,
+        
+        functionalKasir : ['Olah Member','Reset Password Member','Transaksi','Presensi Member Gym'],
+        functionalAdmin : ['Olah Instruktur',],
+        functionalMO : [''],
       }
     },
     methods : {
@@ -47,7 +51,7 @@
 
 
     components : {
-      LogoutButton,
+      // LogoutButton,
       HomeNavbar
     }
   }
@@ -59,8 +63,25 @@
   <main>
     <div class="pegawai-admin" v-show="showMenuAdmin">Admin</div>
     <div class="pegawai-mo" v-show="showMenuMO">MO</div>
-    <div class="pegawai-kasir" v-show="showMenuKasir">Kasir</div>
-    <logout-button></logout-button>
+    <!-- <div class="pegawai-kasir" v-show="showMenuKasir">Kasir</div> -->
+    <div class="" v-show="showMenuKasir">
+      <div class="d-flex flex-row justify-content-evenly" >
+  <div v-for="(items,key) in functionalKasir" :key = "key" class="card text-dark mt-5" style="width: 18rem;">
+    <img src="../../src/assets/image/background-1.jpg" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title ">
+        {{items}}
+      </h5>
+      <p class="card-text">
+        Some quick example text to build on the card title and make up the bulk of the card's content.
+      </p>
+      <a href="#" class="btn btn-primary">
+        Go somewhere
+      </a>
+    </div>
+  </div>
+</div>
+    </div>
   </main>
 </template>
 
@@ -71,18 +92,19 @@
 }
 
 .pegawai-admin{
-  width: 200px;
-  width: 200px;
+  width: 100%;
+  height: 200px;
   background-color: blue;
 }
 .pegawai-mo{
-  width: 200px;
+  height: 200px;
   width: 200px;
   background-color: blue;
 }
 .pegawai-kasir{
-  width: 200px;
-  width: 200px;
+  margin: 10px 10px;
+  height: 200px;
+  width: 100%;
   background-color: blue;
 }
 
