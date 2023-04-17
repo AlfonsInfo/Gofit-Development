@@ -16,7 +16,7 @@ export default defineComponent({
     const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
     let showPassword = false;
 
-    const Login = () => {
+    const Login = async () => {
       console.log('Fungsi Login');
       let username = inputLogin.username;
       let password = inputLogin.password;
@@ -25,24 +25,29 @@ export default defineComponent({
         username : username,
         password : password
       }
-  
       const postUrl ='http://127.0.0.1:8000/api/login' 
 
-      //Request
-      axios.post(postUrl,request)
-      .then(response => response.data)
-      .then(response=>{
-        let {user,access_token} = response
-        // console.log(access_token)
-        localStorage.setItem('token', access_token);
-        localStorage.setItem('user', user);
-        console.log(localStorage.getItem('token'))
+      try{
+
+        //* Login Request
+        const Login = await axios.post(postUrl,request);
+
+        // Destructuring Login Response
+        let {user, access_token,pegawai} = Login.data;
         
-        router.push({name: "Home"})
-      }).catch(error => {
-        console.log(error);
-        alert('Gagal Login'); 
-      })
+        // Set Local Storage
+        localStorage.setItem('token', access_token);
+        localStorage.setItem('userData', JSON.stringify(user));
+        localStorage.setItem('pegawaiData', JSON.stringify(pegawai))
+        
+        //Route ke Home
+        router.push({name: "Home"});
+      }catch(e)
+      {
+        alert('Gagal Login')
+        // console.log(e)
+      }
+    
     }
 
     const togglePassword = () => {

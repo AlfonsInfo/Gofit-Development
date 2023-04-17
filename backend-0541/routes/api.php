@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\instrukturController;
 use App\Http\Controllers\kelasController;
+use App\Http\Controllers\loginWebController;
 use App\Http\Controllers\sesiGymController;
 use App\Models\kelas;
 use Illuminate\Http\Request;
@@ -19,7 +20,8 @@ use Spatie\FlareClient\Api;
 |
 */
 
-Route::post('login', loginController::class)->middleware('cors');
+// Route::post('login', loginWebController::class)->middleware('cors');
+Route::post('login', 'loginWebController')->middleware('cors');
 Route::post('/sesiGym', 'sesiGymController@index');
 Route::post('/kelas', 'kelasController@index');
 Route::post('/instruktur', 'instrukturController@index');
