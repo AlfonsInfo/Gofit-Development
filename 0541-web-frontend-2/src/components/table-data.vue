@@ -65,7 +65,7 @@ export default defineComponent({
                     <td v-for="(field,index) in fields" :key="index">{{ dt[field] }}</td>                    
                     <td>
                       <span v-for="(action,index) in actions" :key="index" class="mx-2">
-                        <router-link @click="action.functionAction(createLink(context,action.link))" :to="createLink(context,action.link)" class="btn btn-primary" :class="action.class"> {{action.aksi}}</router-link>
+                        <router-link @click="eventAction('action')" :to="createLink(context,action.link)"  :class="action.class"> {{action.aksi}}</router-link>
                       </span>
                     </td>
                   </tr>

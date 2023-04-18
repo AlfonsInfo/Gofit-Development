@@ -46,9 +46,15 @@ const router = createRouter({
     },
     {
       path:'/member/tambah',
+      name : 'MemberCreate',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/member/create-member.vue')
+    },
+    {
+      path:'/member/ubah',
       name : 'MemberUpdate',
       beforeEnter : beforeEnter,
-      component: () => import('../views/member/index-member.vue')
+      component: () => import('../views/member/update-member.vue')
     },
       // route fallback
     {
