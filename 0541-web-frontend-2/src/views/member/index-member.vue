@@ -1,37 +1,40 @@
 <script>
-  // import LogoutButton from '../components/LogoutButton.vue';
   import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
-  // import {reactive} from 'vue';
-  // , onMounted
+  import TableData from '../../components/table-data.vue';
   import { onMounted ,ref } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
-  // import axios from 'axios' ;
+  import { ActionCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
 
   export default defineComponent({
     //Component yang digunakan
     components:{
-      HomeNavbar
+      HomeNavbar,
+      TableData,
     },
 
     //Setup
     setup(){
       const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
       let members = ref([])
-      
       onMounted(async () =>  {
         const dataRoute = "http://localhost:8000/api/member";
         const request = await axios.get(dataRoute)
         members.value = request.data.data 
-        // console.log(members.value)
-        for (var i in members.value){
-          console.log(members.value[i])
+        
+        members.value.forEach((e)=>{
+          e['aktivasi'] = (e.tgl_kadeluarsa_aktivasi == null) ? 'Ya' : 'Tidak'  
+        })
 
-        }
       })
+      console.log(ActionCreate)
+      const actions = [
+        ActionCreate,ActionUpdate,ActionDelete
+    ]
 
       return{
+        actions,
         router,
         members
       }
@@ -46,7 +49,8 @@
   <main>
     <div class='content text-white p-5'>
       <h2 class="">Daftar Member</h2>
-      <div>
+      <table-data :context="'member'" :data="members" :column="['ID Member','Nama Member']" :actions="actions" :fields="['id_member','nama_member']"></table-data>
+      <!-- <div>
         Search Section
       </div >
         <div class= 'container-fluid table-custom p-4'>
@@ -72,7 +76,7 @@
               </tr>
             </tbody>
           </table>
-        </div>
+        </div> -->
     </div>
   </main>
 </template>
@@ -87,8 +91,4 @@
   background-color: rgba(0,0,0,0.7  );
 }
 
-.table-custom{
-  background-color: rgba(255,255,255,0.9);
-  border-radius: 10px;
-}
 </style>

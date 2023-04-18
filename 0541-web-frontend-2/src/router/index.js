@@ -44,6 +44,12 @@ const router = createRouter({
       beforeEnter : beforeEnter,
       component: () => import('../views/member/index-member.vue')
     },
+    {
+      path:'/member/tambah',
+      name : 'MemberUpdate',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/member/index-member.vue')
+    },
       // route fallback
     {
       path: '/:pathMatch(.*)*',
