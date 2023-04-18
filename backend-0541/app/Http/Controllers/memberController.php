@@ -13,7 +13,7 @@ class memberController extends Controller
 {
     public function index()
     {
-        $member = member::latest()->with(['pengguna'])->get();
+        $member = member::with(['pengguna'])->get();
 
         return response([
             'message'=>'Success Tampil Data',
