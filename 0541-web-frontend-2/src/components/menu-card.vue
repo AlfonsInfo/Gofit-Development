@@ -46,7 +46,7 @@ export default defineComponent({
         {{items.description}}
         </p>
         <div class="mt-auto d-flex justify-content-start">
-          <a :href="items.route"  class="mdi mdi-location-enter mt-auto"> Masuk</a>
+          <router-link  :to="`/${items.route}`" class="mdi mdi-location-enter mt-auto"> Masuk</router-link>
         </div>
     </div>
   </div>

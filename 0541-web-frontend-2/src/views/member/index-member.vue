@@ -1,82 +1,94 @@
 <script>
   // import LogoutButton from '../components/LogoutButton.vue';
+  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
-  export default{
-    data(){
-      return {
+  // import {reactive} from 'vue';
+  // , onMounted
+  import { onMounted ,ref } from 'vue';
+  import { defineComponent  } from 'vue';
+  import { useRouter} from 'vue-router';
+  // import axios from 'axios' ;
 
+  export default defineComponent({
+    //Component yang digunakan
+    components:{
+      HomeNavbar
+    },
+
+    //Setup
+    setup(){
+      const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+      let members = ref([])
+      
+      onMounted(async () =>  {
+        const dataRoute = "http://localhost:8000/api/member";
+        const request = await axios.get(dataRoute)
+        members.value = request.data.data 
+        // console.log(members.value)
+        for (var i in members.value){
+          console.log(members.value[i])
+
+        }
+      })
+
+      return{
+        router,
+        members
       }
-    },
-    methods : {
-      changeClass(){
-        document.body.classList.replace('body-center','body-normalflow');
-      },
-      renderContent({jabatan_pegawai})
-      {
-        if(jabatan_pegawai == 'kasir')
-          this.showMenuKasir = true;
-        if(jabatan_pegawai == 'MO')
-            this.showMenuMO = true;
-        if(jabatan_pegawai == 'Amin')
-            this.showMenuAdmin = true;
-      },
-      getDataUser()
-      {
-        let user =localStorage.getItem('userData');
-        return JSON.parse(user)
-      },
-      getDataPegawai()
-      {
-        let pegawai = localStorage.getItem('pegawaiData');
-        return JSON.parse(pegawai)
-      }    
-    },
-  
-
-    mounted(){
-      //Change Class For Change CSS Styles
-      this.changeClass()
-    },
-
-
-    components : {
-        
-      // LogoutButton,
-      HomeNavbar,
     }
-  }
+
+})
 </script>
 <template >
   <header>
     <home-navbar :message="'Olah Data Member'"></home-navbar>
   </header>
-  <!-- component untuk redirect ke  menu utama  -->
   <main>
+    <div class='content text-white p-5'>
+      <h2 class="">Daftar Member</h2>
+      <div>
+        Search Section
+      </div >
+        <div class= 'container-fluid table-custom p-4'>
+          <table class="table table-striped table-bordered table-hover mt-4">
+            <thead class="table table-dark">
+              <tr>
+                <th scope="col">ID Member</th>
+                <th scope="col">Nama Member</th>
+                <th scope="col">Tanggal Lahir Member</th>
+                <th scope="col">No Telp Member</th>
+                <th scope="col">Status Aktif</th>
+                <th scope="col">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(data ,id) in members" :key ="id">
+                <td>{{ data.id_member }}</td>
+                <td>{{ data.nama_member}}</td>
+                <td>{{ data.tgl_lahir_member}}</td>
+                <td>{{ data.no_telp_member}}</td>
+                <td>{{ data.tgl_kadeluarsa_aktivasi == null ? 'Ya' : 'Tidak'}}</td>
+                <td>Detail | Edit | Hapus</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+    </div>
   </main>
 </template>
 
 <style scoped>
 
-#app{
-  background-color: red;
-}
 
-.pegawai-admin{
-  width: 100%;
-  height: 200px;
-  background-color: blue;
-}
-.pegawai-mo{
-  height: 200px;
-  width: 200px;
-  background-color: blue;
-}
-.pegawai-kasir{
-  /* margin-top: 4em; */
-  /* margin-left: 2em; */
-  height: 100%;
-  /* width: 100%; */
+
+
+.content{
+  height: 100vh;
   background-color: rgba(0,0,0,0.7  );
 }
 
+.table-custom{
+  background-color: rgba(255,255,255,0.9);
+  border-radius: 10px;
+}
 </style>

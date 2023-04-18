@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class instruktur extends Model
 {
     use HasFactory;
-    protected $guarded = ['id_instruktur'];
     protected $table = 'instruktur';
+    protected $guarded = ['id_instruktur'];
     protected $primaryKey = 'id_pengguna';
 
     // public const CREATED_AT = 'created_timestamp';
