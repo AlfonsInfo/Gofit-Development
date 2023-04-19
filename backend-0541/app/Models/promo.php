@@ -9,5 +9,5 @@ class promo extends Model
 {
     use HasFactory;
     protected $table = 'promo';
-  
+    protected $primaryKey = 'id_promo';
 }

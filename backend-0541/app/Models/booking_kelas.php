@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class booking_kelas extends Model
 {
-    use HasFactory;
+use HasFactory;
 protected $table = 'booking_kelas';
 }
