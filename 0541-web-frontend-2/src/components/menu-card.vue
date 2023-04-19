@@ -9,7 +9,7 @@ export default defineComponent({
     name: 'menu-card',
     props : ['data'],
     setup(){
-        const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+        const router = useRouter('router'); 
         
         const navigateToPage =   () => {
             // * Debugging

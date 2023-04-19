@@ -4,7 +4,7 @@
   import { onMounted ,ref } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
-  import { ActionCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
+  // import { ActionCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
 
   export default defineComponent({
     //Component yang digunakan
@@ -14,7 +14,7 @@
 
     //Setup
     setup(){
-      const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+      const router = useRouter('router'); 
       let members = ref([])
       onMounted(async () =>  {
         const dataRoute = "http://localhost:8000/api/member";
@@ -26,13 +26,9 @@
         })
 
       })
-      console.log(ActionCreate)
-      const actions = [
-        ActionCreate,ActionUpdate,ActionDelete
-    ]
+
 
       return{
-        actions,
         router,
         members
       }

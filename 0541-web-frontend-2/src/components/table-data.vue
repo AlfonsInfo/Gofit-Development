@@ -1,16 +1,21 @@
 
 <script>
+import BackButton from '../components/BackButton.vue';
 // import { defineComponent } from 'vue'
 // import { useRouter } from 'vue-router';
 
 
 
+
 export default {
+  components:{
+    BackButton,
+  },
     //* name : nama komponen yang digunakan di file vue lainnya (template html)
     name: 'table-data',
     
     //* props data yang diambil dari parent template
-    props : ['context','data','actions','column','fields','objectField'],
+    props : ['context','data','actions','column','fields','create'],
     
     //* data untuk pagination
     data(){
@@ -84,10 +89,11 @@ export default {
       }
 </script>
 <template>
-    <div>
+          <div>
             Search Section
           </div >
             <div  class= 'container-fluid table-custom p-4'>
+                <button type="button" @click.prevent="create" class="btn btn-outline-dark">{{ 'Tambah ' + context}}</button>              
               <table  class="table table-striped table-bordered table-hover mt-4">
                 <thead class="table table-dark">
                   <tr>
@@ -114,7 +120,7 @@ export default {
                   </tr>
                 </tbody>
               </table>
-              <nav>  
+              <nav class="d-flex justify-content-between">  
               <ul class="pagination pagination-dark">
                   <li class="page-item" :class="{disabled: currentPage === 1}">
                     <a class="page-link" href="#" @click.prevent="prevPage">Previous</a>
@@ -126,6 +132,7 @@ export default {
                     <a class="page-link" href="#" @click.prevent="nextPage">Next</a>
                   </li>
                 </ul>
+                <back-button className="btn btn-dark"></back-button>
               </nav> 
             </div> 
 </template>
