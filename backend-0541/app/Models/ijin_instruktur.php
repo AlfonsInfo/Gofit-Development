@@ -9,4 +9,15 @@ class ijin_instruktur extends Model
 {   
     use HasFactory;
     protected $table = 'ijin_instruktur';
+    
+    
+    public function instruktur()
+    {
+        return $this->hasOne('App\Models\User\instruktur','id_instruktur','id_instruktur');
+    }
+    public function instrukturPengganti()
+    {
+        return $this->hasOne('App\Models\User\instruktur','id_instruktur','id_instruktur_pengganti');
+    }
+
 }

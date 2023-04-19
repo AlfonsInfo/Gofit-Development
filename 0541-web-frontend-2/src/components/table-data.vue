@@ -2,21 +2,29 @@
 <script>
 // import { defineComponent } from 'vue'
 // import { useRouter } from 'vue-router';
-// import VTooltip from 'v-tooltip';
 
 
 
 export default {
+    //* name : nama komponen yang digunakan di file vue lainnya (template html)
     name: 'table-data',
-    props : ['context','data','actions','column','fields'],
+    
+    //* props data yang diambil dari parent template
+    props : ['context','data','actions','column','fields','objectField'],
+    
+    //* data untuk pagination
     data(){
-        return{
+      // console.log(this.data[0].instruktur.nama_instruktur)
+        // console.log(this.fields)  
+      return{
           itemsPerPage : 10,
           currentPage : 1,
     }
   },
+  //methods
   methods : {
 
+    //generate link
     createLink(context,action){
       if(action == undefined)
       {
@@ -24,6 +32,8 @@ export default {
       }
       return `/${context}/${action}`
     },
+
+    //event action
     eventAction(action)
     {
       alert('woy')
@@ -31,24 +41,49 @@ export default {
         console.log('hapus woy')
       }
     },
+
+    //go to prev page
     prevPage(){
       if(this.currentPage>1){
         this.currentPage -=1;
       }
     },
+    //go to next page
     nextPage(){
       if(this.currentPage < this.totalPages){
         this.currentPage +=1;
       }
       console.log(this.currentPage)
     },
+    printObject(dt,field){
+      // console.log(field[0] + field[1])
+      console.log(dt)
+      console.log(dt[field[0]][field[1]])
+      // console.log('dt', dt);
+      // console.log('field', field)
+      // console.log(Array.isArray(field) == true)
+      if(Array.isArray(field) == true)
+      {
+        // alert(field[0])
+        // console.log(dt[field[0]][field[1]])
+        // console.log(dt[field[0],field[1]])
+        // console.log(dt[field[0]][field[1]])
+      }
+      // console.log(Array.isArray(field))
+      // console.log(dt['instruktur'],['instruktur_pengganti'])
+    }
   },
+
+  //computed properties
   computed : {
+
+        //count total pages
         totalPages(){
-          // return Math.ceil(this.datafromProps / this.itemsPerPage )
+        // return Math.ceil(this.datafromProps / this.itemsPerPage )
           return Math.ceil(this.data.length / this.itemsPerPage )
         },
         
+        //displayed items
         displayedItems(){
           const startIndex = (this.currentPage - 1) * this.itemsPerPage
           const endIndex = startIndex + this.itemsPerPage
@@ -75,7 +110,16 @@ export default {
                 </thead>
                 <tbody>
                   <tr v-for="(dt ,id) in displayedItems" :key ="id">
-                    <td v-for="(field,index) in fields" :key="index">{{ dt[field] }}</td>                    
+                    <td v-for="(field,index) in fields" :key="index">
+                        <template v-if="Array.isArray(field)" >
+                          {{ dt[field[0]][field[1]] }}
+                          <!-- {{ printObject(dt,field) }} -->
+                        </template>
+                        <template v-else>
+                          <!-- {{ printObject(dt,field) }} -->
+                          {{ dt[field] }}
+                        </template>
+                    </td>                    
                     <td>
                       <span v-for="(action,index) in actions" :key="index" class="mx-2">
                         <router-link @click="eventAction('action')" :to="createLink(context,action.link)"  :class="action.class"> {{action.aksi}}</router-link>

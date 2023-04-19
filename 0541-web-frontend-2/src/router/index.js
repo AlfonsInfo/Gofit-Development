@@ -56,7 +56,25 @@ const router = createRouter({
       beforeEnter : beforeEnter,
       component: () => import('../views/member/update-member.vue')
     },
-      // route fallback
+    {
+      path:'/reset-password-member',
+      name : 'MemberReset',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/member/reset-password-member.vue')
+    },
+    {
+      path:'/instruktur',
+      name : 'Instruktur',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/instruktur/index-instruktur.vue')
+    },
+    {
+      path:'/ijin-instruktur',
+      name : 'IjinInstruktur',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/instruktur/ijin-instruktur.vue')
+    },
+    // route fallback
     {
       path: '/:pathMatch(.*)*',
       redirect: '/'

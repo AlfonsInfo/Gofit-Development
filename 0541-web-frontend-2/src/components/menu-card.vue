@@ -10,6 +10,7 @@ export default defineComponent({
     props : ['data'],
     setup(){
         const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+        
         const navigateToPage =   () => {
             // * Debugging
             // * Bersihkan LocalStorage

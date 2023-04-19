@@ -48,6 +48,7 @@
   
 
     mounted(){
+      console.log(functionalKasir)
       console.log(this.showMenuAdmin)
       //Change Class For Change CSS Styles
       this.changeClass()
