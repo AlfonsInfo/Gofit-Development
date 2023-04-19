@@ -14,7 +14,7 @@ class ijinInstrukturController extends Controller
      */
     public function index()
     {
-        $ijin_instruktur = ijin_instruktur::with(['instruktur','instrukturPengganti'])->get();
+        $ijin_instruktur = ijin_instruktur::with(['instruktur','instrukturPengganti','jadwalHarian','jadwalHarian.jadwal_umum'])->get();
 
         return response([
             'message'=>'Success Tampil Data',

@@ -5,7 +5,7 @@
   import { onMounted ,ref } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
-  import { ActionCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
+  import { ActionCreate, ActionConfirm, ActionReject} from '../../data/actionData'
 
   export default defineComponent({
     //Component yang digunakan
@@ -20,14 +20,14 @@
       let ijinInstruktur = ref([])
       onMounted(async () =>  {
         const dataRoute = "http://localhost:8000/api/ijinInstruktur";
-        const request = await axios.get(dataRoute)
-        ijinInstruktur.value = request.data.data 
+        const requestIjin = await axios.get(dataRoute)
+        ijinInstruktur.value = requestIjin.data.data 
         // console.log(ijinInstruktur.value)
 
       })
       console.log(ActionCreate)
       const actions = [
-        ActionCreate,ActionUpdate,ActionDelete
+        ActionConfirm,ActionReject
     ]
 
       return{
@@ -49,8 +49,8 @@
       <table-data 
         :context="'instruktur'" 
         :data="ijinInstruktur" 
-        :column="['ID Ijin','Instruktur','Instruktur Pengganti','Jadwal Harian','Tanggal Pengajuan','Status Ijin']" 
-        :fields="['id_ijin',['instruktur','nama_instruktur'],['instruktur_pengganti','nama_instruktur'],'id_jadwal_harian','tanggal_pengajuan','status_ijin']"
+        :column="['ID Ijin','Instruktur','Instruktur Pengganti','Tanggal Pengajuan','Tanggal Ijin','Sesi','Status Ijin']" 
+        :fields="['id_ijin',['instruktur','nama_instruktur'],['instruktur_pengganti','nama_instruktur'],'tanggal_pengajuan',['jadwal_harian', 'tanggal_jadwal_harian'],['jadwal_harian','jadwal_umum','jam_mulai'],'status_ijin']"
         :object-field="'nama_instruktur'"
         :actions="actions" 
         ></table-data>

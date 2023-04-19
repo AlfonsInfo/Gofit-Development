@@ -19,5 +19,9 @@ class ijin_instruktur extends Model
     {
         return $this->hasOne('App\Models\User\instruktur','id_instruktur','id_instruktur_pengganti');
     }
+    public function jadwalHarian()
+    {
+        return $this->hasOne('App\Models\jadwal_harian','id_jadwal_harian' , 'id_jadwal_harian');
+    }
 
 }

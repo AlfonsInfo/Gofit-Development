@@ -55,22 +55,13 @@ export default {
       }
       console.log(this.currentPage)
     },
-    printObject(dt,field){
-      // console.log(field[0] + field[1])
-      console.log(dt)
-      console.log(dt[field[0]][field[1]])
-      // console.log('dt', dt);
-      // console.log('field', field)
-      // console.log(Array.isArray(field) == true)
-      if(Array.isArray(field) == true)
-      {
-        // alert(field[0])
-        // console.log(dt[field[0]][field[1]])
-        // console.log(dt[field[0],field[1]])
-        // console.log(dt[field[0]][field[1]])
+    // looping index for passing object
+    getField(object,fields){
+      let value = object;
+      for (let i = 0; i < fields.length; i++) {
+        value = value[fields[i]];
       }
-      // console.log(Array.isArray(field))
-      // console.log(dt['instruktur'],['instruktur_pengganti'])
+      return value;
     }
   },
 
@@ -93,9 +84,6 @@ export default {
       }
 </script>
 <template>
-  <!-- <div>
-    test
-  </div> -->
     <div>
             Search Section
           </div >
@@ -112,15 +100,13 @@ export default {
                   <tr v-for="(dt ,id) in displayedItems" :key ="id">
                     <td v-for="(field,index) in fields" :key="index">
                         <template v-if="Array.isArray(field)" >
-                          {{ dt[field[0]][field[1]] }}
-                          <!-- {{ printObject(dt,field) }} -->
+                          {{ getField(dt,field) }}
                         </template>
                         <template v-else>
-                          <!-- {{ printObject(dt,field) }} -->
                           {{ dt[field] }}
                         </template>
                     </td>                    
-                    <td>
+                    <td>  
                       <span v-for="(action,index) in actions" :key="index" class="mx-2">
                         <router-link @click="eventAction('action')" :to="createLink(context,action.link)"  :class="action.class"> {{action.aksi}}</router-link>
                       </span>
