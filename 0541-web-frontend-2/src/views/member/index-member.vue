@@ -15,32 +15,43 @@
       TableData,
       ModalDetail
     },
+    
 
+    //Setup
     setup(){
       const router = useRouter('router');
       let members = ref([])
       const state = reactive({
       modalToggle: false,
-      sendDataDetail : {}
-
+      sendDataDetail : {},
+      searchInput : ''
     })
-      //Fungsi mendapatkan semua member
-      const getAllMember = async() => {
-        const dataRoute = "http://localhost:8000/api/member";
-        const request = await axios.get(dataRoute)
-        members.value = request.data.data 
-        
-        members.value.forEach((e)=>{
+
+      function konversiMember(members){
+          members.value.forEach((e)=>{
           const tanggalLengkap = e['tgl_lahir_member'].split(' ');
           const tanggal = new Date(tanggalLengkap[0])
           const formattedDate = tanggal.toLocaleDateString('en-GB');
           return e['tgl_lahir_member'] = formattedDate;
         })
-        members.value.forEach((e)=>{
-          e['aktivasi'] = (e.tgl_kadeluarsa_aktivasi == null) ? 'Aktif' : 'Tidak Aktif'  
-        })
-
+          members.value.forEach((e)=>{
+            e['aktivasi'] = (e.tgl_kadeluarsa_aktivasi == null) ? 'Aktif' : 'Tidak Aktif'  
+          })
       }
+
+      //Fungsi mendapatkan semua member
+      const getAllMember = async() => {
+        const dataRoute = "http://localhost:8000/api/member";
+        const request = await axios.get(dataRoute)
+        members.value = request.data.data 
+        konversiMember(members)
+      }
+      // const searchMember = () => {
+      //   console.log(state.searchInput.toLowerCase())
+      //   return members.value.filter(function(item){
+      //       return item.id_member.toLowerCase().includes(state.searchInput);
+      //   })
+      // }
 
       //Mounted
       onMounted(async () =>  {
@@ -72,8 +83,7 @@
             'username': detailData.pengguna.username,
           };
 
-state.sendDataDetail = mappedData ;          
-          console.log(state.sendDataDetail)
+          state.sendDataDetail = mappedData ;          
         }catch(e){
           alert(e)
           alert('Gagal Menampilkan Detail')
@@ -112,6 +122,7 @@ state.sendDataDetail = mappedData ;
       const actions = [
         ActionViewDetail,ActionUpdate,ActionDelete
     ]
+
       return{
         actions,
         router,
@@ -119,8 +130,18 @@ state.sendDataDetail = mappedData ;
         ActionCreateMember,
         ModalDetail,
         state,
+        // searchMember
       }
-    }
+    },
+    computed: {
+      displayedMembers() {
+        const searchKeyword = this.state.searchInput.toLowerCase();
+        console.log('Search Keyword' , searchKeyword)
+        return this.members.filter(member => {
+          return member.id_member.toLowerCase().includes(searchKeyword);
+        });
+      }
+    },
 
 })
 </script>
@@ -130,10 +151,14 @@ state.sendDataDetail = mappedData ;
   </header>
   <main>
     <div class='content text-white p-5'>
-      <h2 class="">Daftar Member</h2>
+        <h2 class="">Daftar Member</h2>
+      <div class="input-group mt-3 mb-2">
+        <input type="search" class="form-control rounded me-2 " placeholder="Search" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
+        <button type="button" class="btn btn-success" @click="searchMember" >search</button>
+      </div>
       <table-data 
       :context="'member'" 
-      :data="members" 
+      :data="displayedMembers" 
       :column="['ID Member','Nama Member','Tanggal Lahir','Nomor Telepon','Status Aktif']" 
       :actions="actions" 
       :fields="['id_member','nama_member','tgl_lahir_member','no_telp_member','aktivasi']"

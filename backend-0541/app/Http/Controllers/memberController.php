@@ -96,7 +96,7 @@ class memberController extends Controller
         ]);
 
         return response()->json([
-            'success' => true,
+            'success' => true,  
             'message' => 'Member Updated',
             'data'    => $temp  
         ], 200);

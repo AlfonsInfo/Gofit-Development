@@ -87,9 +87,10 @@ export default {
       }
 </script>
 <template>
-          <div>
-            Search Section
-          </div >
+         <!-- <div class="input-group mt-3 mb-2">
+        <input type="search" class="form-control rounded me-2 "  placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+        <button type="button" class="btn btn-success">search</button>
+      </div>  -->
             <div  class= 'container-fluid table-custom p-4'>
                 <button type="button" @click.prevent="create" class="btn btn-outline-dark">{{ 'Tambah ' + context}}</button>              
               <table  class="table table-striped table-bordered table-hover mt-4">
@@ -114,7 +115,7 @@ export default {
                       <span v-for="(action,index) in actions" :key="index" class="mx-2">
                         <router-link @click="action.functionAction(dt )" :to="createLink(context,action.link)"  :class="action.kelas"> {{action.aksi}}</router-link>
                       </span>
-                    </td>
+                  </td>
                   </tr>
                 </tbody>
               </table>
