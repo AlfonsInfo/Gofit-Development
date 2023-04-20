@@ -16,13 +16,12 @@
 
     //Setup
     setup(){
-      const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+      const router = useRouter('router'); 
       let ijinInstruktur = ref([])
       onMounted(async () =>  {
         const dataRoute = "http://localhost:8000/api/ijinInstruktur";
         const requestIjin = await axios.get(dataRoute)
         ijinInstruktur.value = requestIjin.data.data 
-        // console.log(ijinInstruktur.value)
 
       })
       console.log(ActionCreate)

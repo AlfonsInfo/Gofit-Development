@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router';
 export default defineComponent({
     name: 'logout-button',
     setup(){
-        const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+        const router = useRouter('router'); 
         const logout =   () => {
             // * Debugging
             console.log('logout');

@@ -10,7 +10,7 @@ export default defineComponent({
     props : ['message'],
     name: 'home-navbar',
     setup(){
-        const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+        const router = useRouter('router'); 
         const backHome =   () => {
             router.push({name:'Home'})
         }  
@@ -30,7 +30,6 @@ export default defineComponent({
   <main>
     <nav class="navbar bg-dark">
   <div class="container-fluid"> 
-    <!-- maybe hilangkan fluid agar ditengah -->
     <a class="navbar-brand text-white" @click="backHome">
       {{ message }}
     </a>

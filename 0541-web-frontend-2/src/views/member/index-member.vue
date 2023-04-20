@@ -40,7 +40,21 @@
       const ActionCreateMember =  ()=>{
         ActionRouteToCreate(router,'MemberCreate')
       }
-   
+
+      const deleteData = async (id) => {
+        alert(id.id_pengguna)
+        // lakukan aksi delete dengan menggunakan id dan additionalParam
+      }
+
+      const deleteDataWrapper = (deleteDataFunc, id /*, additionalParam*/ ) => {
+        deleteDataFunc(id);
+      }
+
+      ActionDelete.functionAction = (id) => {
+        // console.log(id)
+        deleteDataWrapper(deleteData,id)
+      }
+
       const actions = [
         ActionViewDetail,ActionUpdate,ActionDelete
     ]

@@ -19,13 +19,12 @@ export default {
     
     //* data untuk pagination
     data(){
-      // console.log(this.data[0].instruktur.nama_instruktur)
-        // console.log(this.fields)  
       return{
           itemsPerPage : 10,
           currentPage : 1,
     }
   },
+
   //methods
   methods : {
 
@@ -41,10 +40,7 @@ export default {
     //event action
     eventAction(action)
     {
-      alert('woy')
-      if(action == 'Hapus'){
-        console.log('hapus woy')
-      }
+      console.log(action)
     },
 
     //go to prev page
@@ -53,6 +49,7 @@ export default {
         this.currentPage -=1;
       }
     },
+
     //go to next page
     nextPage(){
       if(this.currentPage < this.totalPages){
@@ -60,6 +57,7 @@ export default {
       }
       console.log(this.currentPage)
     },
+    
     // looping index for passing object
     getField(object,fields){
       let value = object;
@@ -114,7 +112,7 @@ export default {
                     </td>                    
                     <td>  
                       <span v-for="(action,index) in actions" :key="index" class="mx-2">
-                        <router-link @click="eventAction('action')" :to="createLink(context,action.link)"  :class="action.class"> {{action.aksi}}</router-link>
+                        <router-link @click="action.functionAction(dt)" :to="createLink(context,action.link)"  :class="action.kelas"> {{action.aksi}}</router-link>
                       </span>
                     </td>
                   </tr>

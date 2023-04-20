@@ -11,8 +11,6 @@ export default defineComponent({
     },
     name: 'back-button',
     setup(){
-        // const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
-        // console.log(router)
     }
     });
 </script>
