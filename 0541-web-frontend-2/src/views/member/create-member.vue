@@ -1,6 +1,7 @@
 <script>
   import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
+  import BackButton from '../../components/BackButton.vue';
   import { onMounted ,reactive,ref } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
@@ -12,6 +13,7 @@
     //Component yang digunakan
     components:{
       HomeNavbar,
+      BackButton
     },
 
     //Setup
@@ -23,6 +25,13 @@
         no_telp_member : '',
         membership : false,
       })
+
+      const submitForm = (event) => {
+        console.log(event)
+        event.preventDefault(); // hindari default form submission
+        // kode untuk memproses data form
+        storeMember()
+      }
 
       function isValid({nama_member,tgl_lahir_member,no_telp_member}){
         let status = true;  
@@ -72,7 +81,8 @@
       return{
         router,
         member,
-        storeMember
+        storeMember,
+        submitForm
       }
     }
 
@@ -88,7 +98,7 @@
       <div  class= 'container-fluid form-custom p-4 text-dark'>
         <h3 class="title">Tambah Data Member <span class="mdi mdi-account-plus"></span></h3>
         <hr>
-        <form>
+        <form @submit.prevent="submitForm($event)">
           <div class="mb-3">
             <label for="nama_member" class="form-label">Nama Member</label>
             <input type="teal" v-model="member.nama_member" class="form-control" id="nama_member" aria-describedby="emailHelp">
@@ -96,7 +106,7 @@
           </div>
           <div class="mb-3">
             <label class="form-label" for="birthday">Tanggal Lahir Member</label>
-            <input class="form-text" v-model="member.tgl_lahir_member" type="date" id="birthday" name="birthday">
+            <input class="form-text" v-model="member.tgl_lahir_member" type="date" id="birthday" >
             <div id="namaHelp" class="form-text">Format yang digunakan : mm/dd/yyyy</div>
           </div>
           <div class="mb-3">
@@ -110,7 +120,10 @@
               Daftar Membership langsung ?
             </label>
           </div>
-          <button @click.prevent="storeMember" class="btn btn-primary">Submit</button>
+          <div class="d-flex justify-content-between">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <back-button :className="'btn btn-dark'"></back-button>
+          </div>
         </form>
         <hr>
       </div>
