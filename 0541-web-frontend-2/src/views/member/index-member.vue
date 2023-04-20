@@ -18,7 +18,8 @@
     setup(){
       const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
       let members = ref([])
-      onMounted(async () =>  {
+
+      const getAllMember = async() => {
         const dataRoute = "http://localhost:8000/api/member";
         const request = await axios.get(dataRoute)
         members.value = request.data.data 
@@ -29,11 +30,13 @@
           const formattedDate = tanggal.toLocaleDateString('en-GB');
           return e['tgl_lahir_member'] = formattedDate;
         })
-
         members.value.forEach((e)=>{
           e['aktivasi'] = (e.tgl_kadeluarsa_aktivasi == null) ? 'Aktif' : 'Tidak Aktif'  
         })
 
+      }
+      onMounted(async () =>  {
+        getAllMember()
       })
 
       // Mendefinisikan Route Tujuan MENG
@@ -41,18 +44,28 @@
         ActionRouteToCreate(router,'MemberCreate')
       }
 
-      const deleteData = async (id) => {
-        alert(id.id_pengguna)
+      const deleteData = async ({id_member}) => {
+        // alert(id.)
+        const deleteRoute = `http://localhost:8000/api/member/${id_member}`
+        try{
+          const deleteRequest = await axios.delete(deleteRoute)
+          // console.log(deleteRequest)
+          alert(deleteRequest.data.message)
+          getAllMember()
+        }catch{
+          alert('Gagal Delete')
+        }
         // lakukan aksi delete dengan menggunakan id dan additionalParam
       }
 
-      const deleteDataWrapper = (deleteDataFunc, id /*, additionalParam*/ ) => {
-        deleteDataFunc(id);
-      }
+      // const deleteDataWrapper = (deleteDataFunc, id /*, additionalParam*/ ) => {
+      //   deleteDataFunc(id);
+      // }
 
-      ActionDelete.functionAction = (id) => {
+      ActionDelete.functionAction = (member) => {
         // console.log(id)
-        deleteDataWrapper(deleteData,id)
+        deleteData(member)
+        // deleteDataWrapper(deleteData,id)
       }
 
       const actions = [

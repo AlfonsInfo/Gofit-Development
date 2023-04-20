@@ -33,8 +33,7 @@ class penggunaController extends Controller
 
     public static function destroyPenggunaOnly($id)
     {
-        $pengguna = pengguna::find($id)->first();
-        // dd($pengguna);
+        $pengguna = pengguna::find($id);
         if($pengguna){
             $pengguna->delete();
             return response()->json([

@@ -104,10 +104,11 @@ class memberController extends Controller
 
     public function destroy($id)
     {
-        $member = member::Where('id_member',$id)->first();
+        $member = member::Where('id_member' ,'=', $id)->first();
+        // dd($member);
 
         if($member){
-            $idPengguna = $member->pluck('id_pengguna');
+            $idPengguna = $member->id_pengguna;
             $member->delete();
             penggunaController::destroyPenggunaOnly($idPengguna);
 
