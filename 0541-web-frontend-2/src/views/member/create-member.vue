@@ -1,9 +1,11 @@
 <script>
   import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
-  import { onMounted ,ref } from 'vue';
+  import { onMounted ,reactive,ref } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
+  import {$toast} from '../../plugins/notifHelper.js'
+
   // import { ActionCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
 
   export default defineComponent({
@@ -15,13 +17,62 @@
     //Setup
     setup(){
       const router = useRouter('router'); 
-      // let members = ref([])
+      const member = reactive({
+        nama_member : '',
+        tgl_lahir_member : '',
+        no_telp_member : '',
+        membership : false,
+      })
 
+      function isValid({nama_member,tgl_lahir_member,no_telp_member}){
+        let status = true;  
+        console.log(nama_member,tgl_lahir_member,no_telp_member)
+        if (!nama_member) {
+          $toast.warning('Nama member harus diisi');
+          status = false;
+        }
+        // const regex = /^\d{4}-\d{2}-\d{2}$/;
+        if (!tgl_lahir_member) {
+          $toast.warning('Tanggal lahir member harus diisi');
+          status = false;
+        }
+        if (!no_telp_member) {
+          $toast.warning('No telp member harus diisi');
+          status = false;
+        }
+        return status;
+      }
 
+      function isActivateNow({membership}){
+        if(membership){
+          return true;
+        }
+        return false;
+      }
+
+      function transaksiAktivasi(){
+        console.log('transaksiAktivasi')
+      }
+
+      const storeMember = async() => {
+        const statusValidate = isValid(member)
+        const statusAksiAktivasi = isActivateNow(member)
+        if(statusValidate){
+          try{
+            const post = "http://127.0.0.1:8000/api/member"; 
+            const request = await axios.post(post,member); // ; 
+            (statusAksiAktivasi)? transaksiAktivasi() : null;
+            $toast.success(request.data.message)
+          }catch{
+            $toast.danger('Gagal Menambahkan Data')
+          }
+        }
+      }
 
       return{
         router,
-        // members
+        member,
+        storeMember
       }
     }
 
@@ -39,20 +90,27 @@
         <hr>
         <form>
           <div class="mb-3">
-            <label for="exampleInputEmail1" class="form-label">Nama Member</label>
-            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+            <label for="nama_member" class="form-label">Nama Member</label>
+            <input type="teal" v-model="member.nama_member" class="form-control" id="nama_member" aria-describedby="emailHelp">
+            <div id="namaHelp" class="form-text">ex : Ucup Surucup</div>
           </div>
           <div class="mb-3">
-            <label class="form-label" for="birthday">Tanggal Lahir Member  </label>
-            <input class="form-text" type="date" id="birthday" name="birthday">
+            <label class="form-label" for="birthday">Tanggal Lahir Member</label>
+            <input class="form-text" v-model="member.tgl_lahir_member" type="date" id="birthday" name="birthday">
+            <div id="namaHelp" class="form-text">Format yang digunakan : mm/dd/yyyy</div>
           </div>
-          <div></div>
           <div class="mb-3">
-            <label for="exampleInputPassword1" class="form-label">No Telp Member</label>
-            <input type="password" class="form-control" id="exampleInputPassword1">
+            <label for="notelp" class="form-label">No Telp Member</label>
+            <input type="text" v-model="member.no_telp_member" class="form-control" id="notelp">
+            <div id="namaHelp" class="form-text">ex : 08123456789</div>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <div class="form-check mb-3">
+            <input class="form-check-input" v-model="member.membership" type="checkbox" value="" id="flexCheckDefault">
+            <label class="form-check-label" for="flexCheckDefault">
+              Daftar Membership langsung ?
+            </label>
+          </div>
+          <button @click.prevent="storeMember" class="btn btn-primary">Submit</button>
         </form>
         <hr>
       </div>
