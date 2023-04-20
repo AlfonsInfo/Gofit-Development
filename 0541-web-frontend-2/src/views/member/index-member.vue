@@ -7,6 +7,7 @@
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import {  ActionRouteToCreate, ActionViewDetail,ActionUpdate,ActionDelete} from '../../data/actionData'
+  import {$toast} from '../../plugins/notifHelper.js'
 
   export default defineComponent({
     //Component yang digunakan
@@ -24,7 +25,7 @@
       const state = reactive({
       modalToggle: false,
       sendDataDetail : {},
-      searchInput : ''
+      searchInput : '',
     })
 
       function konversiMember(members){
@@ -40,11 +41,12 @@
       }
 
       //Fungsi mendapatkan semua member
-      const getAllMember = async() => {
+      const getAllMember = async(message) => {
         const dataRoute = "http://localhost:8000/api/member";
         const request = await axios.get(dataRoute)
         members.value = request.data.data 
         konversiMember(members)
+        $toast.success(message)
       }
       // const searchMember = () => {
       //   console.log(state.searchInput.toLowerCase())
@@ -55,7 +57,7 @@
 
       //Mounted
       onMounted(async () =>  {
-        getAllMember()
+        getAllMember('Berhasil Menampilkan Data Member !!')
       })
 
       //Navigasi Ke Create Member
@@ -100,10 +102,11 @@
         const deleteRoute = `http://localhost:8000/api/member/${id_member}`
         try{
           const deleteRequest = await axios.delete(deleteRoute)
-          alert(deleteRequest.data.message)
-          getAllMember()
+          // alert(deleteRequest.data.message)
+          $toast.success(deleteRequest.data.message)
+          getAllMember('Tabel Data Member di update')
         }catch{
-          alert('Gagal Delete')
+          $toast.danger('Berhasil Menghapus Data')
         }
       }
 
@@ -155,8 +158,7 @@
     <div class='content text-white p-5'>
         <h2 class="">Daftar Member</h2>
       <div class="input-group mt-3 mb-2">
-        <input type="search" class="form-control rounded me-2 " placeholder="Search" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
-        <button type="button" class="btn btn-success" @click="searchMember" >search</button>
+        <input type="search" class="form-control rounded me-2 " placeholder="Cari Member" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
       </div>
       <table-data 
       :context="'member'" 

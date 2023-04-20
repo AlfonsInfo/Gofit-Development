@@ -19,9 +19,9 @@ use Spatie\FlareClient\Api;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-
+// ->middleware('cors');
 // Route::post('login', loginWebController::class)->middleware('cors');
-Route::post('login', 'loginWebController')->middleware('cors');
+Route::post('login', 'loginWebController');
 Route::post('/sesiGym', 'sesiGymController@index');
 Route::post('/kelas', 'kelasController@index');
 Route::post('/instruktur', 'instrukturController@index');
@@ -30,7 +30,7 @@ Route::apiResource('/instruktur', 'instrukturController');
 Route::apiResource('/jadwalumum', 'jadwalController');
 // Route::post('/promo', 'promoController@index');
 Route::apiResource('/member', 'memberController');
-Route::apiResource('/ijinInstruktur', 'ijinInstrukturController');
+Route::apiResource('/ijinInstruktur', 'ijinInstrukturController');  
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();         
 // });

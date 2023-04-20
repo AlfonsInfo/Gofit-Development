@@ -2,6 +2,7 @@
 import axios from 'axios' ;
 import { defineComponent, reactive } from 'vue';
 import { useRouter} from 'vue-router';
+import {$toast} from '../plugins/notifHelper.js'
 
 export default defineComponent({
   mounted(){
@@ -30,7 +31,6 @@ export default defineComponent({
       try{
         //* Login Request
         const Login = await axios.post(postUrl,request);
-
         // Destructuring Login Response
         let {user, access_token,pegawai} = Login.data;
         
@@ -38,7 +38,8 @@ export default defineComponent({
         localStorage.setItem('token', access_token);
         localStorage.setItem('userData', JSON.stringify(user));
         localStorage.setItem('pegawaiData', JSON.stringify(pegawai))
-        
+        $toast.success(`Welcome  ${user.username}!`);
+
         //Route ke Home
         router.push({name: "Home"});
       }catch(e)
