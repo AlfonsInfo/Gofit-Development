@@ -112,7 +112,7 @@ export default {
                     </td>                    
                     <td>  
                       <span v-for="(action,index) in actions" :key="index" class="mx-2">
-                        <router-link @click="action.functionAction(dt)" :to="createLink(context,action.link)"  :class="action.kelas"> {{action.aksi}}</router-link>
+                        <router-link @click="action.functionAction(dt )" :to="createLink(context,action.link)"  :class="action.kelas"> {{action.aksi}}</router-link>
                       </span>
                     </td>
                   </tr>
