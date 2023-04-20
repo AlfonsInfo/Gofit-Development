@@ -136,11 +136,13 @@
     computed: {
       displayedMembers() {
         const searchKeyword = this.state.searchInput.toLowerCase();
-        console.log('Search Keyword' , searchKeyword)
+        // console.log('Search Keyword', searchKeyword);
         return this.members.filter(member => {
-          return member.id_member.toLowerCase().includes(searchKeyword);
-        });
-      }
+          const memberString = Object.values(member).join(' ').toLowerCase();
+          return memberString.includes(searchKeyword);
+    });
+}
+
     },
 
 })
