@@ -23,7 +23,10 @@ const viewDetail = (detail) =>{
 
 
 const deleteFunction = (deleteDataFunc) => {
-    deleteDataFunc() // fungsi yang nantinya diambil dari file 2
+    deleteDataFunc() 
+}
+const resetPwFunction = (resetPw) => {
+    resetPw()
 }
 
 // const update = (detail) => {
@@ -33,6 +36,6 @@ export const ActionCreate = new Actions('Tambah','');
 export const ActionViewDetail = new Actions('Detail','mdi mdi-eye btn btn-primary', undefined ,viewDetail )
 export const ActionUpdate = new Actions('Ubah','mdi mdi-update btn btn-warning','ubah')
 export const ActionDelete = new Actions('Hapus','mdi mdi-delete btn btn-danger' , undefined ,  deleteFunction)
-export const ActionResetPassword = new Actions('Reset Password','member-reset-password','member-reset-password')
+export const ActionResetPassword = new Actions('Reset Password','mdi mdi-lock btn btn-danger','reset-password', resetPwFunction)
 export const ActionConfirm = new Actions('Konfirmasi','','')
 export const ActionReject = new Actions('Tolak','','')

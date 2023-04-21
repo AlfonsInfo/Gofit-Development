@@ -4,7 +4,8 @@ import {  RouterView } from 'vue-router'
 
 <template>
   <RouterView />
-  <!-- <toast></toast> --> 
+  <!-- <toast></toast> -->
+  <DialogsWrapper /> 
   <!-- cara import toast 1 untuk semua piye?? -->
 </template>
 

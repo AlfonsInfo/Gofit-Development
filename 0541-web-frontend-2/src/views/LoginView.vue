@@ -8,7 +8,7 @@ export default defineComponent({
   mounted(){
     document.body.classList.add('body-center');
   },
-  setup(){
+setup(){  
     const inputLogin = reactive({
       username : "",
       password : "",

@@ -85,21 +85,16 @@ class memberController extends Controller
         }
 
         //*Data yang ingin di update
-        $temp = member::Where('id_member',$id)->with(['pengguna'])->get();
+        $member = Member::findOrFail($id);
 
         //* Update
 
-        $temp->update([
-            'nama_member' => $request->nama_member,
-            'tgl_lahir_member' => $request->tgl_lahir_member,
-            'no_telp_member' => $request->no_telp_member,  
-        ]);
-
-        return response()->json([
-            'success' => true,  
-            'message' => 'Member Updated',
-            'data'    => $temp  
-        ], 200);
+         //* Update
+        $member->nama_member = $request->nama_member;
+        $member->tgl_lahir_member = $request->tgl_lahir_member;
+        $member->no_telp_member = $request->no_telp_member;
+        $member->save();
+        return response()->json(['message' => 'Data member berhasil diupdate.'], 200);
     }
 
     public function destroy($id)

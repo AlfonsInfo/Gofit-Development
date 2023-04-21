@@ -26,9 +26,17 @@ class penggunaController extends Controller
         ]);
     }
 
-    public static function updatePassword()
+    public function update(Request $request, $id)
     {
-
+        $pengguna = pengguna::find($id);
+        // dd($request->tgl_lahir_member);
+        $newPassword = bcrypt($request->tgl_lahir_member);
+        $pengguna->password = $newPassword; 
+        $pengguna->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Password Berhasil Direset'
+        ],200);
     }
 
     public static function destroyPenggunaOnly($id)

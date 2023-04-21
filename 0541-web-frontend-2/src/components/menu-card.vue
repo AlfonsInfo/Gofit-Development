@@ -40,7 +40,7 @@ export default defineComponent({
         <!-- items.imageLink -->
         <img   :src="items.imageLink" class="card-img-top " style="height: 40%;" alt="...">
     <div class="card-body">
-      <h5 class="card-title ">
+      <h5 class="card-title ">  
         {{items.title}}
       </h5>
       <p class="card-text">

@@ -16,6 +16,19 @@
       BackButton
     },
 
+    methods : {
+        goBack() {
+        if ($toast) {
+        this.toast.goAway(0);
+        }
+      },
+    },
+
+    mounted(){
+      window.onpopstate = () => {
+        this.goBack();
+      };
+    },
     //Setup
     setup(){
       const router = useRouter('router'); 
@@ -78,6 +91,8 @@
         }
       }
 
+
+
       return{
         router,
         member,
@@ -121,8 +136,8 @@
             </label>
           </div>
           <div class="d-flex justify-content-between">
+            <back-button :className="'btn btn-dark'" @click="goBack"></back-button>
             <button type="submit" class="btn btn-primary">Submit</button>
-            <back-button :className="'btn btn-dark'"></back-button>
           </div>
         </form>
         <hr>

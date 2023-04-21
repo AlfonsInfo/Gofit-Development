@@ -12,9 +12,11 @@ import 'vue-toast-notification';
 import VTooltip from 'v-tooltip';
 import {useToast} from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
+import * as ConfirmDialog from 'vuejs-confirm-dialog'
 const app = createApp(App)
 app.use(VTooltip)
 app.use(router)
+app.use(ConfirmDialog)
 // app.use(ToastPlugin)
 
 app.mount('#app')

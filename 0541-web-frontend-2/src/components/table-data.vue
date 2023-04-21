@@ -15,7 +15,7 @@ export default {
     name: 'table-data',
     
     //* props data yang diambil dari parent template
-    props : ['context','data','actions','column','fields','create'],
+    props : ['context','data','actions','column','fields','create','hiddenClass'],
     
     //* data untuk pagination
     data(){
@@ -37,7 +37,6 @@ export default {
       return `/${context}/${action}`
     },
     createPathName(context,action){
-      console.log(action)
       if(action.link == undefined)
       {
         return `${context}`
@@ -101,7 +100,7 @@ export default {
         <button type="button" class="btn btn-success">search</button>
       </div>  -->
             <div  class= 'container-fluid table-custom p-4'>
-                <button type="button" @click.prevent="create" class="btn btn-outline-dark">{{ 'Tambah ' + context}}</button>              
+                <button type="button" @click.prevent="create" class="btn btn-outline-dark" :class="hiddenClass">{{ 'Tambah ' + context}}</button>              
               <table  class="table table-striped table-bordered table-hover mt-4">
                 <thead class="table table-dark">
                   <tr>
@@ -159,5 +158,10 @@ export default {
 }
 .pagination.pagination-dark .page-item.active .page-link {
   background-color: black;
+}
+
+
+.hidden-feature{
+  display:none
 }
 </style>

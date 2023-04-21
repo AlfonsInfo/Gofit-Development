@@ -2,19 +2,22 @@
   import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import TableData from '../../components/table-data.vue';
-  import ModalDetail from '../../components/ModalDetail.vue';
   import { onMounted ,ref, reactive} from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
-  import {  ActionRouteToCreate, ActionViewDetail,ActionUpdate,ActionDelete, ActionResetPassword} from '../../data/actionData'
+  import {  ActionResetPassword} from '../../data/actionData'
   import {$toast} from '../../plugins/notifHelper.js'
+  //Modal Dialog
+  import ModalDialog from '../../components/ModalDialog.vue';
+  import { createConfirmDialog } from 'vuejs-confirm-dialog'
+  const { reveal, onConfirm, onCancel } = createConfirmDialog(ModalDialog)  
+
 
   export default defineComponent({
     //Component yang digunakan
     components:{
       HomeNavbar,
       TableData,
-      ModalDetail
     },
     
 
@@ -48,83 +51,48 @@
         konversiMember(members)
         $toast.success(message)
       }
-      // const searchMember = () => {
-      //   console.log(state.searchInput.toLowerCase())
-      //   return members.value.filter(function(item){
-      //       return item.id_member.toLowerCase().includes(state.searchInput);
-      //   })
-      // }
 
       //Mounted
       onMounted(async () =>  {
         getAllMember('Berhasil Menampilkan Data Member !!')
       })
 
-      //Navigasi Ke Create Member
-      const ActionCreateMember =  ()=>{
-        ActionRouteToCreate(router,'MemberCreate')
+      function formatDate(date) {
+      const [dd, mm, yyyy] = date.split('/');
+      return `${yyyy}-${mm}-${dd}`;
       }
 
-      //Fungsi Show Detail Data 
-      const detailMember = async({id_member}) =>{
-        const showDetailMemberRoute = `http://localhost:8000/api/member/${id_member}`
-        try{
-          const detailRequest = await axios.get(showDetailMemberRoute)
-          const detailData = detailRequest.data.data[0];
-          state.modalToggle = true;
-          const mappedData = {
-            'ID Member': detailData.id_member,
-            'Nama Member': detailData.nama_member,
-            'Tanggal Lahir': detailData.tgl_lahir_member,
-            'No Telp': detailData.no_telp_member,
-            'Kadeluarsa Aktivasi': detailData.tgl_kadeluarsa_aktivasi,
-            'Total Deposit ': detailData.total_deposit_uang,
-            'Tanggal Gabung Member': detailData.tgl_gabung_member,
-            'Total Deposit Paket': detailData.total_deposit_paket,
-            'Tanggal Kadeluarsa Paket': detailData.tgl_kadeluarsa_paket,
-            'username': detailData.pengguna.username,
-          };
+      const validasiPIC = ()=>{
+        let user =localStorage.getItem('userData');
+        user = JSON.parse(user);
+        let konfirmUsername = prompt('Konfirmasi username sebelum melakukan reset password');
+        if(user.username == konfirmUsername)
+        {
+          return true;
+        }
+        return false;
+      }
 
-          state.sendDataDetail = mappedData ;          
-        }catch(e){
-          alert(e)
-          alert('Gagal Menampilkan Detail')
+      //Fungsi ResetPW
+      const ResetPw = async ({id_pengguna,tgl_lahir_member}) => {
+        tgl_lahir_member = formatDate(tgl_lahir_member)
+        const  validPegawai = validasiPIC();
+        if(validPegawai == true)
+        {
+          try{
+            const url = `http://127.0.0.1:8000/api/pengguna/${id_pengguna}`
+            const request = await axios.put(url,{ tgl_lahir_member : tgl_lahir_member} ); // ; 
+            $toast.success(request.data.message)
+          }catch{
+            $toast.warning('Gagal Menambahkan Data')
+          }
+        }else{
+          $toast.warning('Gagal Validasi Pegawai')
         }
       }
 
-      ActionViewDetail.functionAction = (member) =>{
-          detailMember(member)
-      }
-      //Fungsi Update
-      const updateDataRedirect = async({id_member}) => {
-
-      }
-
-      // ActionUpdate.functionAction = member => {
-
-      // }
-
-      //Fungsi Delete
-      const deleteData = async ({id_member}) => {
-        // alert(id.)
-        const deleteRoute = `http://localhost:8000/api/member/${id_member}`
-        try{
-          const deleteRequest = await axios.delete(deleteRoute)
-          // alert(deleteRequest.data.message)
-          $toast.success(deleteRequest.data.message)
-          getAllMember('Tabel Data Member di update')
-        }catch{
-          $toast.danger('Berhasil Menghapus Data')
-        }
-      }
-
-      // const deleteDataWrapper = (deleteDataFunc, id /*, additionalParam*/ ) => {
-      //   deleteDataFunc(id);
-      // }
-
-      ActionDelete.functionAction = (member) => {
-        deleteData(member)
-        // deleteDataWrapper(deleteData,id)
+      ActionResetPassword.functionAction = (member) => {
+        ResetPw(member)
       }
 
 
@@ -138,10 +106,7 @@
         actions,
         router,
         members,
-        ActionCreateMember,
-        ModalDetail,
         state,
-        // searchMember
       }
     },
     computed: {
@@ -168,17 +133,15 @@
       <div class="input-group mt-3 mb-2">
         <input type="search" class="form-control rounded me-2 " placeholder="Cari Member" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
       </div>
-      <!-- <table-data 
+      <table-data 
       :context="'member'" 
       :data="displayedMembers" 
       :column="['ID Member','Nama Member','Tanggal Lahir','Nomor Telepon','Status Aktif']" 
       :actions="actions" 
       :fields="['id_member','nama_member','tgl_lahir_member','no_telp_member','aktivasi']"
       :create="ActionCreateMember"
-      ></table-data> -->
-    </div>
-    <div>
-      <modal-detail :display="state.modalToggle" :data="state.sendDataDetail"  @close-modal="state.modalToggle = false;" ></modal-detail>
+      :hiddenClass ="'hidden-class'"
+      ></table-data>
     </div>
   </main>
 </template>

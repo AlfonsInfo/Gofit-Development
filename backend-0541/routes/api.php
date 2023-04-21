@@ -22,6 +22,7 @@ use Spatie\FlareClient\Api;
 // ->middleware('cors');
 // Route::post('login', loginWebController::class)->middleware('cors');
 Route::post('login', 'loginWebController');
+Route::post('login-mobile', 'loginMobileController');
 Route::post('/sesiGym', 'sesiGymController@index');
 Route::post('/kelas', 'kelasController@index');
 Route::post('/instruktur', 'instrukturController@index');
@@ -30,6 +31,7 @@ Route::apiResource('/instruktur', 'instrukturController');
 Route::apiResource('/jadwalumum', 'jadwalController');
 // Route::post('/promo', 'promoController@index');
 Route::apiResource('/member', 'memberController');
+Route::apiResource('/pengguna', 'penggunaController');
 Route::apiResource('/ijinInstruktur', 'ijinInstrukturController');  
 // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 //     return $request->user();         
