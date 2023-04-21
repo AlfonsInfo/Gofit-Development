@@ -11,11 +11,15 @@
     components:{
       HomeNavbar,
     },
-
+    mounted(){
+      console.log(this.$route.query)
+    },
     //Setup
     setup(){
       const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+      console.log(router)
       let members = ref([])
+      console.log(router.query)
       onMounted(async () =>  {
         const dataRoute = "http://localhost:8000/api/member";
         const request = await axios.get(dataRoute)

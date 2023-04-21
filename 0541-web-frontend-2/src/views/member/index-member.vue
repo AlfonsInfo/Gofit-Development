@@ -20,7 +20,7 @@
 
     //Setup
     setup(){
-      const router = useRouter('router');
+      const router = useRouter();
       let members = ref([])
       const state = reactive({
       modalToggle: false,
@@ -36,7 +36,7 @@
           return e['tgl_lahir_member'] = formattedDate;
         })
           members.value.forEach((e)=>{
-            e['aktivasi'] = (e.tgl_kadeluarsa_aktivasi == null) ? 'Aktif' : 'Tidak Aktif'  
+            e['aktivasi'] = (e.tgl_kadeluarsa_aktivasi == null) ? 'Tidak Aktif' : 'Aktif'  
           })
       }
 
@@ -95,6 +95,14 @@
       ActionViewDetail.functionAction = (member) =>{
           detailMember(member)
       }
+      //Fungsi Update
+      const updateDataRedirect = async({id_member}) => {
+
+      }
+
+      // ActionUpdate.functionAction = member => {
+
+      // }
 
       //Fungsi Delete
       const deleteData = async ({id_member}) => {

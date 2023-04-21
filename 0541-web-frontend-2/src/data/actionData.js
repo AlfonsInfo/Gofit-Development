@@ -26,6 +26,9 @@ const deleteFunction = (deleteDataFunc) => {
     deleteDataFunc() // fungsi yang nantinya diambil dari file 2
 }
 
+// const update = (detail) => {
+//     console.log(detail)
+// }
 export const ActionCreate = new Actions('Tambah','');
 export const ActionViewDetail = new Actions('Detail','mdi mdi-eye btn btn-primary', undefined ,viewDetail )
 export const ActionUpdate = new Actions('Ubah','mdi mdi-update btn btn-warning','ubah')

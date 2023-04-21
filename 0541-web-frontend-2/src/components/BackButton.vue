@@ -19,7 +19,6 @@ export default defineComponent({
     <button :class="className" @click="$router.go(-1)">Back</button>
 </main>
 </template>
-
 <style>
 
 </style>

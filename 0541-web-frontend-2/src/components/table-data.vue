@@ -36,6 +36,15 @@ export default {
       }
       return `/${context}/${action}`
     },
+    createPathName(context,action){
+      console.log(action)
+      if(action.link == undefined)
+      {
+        return `${context}`
+      }
+      return `${context}-${action.link}`
+      // return `/${context}/${action}`
+    },
 
     //event action
     eventAction(action)
@@ -113,8 +122,8 @@ export default {
                     </td>                    
                     <td>  
                       <span v-for="(action,index) in actions" :key="index" class="mx-2">
-                        <router-link @click="action.functionAction(dt )" :to="createLink(context,action.link)"  :class="action.kelas"> {{action.aksi}}</router-link>
-                      </span>
+                        <router-link @click="action.functionAction(dt)" :to="{name : createPathName(context,action,dt), query : {...dt}  }"  :class="action.kelas"> {{action.aksi}}</router-link>
+                    </span>
                   </td>
                   </tr>
                 </tbody>

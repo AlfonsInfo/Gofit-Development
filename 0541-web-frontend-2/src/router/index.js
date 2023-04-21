@@ -40,7 +40,7 @@ const router = createRouter({
     },
     {
       path:'/member',
-      name : 'Member',
+      name : 'member',
       beforeEnter : beforeEnter,
       component: () => import('../views/member/index-member.vue')
     },
@@ -51,9 +51,9 @@ const router = createRouter({
       component: () => import('../views/member/create-member.vue')
     },
     {
-      path:'/member/ubah',
-      name : 'MemberUpdate',
-      beforeEnter : beforeEnter,
+      path: '/member/Ubah',
+      name: 'member-ubah',
+      beforeEnter: beforeEnter,
       component: () => import('../views/member/update-member.vue')
     },
     {
