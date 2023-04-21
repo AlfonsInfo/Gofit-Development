@@ -33,6 +33,6 @@ export const ActionCreate = new Actions('Tambah','');
 export const ActionViewDetail = new Actions('Detail','mdi mdi-eye btn btn-primary', undefined ,viewDetail )
 export const ActionUpdate = new Actions('Ubah','mdi mdi-update btn btn-warning','ubah')
 export const ActionDelete = new Actions('Hapus','mdi mdi-delete btn btn-danger' , undefined ,  deleteFunction)
-export const ActionResetPassword = new Actions('Reset Password','','')
+export const ActionResetPassword = new Actions('Reset Password','member-reset-password','member-reset-password')
 export const ActionConfirm = new Actions('Konfirmasi','','')
 export const ActionReject = new Actions('Tolak','','')

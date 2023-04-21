@@ -62,7 +62,7 @@
 
       //Navigasi Ke Create Member
       const ActionCreateMember =  ()=>{
-        ActionRouteToCreate(router,'MemberCreate')
+        ActionRouteToCreate(router,'member-tambah')
       }
 
       //Fungsi Show Detail Data 

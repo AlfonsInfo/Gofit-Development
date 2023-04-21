@@ -46,7 +46,7 @@ const router = createRouter({
     },
     {
       path:'/member/tambah',
-      name : 'MemberCreate',
+      name : 'member-tambah',
       beforeEnter : beforeEnter,
       component: () => import('../views/member/create-member.vue')
     },
@@ -57,20 +57,50 @@ const router = createRouter({
       component: () => import('../views/member/update-member.vue')
     },
     {
-      path:'/reset-password-member',
-      name : 'MemberReset',
+      path:'/member/reset-password',
+      name : 'member-reset-password',
       beforeEnter : beforeEnter,
       component: () => import('../views/member/reset-password-member.vue')
     },
     {
       path:'/instruktur',
-      name : 'Instruktur',
+      name : 'instruktur',
       beforeEnter : beforeEnter,
       component: () => import('../views/instruktur/index-instruktur.vue')
     },
     {
       path:'/ijin-instruktur',
-      name : 'IjinInstruktur',
+      name : 'ijin-instruktur',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/instruktur/ijin-instruktur.vue')
+    },
+    {
+      path:'/jadwal-umum',
+      name : 'jadwal-umum',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/instruktur/ijin-instruktur.vue')
+    },
+    {
+      path:'/jadwal-harian',
+      name : 'jadwal-harian',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/instruktur/ijin-instruktur.vue')
+    },
+    {
+      path:'/laporan',
+      name : 'laporan',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/instruktur/ijin-instruktur.vue')
+    },
+    {
+      path:'/transaksi',
+      name : 'transaksi',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/instruktur/ijin-instruktur.vue')
+    },
+    {
+      path:'/presensi-member-gym',
+      name : 'presensi-member-gym',
       beforeEnter : beforeEnter,
       component: () => import('../views/instruktur/ijin-instruktur.vue')
     },
