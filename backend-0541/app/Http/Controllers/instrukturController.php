@@ -77,30 +77,29 @@ class instrukturController extends Controller
     public function update(Request $request, $id)
     {
         //* Validasi
-        $validator = ValidatorHelper::validateInstruktur($request->all());
-        if ($validator->fails()) {
-            return response()->json($validator->errors(), 422);
-        }
+        // $validator = ValidatorHelper::validateInstruktur($request->all());
+        // if ($validator->fails()) {
+        //     return response()->json($validator->errors(), 422);
+        // }
 
         //*Data yang ingin di update
-        $temp = instruktur::Where('id_instruktur',$id)->with(['pengguna'])->get();
+        $instruktur = Instruktur::findOrFail($id);
+        // dd($instruktur,'test');
+        // dd($instruktur);
 
-        //* Update
+            // Update data pada objek Instruktur
+            $instruktur->nama_instruktur = $request->nama_instruktur;
+            $instruktur->tanggal_lahir_instruktur = $request->tanggal_lahir_instruktur;
+            $instruktur->alamat_instruktur = $request->alamat_instruktur;
+            $instruktur->no_telp_instruktur = $request->no_telp_instruktur;
+            $instruktur->save();
 
-        $temp->update([
-            'nama_instruktur' => $request->nama_instruktur,
-            'tanggal_lahir_instruktur' => $request->tanggal_lahir_instruktur,
-            'alamat_instruktur' => $request->alamat_instruktur,
-            'no_telp_instruktur' => $request->no_telp_instruktur
-        ]);
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Instruktur Updated',
-            'data'    => $temp  
-        ], 200);
-    }
-
+            return response()->json([
+                'success' => true,
+                'message' => 'Instruktur Updated',
+                'data'    => $instruktur  
+            ], 200);
+        }
     //* Remove the specified resource from storage.
     //TODO belum tau apakah saat menghapus instruktur pengguna ikut terhapus atau tidak, masalah cascadenya juga
     //TODO perlu diperhitungkan kedepannya
@@ -109,7 +108,7 @@ class instrukturController extends Controller
         $instruktur = instruktur::Where('id_instruktur',$id)->first();
 
         if($instruktur){
-            $idPengguna = $instruktur->pluck('id_pengguna');
+            $idPengguna = $instruktur->id_pengguna;
             $instruktur->delete();
             penggunaController::destroyPenggunaOnly($idPengguna);
 

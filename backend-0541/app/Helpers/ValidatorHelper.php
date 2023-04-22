@@ -16,8 +16,8 @@ class ValidatorHelper{
                     'tanggal_lahir_instruktur' => 'required',
                     'alamat_instruktur' => 'required',
                     'no_telp_instruktur' => 'required',
-                    'username' => 'required',
-                    'password' => 'required'
+                    // 'username' => 'required',
+                    // 'password' => 'required'
                 ]);
                 return $validator; 
     }

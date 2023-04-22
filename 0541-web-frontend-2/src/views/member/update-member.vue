@@ -80,7 +80,7 @@
     //Mounted
     mounted(){
       this.member = this.$route.query
-      this.member.tgl_lahir_member = this.formatDate(this.member.tgl_lahir_member)
+      this.member.tanggal_lahir_member = this.formatDate(this.member.tgl_lahir_member)
       window.onpopstate = () => {
         this.goBack();
       };

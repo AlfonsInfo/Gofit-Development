@@ -70,19 +70,19 @@
   <header>
     <home-navbar :message = "'Selamat Datang Di Aplikasi Gofit'"></home-navbar>
   </header>
-  <main>
+  <main class="">
       <div class="pegawai-admin p-5" v-show="showMenuAdmin">
-        <div class="d-flex flex-row justify-content-evenly" >
+        <div class=" row row-cols-2 row-cols-md-12" >
           <menu-card :data ="functionalAdmin"></menu-card>
         </div>
       </div>
-      <div class="pegawai-mo p-5" v-show="showMenuMO">
-        <div class="d-flex flex-row justify-content-evenly" >
+      <div class="pegawai-mo p-5 " v-show="showMenuMO">
+        <div class=" row row-cols-2 row-cols-md-12" >
           <menu-card :data ="functionalMO"></menu-card>
         </div>
       </div>
       <div class="pegawai-kasir p-5" v-show="showMenuKasir">
-        <div class="d-flex flex-row justify-content-evenly" >
+        <div class=" row row-cols-2 row-cols-md-12" >
           <menu-card :data ="functionalKasir"></menu-card>
         </div>
       </div>

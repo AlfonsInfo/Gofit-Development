@@ -69,6 +69,18 @@ const router = createRouter({
       component: () => import('../views/instruktur/index-instruktur.vue')
     },
     {
+      path:'/instruktur/tambah',
+      name : 'instruktur-tambah',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/instruktur/create-instruktur.vue')
+    },
+    {
+      path:'/instruktur/ubah',
+      name : 'instruktur-ubah',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/instruktur/update-instruktur.vue')
+    },
+    {
       path:'/ijin-instruktur',
       name : 'ijin-instruktur',
       beforeEnter : beforeEnter,
@@ -78,7 +90,7 @@ const router = createRouter({
       path:'/jadwal-umum',
       name : 'jadwal-umum',
       beforeEnter : beforeEnter,
-      component: () => import('../views/instruktur/ijin-instruktur.vue')
+      component: () => import('../views/jadwal/index-jadwal.vue')
     },
     {
       path:'/jadwal-harian',
@@ -102,7 +114,7 @@ const router = createRouter({
       path:'/presensi-member-gym',
       name : 'presensi-member-gym',
       beforeEnter : beforeEnter,
-      component: () => import('../views/instruktur/ijin-instruktur.vue')
+      component: () => import('../views/member/presensi-member.vue')
     },
     // route fallback
     {

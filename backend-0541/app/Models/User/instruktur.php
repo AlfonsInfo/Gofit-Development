@@ -10,11 +10,13 @@ class instruktur extends Model
     use HasFactory;
     protected $table = 'instruktur';
     protected $guarded = ['id_instruktur'];
-    protected $primaryKey = 'id_pengguna';
+    protected $primaryKey = 'id_instruktur';
 
     // public const CREATED_AT = 'created_timestamp';
     // public const UPDATED_AT = 'updated_timestamp';
-
+    protected $casts = [
+        'id_instruktur' => 'string'
+    ];
 
 
     public function pengguna()

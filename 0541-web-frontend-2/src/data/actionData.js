@@ -12,8 +12,6 @@ class Actions{
 
 export const ActionRouteToCreate = (router,route) =>{
     router.push({name:route})
-
-
 }
 
 const viewDetail = (detail) =>{

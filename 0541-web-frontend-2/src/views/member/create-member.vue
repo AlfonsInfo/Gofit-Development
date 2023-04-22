@@ -2,7 +2,7 @@
   import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import BackButton from '../../components/BackButton.vue';
-  import { onMounted ,reactive,ref } from 'vue';
+  import { reactive } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import {$toast} from '../../plugins/notifHelper.js'
@@ -86,12 +86,10 @@
             (statusAksiAktivasi)? transaksiAktivasi() : null;
             $toast.success(request.data.message)
           }catch{
-            $toast.danger('Gagal Menambahkan Data')
+            $toast.warning('Gagal Menambahkan Data')
           }
         }
       }
-
-
 
       return{
         router,

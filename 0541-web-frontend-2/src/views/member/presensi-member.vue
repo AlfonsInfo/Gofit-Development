@@ -21,43 +21,37 @@
     //Setup
     setup(){
       const router = useRouter();
-      let members = ref([])
+      let presensiGym = ref([])
       const state = reactive({
       modalToggle: false,
       sendDataDetail : {},
       searchInput : '',
     })
 
-      function konversiMember(members){
-          members.value.forEach((e)=>{
-          const tanggalLengkap = e['tgl_lahir_member'].split(' ');
-          const tanggal = new Date(tanggalLengkap[0])
-          const formattedDate = tanggal.toLocaleDateString('en-GB');
-          return e['tgl_lahir_member'] = formattedDate;
-        })
-          members.value.forEach((e)=>{
-            e['aktivasi'] = (e.tgl_kadeluarsa_aktivasi == null) ? 'Tidak Aktif' : 'Aktif'  
-          })
-      }
+    //   function konversiMember(members){
+    //       members.value.forEach((e)=>{
+    //       const tanggalLengkap = e['tgl_lahir_member'].split(' ');
+    //       const tanggal = new Date(tanggalLengkap[0])
+    //       const formattedDate = tanggal.toLocaleDateString('en-GB');
+    //       return e['tgl_lahir_member'] = formattedDate;
+    //     })
+    //       members.value.forEach((e)=>{
+    //         e['aktivasi'] = (e.tgl_kadeluarsa_aktivasi == null) ? 'Tidak Aktif' : 'Aktif'  
+    //       })
+    //   }
 
       //Fungsi mendapatkan semua member
-      const getAllMember = async(message) => {
-        const dataRoute = "http://localhost:8000/api/member";
+      const getAllPresensi = async(message) => {
+        const dataRoute = "http://localhost:8000/api/presensi-instruktur";
         const request = await axios.get(dataRoute)
-        members.value = request.data.data 
-        konversiMember(members)
+        presensiGym.value = request.data.data 
+        // konversiMember(members)
         $toast.success(message)
       }
-      // const searchMember = () => {
-      //   console.log(state.searchInput.toLowerCase())
-      //   return members.value.filter(function(item){
-      //       return item.id_member.toLowerCase().includes(state.searchInput);
-      //   })
-      // }
 
       //Mounted
       onMounted(async () =>  {
-        getAllMember('Berhasil Menampilkan Data Member !!')
+        getAllPresensi('Berhasil Menampilkan Data Member !!')
       })
 
       //Navigasi Ke Create Member
@@ -103,24 +97,25 @@
       // }
 
       //Fungsi Delete
-      const deleteData = async ({id_member}) => {
-        // alert(id.)
-        const deleteRoute = `http://localhost:8000/api/member/${id_member}`
-        try{
-          const deleteRequest = await axios.delete(deleteRoute)
-          // alert(deleteRequest.data.message)
-          $toast.success(deleteRequest.data.message)
-          getAllMember('Tabel Data Member di update')
-        }catch{
-          $toast.warning('Gagal Menghapus Data')
-        }
-      }
+    //   const deleteData = async ({id_member}) => {
+    //     // alert(id.)
+    //     const deleteRoute = `http://localhost:8000/api/member/${id_member}`
+    //     try{
+    //       const deleteRequest = await axios.delete(deleteRoute)
+    //       // alert(deleteRequest.data.message)
+    //       $toast.success(deleteRequest.data.message)
+    //       getAllMember('Tabel Data Member di update')
+    //     }catch{
+    //       $toast.danger('Berhasil Menghapus Data')
+    //     }
+    //   }
 
 
-      ActionDelete.functionAction = (member) => {
-        deleteData(member)
-        // deleteDataWrapper(deleteData,id)
-      }
+    //   ActionDelete.functionAction = (member) => {
+    //     deleteData(member)
+    //   }
+
+
 
 
       const actions = [
@@ -130,15 +125,17 @@
       return{
         actions,
         router,
-        members,
+        presensiGym,
         ActionCreateMember,
         ModalDetail,
         state,
+        // searchMember
       }
     },
     computed: {
-      displayedMembers() {
+      displayedpresensiGym() {
         const searchKeyword = this.state.searchInput.toLowerCase();
+        // console.log('Search Keyword', searchKeyword);
         return this.members.filter(member => {
           const memberString = Object.values(member).join(' ').toLowerCase();
           return memberString.includes(searchKeyword);
@@ -151,21 +148,21 @@
 </script>
 <template >
   <header>
-    <home-navbar :message="'Olah Data Member'"></home-navbar>
+    <home-navbar :message="'Gofit - Olah Presensi Gym Member'"></home-navbar>
   </header>
   <main>
     <div class='content text-white p-5'>
-        <h2 class="">Daftar Member</h2>
+        <h2 class="">Daftar Presensi</h2>
       <div class="input-group mt-3 mb-2">
-        <input type="search" class="form-control rounded me-2 " placeholder="Cari Member" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
+        <input type="search" class="form-control rounded me-2 " placeholder="Cari presensi" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
       </div>
       <table-data 
-      :context="'member'" 
-      :data="displayedMembers" 
+      :context="'ijin-instruktur'" 
+      :data="presensiGym" 
       :column="['ID Member','Nama Member','Tanggal Lahir','Nomor Telepon','Status Aktif']" 
       :actions="actions" 
-      :fields="['id_member','nama_member','tgl_lahir_member','no_telp_member','aktivasi']"
-      :create="ActionCreateMember"
+      :fields="['id_presensi','nama_member','tgl_lahir_member','no_telp_member','aktivasi']"
+      :hiddenClass ="'hidden-feature'"
       ></table-data>
     </div>
     <div>

@@ -139,8 +139,7 @@
       :column="['ID Member','Nama Member','Tanggal Lahir','Nomor Telepon','Status Aktif']" 
       :actions="actions" 
       :fields="['id_member','nama_member','tgl_lahir_member','no_telp_member','aktivasi']"
-      :create="ActionCreateMember"
-      :hiddenClass ="'hidden-class'"
+      :hiddenClass ="'hidden-feature'"
       ></table-data>
     </div>
   </main>

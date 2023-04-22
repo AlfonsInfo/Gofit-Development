@@ -11,12 +11,28 @@ class jadwalController extends Controller
     public function index()
     {
         //* find all data
-        $jadwal_umum = jadwal_umum::latest()->with(['instruktur','kelas'])->get();
-        
-        //* return response
+        // $jadwal_umum = jadwal_umum::latest()->with(['instruktur','kelas'])->get();
+        $jadwalPagi = ['senin' => jadwal_umum::where('hari','senin')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'selasa' => jadwal_umum::where('hari','selasa')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'rabu' => jadwal_umum::where('hari','rabu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'kamis' => jadwal_umum::where('hari','kamis')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'jumat' => jadwal_umum::where('hari','jumat')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'sabtu' => jadwal_umum::where('hari','sabtu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'minggu' => jadwal_umum::where('hari','minggu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
+    ];
+    $jadwalSore = ['senin' => jadwal_umum::where('hari','senin')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'selasa' => jadwal_umum::where('hari','selasa')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'rabu' => jadwal_umum::where('hari','rabu')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'kamis' => jadwal_umum::where('hari','kamis')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'jumat' => jadwal_umum::where('hari','jumat')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'sabtu' => jadwal_umum::where('hari','sabtu')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'minggu' => jadwal_umum::where('hari','minggu')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
+    ];
+        $jadwal = ['pagi' => $jadwalPagi, 'sore' => $jadwalSore]; 
         return response([
+        //* return response
             'message'=>'Success Tampil Data',
-            'data' => $jadwal_umum
+            'data' => $jadwal
         ],200); 
 
     }
