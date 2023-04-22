@@ -115,7 +115,6 @@ class jadwalController extends Controller
     {
         //* Find Data based on params $id
         $jadwal_umum = jadwal_umum::Where('id_jadwal_umum',$id)->first();
-        dd($jadwal_umum);
         //*found
         if($jadwal_umum){
             $jadwal_umum->delete();

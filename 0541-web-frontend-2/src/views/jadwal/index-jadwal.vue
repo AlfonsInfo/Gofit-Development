@@ -1,30 +1,24 @@
 <script>
   import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
-  import TableData from '../../components/table-data.vue';
-  import { computed, onMounted ,ref } from 'vue';
+  import BackButton from '../../components/BackButton.vue';
+  import {  onMounted ,ref } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
-  import { ActionRouteToCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
   import { $toast } from '../../plugins/notifHelper';
 
   export default defineComponent({
     //Component yang digunakan
     components:{
       HomeNavbar,
-      TableData,
+      BackButton
     },
 
     data() {
-  return {
-    data: [
-      { hari: 'Senin', sesi1: '', sesi2: '', sesi3: '' },
-      { hari: 'Selasa', sesi1: '', sesi2: '', sesi3: '' },
-      { hari: 'Rabu', sesi1: '', sesi2: '', sesi3: '' },
-      { hari: 'Kamis', sesi1: '', sesi2: '', sesi3: '' },
-      { hari: 'Jumat', sesi1: '', sesi2: '', sesi3: '' }
-    ]
-  }
+      return {
+        toggle:true,
+        toggleModeTabel : false,
+    } 
 },
 
     //Setup
@@ -61,50 +55,51 @@
       })
 
       //Create
-      // const ActionCreateInstruktur =  ()=>{
-      //   ActionRouteToCreate(router,'instruktur-tambah') 
-      // }
 
       //Update
-
+      const updateDataCell= (data) => {
+          console.log(data)
+          router.push({name:'',query:''})
+      }
 
       //Delete
-      // const deleteData = async ({id_instruktur}) => {
-      //   console.log(id_instruktur)
-      //   const deleteRoute = `http://localhost:8000/api/instruktur/${id_instruktur}`
-      //   try{
-      //     const deleteRequest = await axios.delete(deleteRoute)
-      //     $toast.success(deleteRequest.data.message)
-      //     getAllInstruktur('Tabel Data Member di update')
-      //   }catch{
-      //     $toast.warning('Gagal Menghapus Data')
-      //   }
-      // }
+      const deleteDataCell = async ({id_jadwal_umum}) =>{
+        console.log(id_jadwal_umum)
+        const deleteRoute = `http://localhost:8000/api/jadwalumum/${id_jadwal_umum}`
+        try{
+          const deleteRequest = await axios.delete(deleteRoute)
+          // alert(deleteRequest.data.message)
+          $toast.success(deleteRequest.data.message)
+          getAllJadwal('Tabel Data Jadwal di update')
+        }catch{
+          $toast.warning('Gagal Menghapus Data')
+        }
 
-
-    //   ActionDelete.functionAction = (instruktur) => {
-    //     deleteData(instruktur)
-    //     // deleteDataWrapper(deleteData,id)
-    //   }
-
-    //   const actions = [
-    //     ActionUpdate,ActionDelete
-    // ]
+      }
 
       return{
         jadwalPagi,
         jadwalSore,
         maxPagi,
-        maxSore
-    //     ActionCreateInstruktur,
-    //     actions,
-    //     router,
-    //     instrukturs
+        maxSore,
+        updateDataCell,
+        deleteDataCell
       }
     },
     computed:{
-
+      displayedJadwal(){
+        if(this.toggle){
+          return this.jadwalPagi;
+        }
+        return this.jadwalSore
+      },
+      max(){
+        if(this.toggle){ 
+          return this.maxPagi;
+        }
+        return this.maxSore
     }
+  }
 })
 </script>
 <template >
@@ -115,44 +110,50 @@
     <div class='content text-white p-5'>
       <h2 class="">Jadwal</h2>
       <div class="class='container-fluid table-custom p-4 text-dark'">
-        <table class="table table-striped table-bordered table-hover mt-4">
+        <!-- Button -->
+        <div class="d-flex justify-content-between ">
+          <router-link type="button"  class="btn btn-outline-dark" :to="{name:'jadwal-umum-tambah'}">Tambah Jadwal</router-link>
+          <div>
+            <button type="button"  class="btn btn-outline-dark" v-if="toggle" @click="toggle = !toggle">Jadwal Malam</button>              
+            <button type="button"  class="btn btn-outline-dark" v-else @click="toggle = !toggle">Jadwal Pagi</button>              
+          </div>              
+        </div>
+        <table class="table table-dark table-striped table-bordered table-hover mt-4 scrollme">
           <thead>
-            <tr>
-              <th></th>
-              <th v-for="i in maxPagi" :key="'sesi-'+i">Jadwal {{i}}</th>
+            <tr class="text-white bg-dark text-center">
+              <th>#</th>
+              <th v-for="i in max" :key="i" >Jadwal {{i}}</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(jd,index) in jadwalPagi" :key="index">
-              <th scope="row">{{index}}</th>
-              <td v-for="(column,idx) in jd" :key="idx"> 
-                {{column.jam_mulai}}
-                {{column.kelas.jenis_kelas }}  
-                {{ column.instruktur.nama_instruktur }}
+            <tr v-for="(jd,index) in displayedJadwal" :key="index">
+              <th scope="row" class="text-white bg-dark text-center">{{index}}</th>
+              <td v-for="(column,idx) in jd" :key="idx" class="text-center"> 
+                <p>
+                  Jadwal : {{column.jam_mulai}}
+                </p>
+                <p>
+                  Nama Kelas : {{column.kelas.jenis_kelas }}  
+                </p>
+                <p>
+                  Instruktur : {{ column.instruktur.nama_instruktur }}
+                </p>
+                <div v-show="toggleModeTabel">
+                  <button class="btn btn-warning m-2" @click.prevent="updateDataCell(column)">Update</button>
+                  <button class="btn btn-danger" @click.prevent="deleteDataCell(column)">Delete</button>
+                </div>
               </td>
+              <td v-for="i in (max - jd.length)" :key="i" class="text-center">*</td>
             </tr>
           </tbody>
         </table>
-      </div>
-      <div class="class='container-fluid table-custom p-4 text-dark'">
-        <table class="table table-striped table-bordered table-hover mt-4">
-          <thead>
-            <tr>
-              <th></th>
-              <th v-for="i in maxSore" :key="'sesi-'+i">Jadwal {{i}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(jd,index) in jadwalSore" :key="index">
-              <th scope="row">{{index}}</th>
-              <td v-for="(column,idx) in jd" :key="idx"> 
-                {{column.jam_mulai}}
-                {{column.kelas.jenis_kelas }}  
-                {{ column.instruktur.nama_instruktur }}
-              </td>
-            </tr>
-          </tbody>
-        </table>
+        <div class="d-flex justify-content-between">
+          <div>
+            <button class="btn btn-primary" v-if="!toggleModeTabel" @click="toggleModeTabel = !toggleModeTabel">Mode Edit</button>
+            <button class="btn btn-success" v-else @click=" toggleModeTabel =!toggleModeTabel">Mode Tampil</button>
+          </div>
+          <back-button className="btn btn-dark"></back-button>
+        </div>
       </div>
     </div>
   </main>
@@ -164,7 +165,9 @@
   border-radius: 10px;
 }
 
-
+/* .scrollme {
+  overflow-x:scroll;
+} */
 
 .content{
   height: 100vh;

@@ -38,7 +38,7 @@ export default defineComponent({
 
 <template >
   <!-- style="width: 18rem;" -->
-  <div v-for="(items,key) in data" class="col-12 col-md-3 p-2"  :key = "key">
+  <div v-for="(items,key) in data" class="col-12 col-md-3 p-2 m-auto"  :key = "key">
     <div  @hover="hoverEvent($event)" v-tooltip="'testing text'"  @click="clickNavigateEvent" class="card text-dark mt-5 " > 
       <!-- items.imageLink -->
       <img   :src="items.imageLink" class="card-img-top " style="height: 40%;" alt="...">

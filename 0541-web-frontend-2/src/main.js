@@ -12,7 +12,9 @@ import 'vue-toast-notification';
 import VTooltip from 'v-tooltip';
 import {useToast} from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
-import * as ConfirmDialog from 'vuejs-confirm-dialog'
+import * as ConfirmDialog from 'vuejs-confirm-dialog';
+import "https://code.jquery.com/jquery-3.5.1.js";
+import "https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js";
 const app = createApp(App)
 app.use(VTooltip)
 app.use(router)
@@ -23,3 +25,5 @@ app.mount('#app')
 
 const $toast = useToast();
 $toast.success('Welcome To Aplikasi Gofit!');
+
+

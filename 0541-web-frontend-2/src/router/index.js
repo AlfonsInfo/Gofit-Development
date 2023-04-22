@@ -93,6 +93,12 @@ const router = createRouter({
       component: () => import('../views/jadwal/index-jadwal.vue')
     },
     {
+      path:'/jadwal-umum/tambah',
+      name : 'jadwal-umum-tambah',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/jadwal/create-jadwal-umum.vue')
+    },
+    {
       path:'/jadwal-harian',
       name : 'jadwal-harian',
       beforeEnter : beforeEnter,

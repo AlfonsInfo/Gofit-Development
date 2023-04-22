@@ -13,7 +13,6 @@ class kelasController extends Controller
     public function index()
     {
         $kelas = kelas::latest()->get();
-        // var_dump($kelas);
         return response(
             [
                 'message' => 'Show Sesi Gym Success',

@@ -72,7 +72,7 @@
   </header>
   <main class="">
       <div class="pegawai-admin p-5" v-show="showMenuAdmin">
-        <div class=" row row-cols-2 row-cols-md-12" >
+        <div class="row row-cols-2 row-cols-md-12" >
           <menu-card :data ="functionalAdmin"></menu-card>
         </div>
       </div>
@@ -87,6 +87,7 @@
         </div>
       </div>
   </main>
+  div
 </template>
 
 <style scoped>

@@ -95,11 +95,7 @@ export default {
       }
 </script>
 <template>
-         <!-- <div class="input-group mt-3 mb-2">
-        <input type="search" class="form-control rounded me-2 "  placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
-        <button type="button" class="btn btn-success">search</button>
-      </div>  -->
-            <div  class= 'container-fluid table-custom p-4'>
+          <div  class= 'container-fluid table-custom p-4'>
                 <button type="button" @click.prevent="create" class="btn btn-outline-dark" :class="hiddenClass">{{ 'Tambah ' + context}}</button>              
               <table  class="table table-striped table-bordered table-hover mt-4">
                 <thead class="table table-dark">
