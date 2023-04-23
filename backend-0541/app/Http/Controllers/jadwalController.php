@@ -123,7 +123,7 @@ class jadwalController extends Controller
                 'success' => true,
                 'message' => 'jadwal_umum Deleted',
             ], 200);
-
+            
         //*not found
         }else{
             return response()->json([

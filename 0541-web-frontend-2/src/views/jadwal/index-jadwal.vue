@@ -130,7 +130,7 @@
               <th scope="row" class="text-white bg-dark text-center">{{index}}</th>
               <td v-for="(column,idx) in jd" :key="idx" class="text-center"> 
                 <p>
-                  Jadwal : {{column.jam_mulai}}
+                  Jadwal : {{column.jam_mulai}} - {{ column.jam_selesai }}
                 </p>
                 <p>
                   Nama Kelas : {{column.kelas.jenis_kelas }}  

@@ -11,7 +11,7 @@ class jadwal_umum extends Model
     use HasFactory;
     protected $table = 'jadwal_umum';  
     protected $primaryKey = 'id_jadwal_umum';
-    protected $guarded = ['id_jadwal_umum'];
+    protected $guarded = ['id_jadwal_umum'];    
     
 
     public function instruktur()

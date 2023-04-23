@@ -37,3 +37,17 @@ export const ActionDelete = new Actions('Hapus','mdi mdi-delete btn btn-danger' 
 export const ActionResetPassword = new Actions('Reset Password','mdi mdi-lock btn btn-danger','reset-password', resetPwFunction)
 export const ActionConfirm = new Actions('Konfirmasi','','')
 export const ActionReject = new Actions('Tolak','','')
+
+
+
+// let content = [];
+// Object.values(jadwals.value).forEach((data) => {
+//   Object.values(data).forEach((dt) => {
+//     dt.forEach(e => content.push(e))
+//   })
+// });
+// console.log(content.forEach((values) => {
+//   if(values.hari == 'senin' && values.jam_mulai !=  '08:00' && values.jam_selesai != '10:00'){
+//     console.log(values)
+//   }
+// }))}

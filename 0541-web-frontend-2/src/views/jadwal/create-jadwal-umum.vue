@@ -53,22 +53,35 @@
         kelas.value = request.data.kelas
       }
       
+
+      //Container Data Jadwal Baru
       const jadwal = reactive({
           'hari' : '',
           'id_instruktur' : '',
           'id_kelas' : '',
-          'jam_mulai' : 'jam_selesai'
+          'jam_mulai' : '',
+          'jam_selesai' : '',
       })
+
+      const jadwals  = reactive({})
+      const getAllJadwal= async () => {
+        const dataRoute = "http://localhost:8000/api/jadwalumum";
+        const request = await axios.get(dataRoute)
+        jadwals.value = request.data.data
+      }
+       
       //Mounted
-      onMounted(async () =>  {
-          getAllInstruktur()
-          getAllKelas()
+      onMounted(async () =>  {  
+          getAllInstruktur();
+          getAllKelas();
+          getAllJadwal();
+
+
       })
-      const submitForm = (event) => {
+      const submitForm = (event,) => {
         console.log(event)
         event.preventDefault(); // hindari default form submission
         // kode untuk memproses data form
-        console.log(jadwal)
         storeJadwal()
       }
 
@@ -93,25 +106,68 @@
 
 
       function isNotConflict(jadwal){
+
+        //Default tidak ada konflik
         let status = true;
-          //cek
-        return status;
-      }
+
+        //Mapping data ke content
+        let content = Object.values(jadwals.value).flatMap(data => Object.values(data)).flat();
+
+        console.log('input jadwal', jadwal)
+
+        let filteredData = content.filter((values) => {
+            const jadwalMulaiA = parseInt(jadwal.jam_mulai.replace(':',''));
+            const jadwalSelesaiA = parseInt(jadwal.jam_selesai.replace(':',''))
+            const jadwalMulaiB = parseInt(values.jam_mulai.replace(':',''));
+            const jadwalSelesaiB = parseInt(values.jam_selesai.replace(':',''))
+
+
+            const conditionHari = (values.hari == jadwal.hari) ? true : false
+            const conditionInstruktur = (values.id_instruktur== jadwal.id_instruktur) ? true : false
+
+            //Jadwal Konflik 1
+            const conditionjadwalConflict1 = ((jadwalMulaiB >= jadwalMulaiA ) && jadwalSelesaiA >= jadwalMulaiB)
+            const conditionJadwalConflict2 = ((jadwalMulaiA <= jadwalMulaiB) && jadwalSelesaiA > jadwalSelesaiB)
+            const conditionJadwalConflict3 = ((jadwalMulaiA <= jadwalSelesaiB) && jadwalSelesaiA >= jadwalMulaiB)
+
+            
+
+            if(conditionHari && conditionInstruktur && (conditionjadwalConflict1 || conditionJadwalConflict2 || conditionJadwalConflict3)){
+              console.log(jadwalMulaiA, jadwalMulaiB , jadwalSelesaiA, jadwalSelesaiB)
+              console.log( conditionjadwalConflict1, conditionJadwalConflict2, conditionJadwalConflict2)
+              if(conditionjadwalConflict1)
+                $toast.warning('Jadwal Bentrok : Jadwal Baru Yang dinputkan bentrok dengan jadwal Mulai Kelas ' + values.kelas.jenis_kelas)
+              if(conditionJadwalConflict2)
+                $toast.warning('Jadwal Bentrok  ' + values.kelas.jenis_kelas)
+              return values
+            }
+            return null
+        })
+    console.log(filteredData)
+    if(filteredData.length > null)
+    {
+      status = false;
+    }
+    console.log(status)
+    return status;
+}
+
 
 
 
       const storeJadwal = async() => {
-        const statusValidate = isValid(jadwal)
+        // const statusValidate = isValid(jadwal)
         const statusJadwalInstruktur = isNotConflict(jadwal)
-        if(statusValidate && statusJadwalInstruktur){
-          try{
-            const post = "http://127.0.0.1:8000/api/member"; 
-            const request = await axios.post(post,jadwal); // ; 
-            $toast.success(request.data.message)
-          }catch{
-            $toast.warning('Gagal Menambahkan Data')
-          }
-        }
+        console.log(statusJadwalInstruktur)
+        // if( statusJadwalInstruktur){
+        //   try{
+        //     const post = "http://127.0.0.1:8000/api/member"; 
+        //     const request = await axios.post(post,jadwal); // ; 
+        //     $toast.success(request.data.message)
+        //   }catch{
+        //     $toast.warning('Gagal Menambahkan Data')
+        //   }
+        // }
       }
 
       return{
@@ -156,7 +212,7 @@
             <label for="nama_member" class="form-label">Pilih Instruktur Kelas</label>
             <select  v-model="jadwal.id_instruktur" class="form-select" aria-label="Default select example">
               <option selected default disabled>Pilih Instruktur Kelas</option>
-              <option v-for="(instruktur,index) in instrukturs.value" :key="index" >{{instruktur.nama_instruktur}}</option>
+              <option v-for="(instruktur,index) in instrukturs.value" :key="index" :value="instruktur.id_instruktur" >{{instruktur.nama_instruktur}}</option>
           </select>
             <div id="namaHelp" class="form-text">ex : Instruktur Penanggung Jawab Ucup Surucup</div>
           </div>
@@ -165,7 +221,7 @@
             <label for="nama_member" class="form-label">Pilih Kelas</label>
             <select  v-model="jadwal.id_kelas" class="form-select" aria-label="Default select example">
               <option selected default disabled>Pilih Kelas </option>
-              <option v-for="(kls,index) in kelas.value" :key="index" >{{kls.jenis_kelas}}</option>
+              <option v-for="(kls,index) in kelas.value" :key="index" :value="kls.id_kelas">{{kls.jenis_kelas}}</option>
           </select>
             <div id="namaHelp" class="form-text">ex : Kelas Pilates</div>
           </div>
