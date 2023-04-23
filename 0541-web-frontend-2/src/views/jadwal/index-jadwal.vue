@@ -6,12 +6,14 @@
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import { $toast } from '../../plugins/notifHelper';
+  import createJadwalUmum from './create-jadwal-umum.vue';
 
   export default defineComponent({
     //Component yang digunakan
     components:{
       HomeNavbar,
-      BackButton
+      BackButton,
+      createJadwalUmum,
     },
 
     data() {
@@ -59,7 +61,7 @@
       //Update
       const updateDataCell= (data) => {
           console.log(data)
-          router.push({name:'',query:''})
+          router.push({name:'jadwal-umum-ubah',query:data})
       }
 
       //Delete

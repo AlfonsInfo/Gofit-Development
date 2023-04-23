@@ -91,25 +91,33 @@ class jadwalController extends Controller
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
-
-        //*Data yang ingin di update
-        $temp = jadwal_umum::Where('id_jadwal_umum',$id)->get();
-
-        //* Update
-        $temp->update([
+    
+        //* Cari data berdasarkan ID
+        $temp = jadwal_umum::where('id_jadwal_umum', $id)->first();
+        if (!$temp) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data not found',
+            ], 404);
+        }
+    
+        //* Update data
+        jadwal_umum::where('id_jadwal_umum', $id)->update([
             'hari' => $request->hari,
             'id_instruktur' => $request->id_instruktur,
             'id_kelas' => $request->id_kelas,
             'jam_mulai' => $request->jam_mulai,
             'jam_selesai' => $request->jam_selesai,
         ]);
-
+    
+        //* Berikan respon sukses
         return response()->json([
             'success' => true,
-            'message' => 'Instruktur Updated',
-            'data'    => $temp  
+            'message' => 'Jadwal Umum Updated',
+            'data'    => jadwal_umum::find($id),
         ], 200);
     }
+    
 
     public function destroy($id)
     {

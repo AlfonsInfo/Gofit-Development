@@ -99,6 +99,12 @@ const router = createRouter({
       component: () => import('../views/jadwal/create-jadwal-umum.vue')
     },
     {
+      path:'/jadwal-umum/ubah',
+      name : 'jadwal-umum-ubah',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/jadwal/update-jadwal-umum.vue')
+    },
+    {
       path:'/jadwal-harian',
       name : 'jadwal-harian',
       beforeEnter : beforeEnter,

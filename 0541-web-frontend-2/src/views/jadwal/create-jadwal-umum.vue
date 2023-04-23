@@ -2,12 +2,11 @@
   import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import BackButton from '../../components/BackButton.vue';
-  import { reactive, onMounted } from 'vue';
+  import { ref, reactive, onMounted } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import {$toast} from '../../plugins/notifHelper.js'
 
-  // import { ActionCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
 
   export default defineComponent({
     //Component yang digunakan
@@ -16,12 +15,25 @@
       BackButton
     },
 
+    name : 'create-jadwal-umum',
+
+    data() {
+      return {
+        toggle:true,
+        toggleModeTabel : false,
+    } 
+  },
     methods : {
         goBack() {
         if ($toast) {
         this.toast.goAway(0);
         }
       },
+
+      scrollToSection(refName) {
+        let element = this.$refs[refName];
+        element.scrollIntoView({ behavior: 'smooth', inline:'center' });
+      }
     },
 
     mounted(){
@@ -33,10 +45,13 @@
     setup(){
       //router
       const router = useRouter(); 
+      let jadwalPagi = ref([])
+      let jadwalSore = ref([])
+      let maxPagi = ref([]);
+      let maxSore = ref([]);
       
       //Input 1 : Days
-      const days = ['senin','selasa','rabu','kamis','jumat','minggu'];
-      const selectedDay  = 'senin';
+      const days = ['senin','selasa','rabu','kamis','jumat','sabtu','minggu'];
       
       //Input 2 : Instruktur
       const instrukturs = ({});
@@ -68,6 +83,11 @@
         const dataRoute = "http://localhost:8000/api/jadwalumum";
         const request = await axios.get(dataRoute)
         jadwals.value = request.data.data
+
+        jadwalPagi.value = request.data.data.pagi
+        maxPagi.value = Math.max(...Object.values(jadwalPagi.value).map(x => x.length)) 
+        jadwalSore.value = request.data.data.sore
+        maxSore.value = Math.max(...Object.values(jadwalSore.value).map(x => x.length)) 
       }
        
       //Mounted
@@ -82,23 +102,34 @@
         console.log(event)
         event.preventDefault(); // hindari default form submission
         // kode untuk memproses data form
-        storeJadwal()
+        storeJadwal();
       }
 
-      function isValid({nama_member,tgl_lahir_member,no_telp_member}){
+      function isValid({hari, id_instruktur,id_kelas,jam_mulai,jam_selesai}){
         let status = true;  
-        console.log(nama_member,tgl_lahir_member,no_telp_member)
-        if (!nama_member) {
-          $toast.warning('Nama member harus diisi');
+        if (!hari) {
+          $toast.warning('Hari harus diisi');
           status = false;
         }
         // const regex = /^\d{4}-\d{2}-\d{2}$/;
-        if (!tgl_lahir_member) {
-          $toast.warning('Tanggal lahir member harus diisi');
+        if (!id_instruktur) {
+          $toast.warning('Nama Instruktur Harus Diisi');
           status = false;
         }
-        if (!no_telp_member) {
-          $toast.warning('No telp member harus diisi');
+        if (!id_kelas) {
+          $toast.warning('Kelas harus diisi');
+          status = false;
+        }
+        if(!jam_mulai){
+          $toast.warning('Jam Mulai harus diisi');
+          status = false;
+        }
+        if(!jam_selesai){
+          $toast.warning('Jam Selesai harus diisi');
+          status = false;
+        }
+        if(parseInt(jam_mulai.replace(':',''))> parseInt(jam_selesai.replace(':',''))){
+          $toast.warning(`Jam selesai harus lebih besar dari Jam Mulai`);
           status = false;
         }
         return status;
@@ -122,32 +153,26 @@
             const jadwalSelesaiB = parseInt(values.jam_selesai.replace(':',''))
 
 
+            //Hari Intruktur sama
             const conditionHari = (values.hari == jadwal.hari) ? true : false
             const conditionInstruktur = (values.id_instruktur== jadwal.id_instruktur) ? true : false
+            //Jadwal yang overlaps
+            const conditionjadwalConflict = ( jadwalMulaiA < jadwalSelesaiB && jadwalSelesaiA > jadwalMulaiB)
 
-            //Jadwal Konflik 1
-            const conditionjadwalConflict1 = ((jadwalMulaiB >= jadwalMulaiA ) && jadwalSelesaiA >= jadwalMulaiB)
-            const conditionJadwalConflict2 = ((jadwalMulaiA <= jadwalMulaiB) && jadwalSelesaiA > jadwalSelesaiB)
-            const conditionJadwalConflict3 = ((jadwalMulaiA <= jadwalSelesaiB) && jadwalSelesaiA >= jadwalMulaiB)
-
+            // Debugging
+            // console.log(jadwalMulaiA, '<', jadwalSelesaiB ,'&&', jadwalSelesaiA,'>', jadwalMulaiA)
             
-
-            if(conditionHari && conditionInstruktur && (conditionjadwalConflict1 || conditionJadwalConflict2 || conditionJadwalConflict3)){
-              console.log(jadwalMulaiA, jadwalMulaiB , jadwalSelesaiA, jadwalSelesaiB)
-              console.log( conditionjadwalConflict1, conditionJadwalConflict2, conditionJadwalConflict2)
-              if(conditionjadwalConflict1)
-                $toast.warning('Jadwal Bentrok : Jadwal Baru Yang dinputkan bentrok dengan jadwal Mulai Kelas ' + values.kelas.jenis_kelas)
-              if(conditionJadwalConflict2)
-                $toast.warning('Jadwal Bentrok  ' + values.kelas.jenis_kelas)
+            if(conditionHari && conditionInstruktur && conditionjadwalConflict){
+              console.log('kondisi konflik jadwal' , conditionjadwalConflict)
+              $toast.warning('Jadwal Bentrok  ' + values.kelas.jenis_kelas)
               return values
             }
             return null
         })
-    console.log(filteredData)
-    if(filteredData.length > null)
-    {
+      if(filteredData.length > null)
+      {
       status = false;
-    }
+      }
     console.log(status)
     return status;
 }
@@ -156,18 +181,18 @@
 
 
       const storeJadwal = async() => {
-        // const statusValidate = isValid(jadwal)
+        const statusValidate = isValid(jadwal)
         const statusJadwalInstruktur = isNotConflict(jadwal)
-        console.log(statusJadwalInstruktur)
-        // if( statusJadwalInstruktur){
-        //   try{
-        //     const post = "http://127.0.0.1:8000/api/member"; 
-        //     const request = await axios.post(post,jadwal); // ; 
-        //     $toast.success(request.data.message)
-        //   }catch{
-        //     $toast.warning('Gagal Menambahkan Data')
-        //   }
-        // }
+        if( statusValidate && statusJadwalInstruktur){
+          try{
+            const post = "http://127.0.0.1:8000/api/jadwalumum"; 
+            const request = await axios.post(post,jadwal); // ; 
+            $toast.success(request.data.message)
+            getAllJadwal()
+          }catch{
+            $toast.warning('Gagal Menambahkan Data')
+          }
+        }
       }
 
       return{
@@ -178,12 +203,34 @@
 
         //day
         days,
-        selectedDay,
         kelas,
-        instrukturs
+        instrukturs,
+
+
+        // table
+        jadwalPagi,
+        jadwalSore,
+        maxPagi,
+        maxSore,
         
       }
+    },
+
+
+    computed:{
+      displayedJadwal(){
+        if(this.toggle){
+          return this.jadwalPagi;
+        }
+        return this.jadwalSore
+      },
+      max(){
+        if(this.toggle){ 
+          return this.maxPagi;
+        }
+        return this.maxSore
     }
+  }
 
 })
 </script>
@@ -192,10 +239,13 @@
     <home-navbar :message="'Gofit -  Tambah Data Jadwal'"></home-navbar>
   </header>
   <main>
-    <div class='content text-white p-5'>
+    <div class='content text-white p-5 mt-5'>
       <h2></h2>
-      <div  class= 'container-fluid form-custom p-4 text-dark'>
-        <h3 class="title">Form Tambah Jadwal <span class="mdi mdi-calendar"></span></h3>
+      <div  class= 'container-fluid form-custom p-4 text-dark' ref="sectionForm">
+        <div class="d-flex justify-content-between" >
+          <h3 class="title">Form Tambah Jadwal <span class="mdi mdi-calendar"></span></h3>
+          <button class="btn btn-outline-dark" @click="scrollToSection('sectionTable')">Cek Jadwal</button>
+          </div>
         <hr>
         <form @submit.prevent="submitForm($event)">
           <!-- Hari -->
@@ -242,7 +292,44 @@
         </form>
         <hr>
       </div>
+      <div>
+        <div class="container-fluid form-custom p-4 text-dark mt-5" ref="sectionTable">
+          <div>
+              <button type="button"  class="btn btn-outline-dark" v-if="toggle" @click="toggle = !toggle">Jadwal Malam</button>              
+              <button type="button"  class="btn btn-outline-dark" v-else @click="toggle = !toggle">Jadwal Pagi</button>              
+            </div>      
+          <table class="table table-dark table-striped table-bordered table-hover mt-4 scrollme">
+            <thead>
+              <tr class="text-white bg-dark text-center">
+                <th>#</th>
+                <th v-for="i in max" :key="i" >Jadwal {{i}}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(jd,index) in displayedJadwal" :key="index">
+                <th scope="row" class="text-white bg-dark text-center">{{index}}</th>
+                <td v-for="(column,idx) in jd" :key="idx" class="text-center"> 
+                  <p>
+                    Jadwal : {{column.jam_mulai}} - {{ column.jam_selesai }}
+                  </p>
+                  <p>
+                    Nama Kelas : {{column.kelas.jenis_kelas }}  
+                  </p>
+                  <p>
+                    Instruktur : {{ column.instruktur.nama_instruktur }}
+                  </p>
+                  <div v-show="toggleModeTabel">
+                    <button class="btn btn-warning m-2" @click.prevent="updateDataCell(column)">Update</button>
+                    <button class="btn btn-danger" @click.prevent="deleteDataCell(column)">Delete</button>
+                  </div>
+                </td>
+                <td v-for="i in (max - jd.length)" :key="i" class="text-center">*</td>
+              </tr>
+            </tbody>
+          </table>
+      </div>
     </div>
+  </div>
   </main>
 </template>
 
@@ -289,11 +376,11 @@ input[type="date"]:focus {
   box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
 }
 
-
+/* 
 .content{
   height: 100vh;
   background-color: rgba(0,0,0,0.7  );
-}
+} */
 
 
 .form-custom{

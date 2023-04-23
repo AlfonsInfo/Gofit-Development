@@ -73,8 +73,6 @@
         }
         return status;
       }
-      
-      
     },
 
     //Mounted
@@ -85,8 +83,8 @@
         this.goBack();
       };
     }
-
 })
+
 </script>
 <template >
   <header>
