@@ -2,7 +2,7 @@
 import { defineComponent } from 'vue'
 // import { useRouter } from 'vue-router';
 // import VTooltip from 'v-tooltip';
-
+import { jsPDF } from "jspdf";
 
 export default defineComponent({
   name: 'modal-detail',
@@ -19,6 +19,53 @@ export default defineComponent({
   methods: {
     closeModal() {
       this.$emit('close-modal');
+    },
+
+    cetakMemberCard()
+    {
+      console.log(this.data)
+    // Membuat instance dari jspdf
+      let doc = new jsPDF({
+        orientation : 'landscape',
+        unit : 'mm',
+        format : ['150','80']
+      });
+        // Mengatur posisi dan ukuran teks untuk judul
+        doc.setFontSize(18);
+        doc.setFont(undefined,"bold");
+        doc.text("GoFit", 10, 10, null, null, "left");
+
+        // Mengatur posisi dan ukuran teks untuk alamat
+        doc.setFontSize(12);
+        doc.setFont(undefined,"normal");
+        doc.text("Jl. Centralpark No. 10 Yogyakarta", 10 , 20, null, null, "");
+
+        // Mengatur posisi dan ukuran teks untuk nomor member
+        doc.setFontSize(16);
+        doc.setFont(undefined,"bold");
+        doc.text("MEMBER CARD", 10, 30, null, null, "left");
+        doc.setFontSize(12);
+        doc.setFont(undefined,"normal");
+        doc.text(`Member ID : ${this.data['ID Member']}`, 10, 40, null, null, "left");
+
+        // Mengatur posisi dan ukuran teks untuk nama, alamat, dan nomor telepon
+        doc.setFontSize(12);
+        doc.setFont(undefined,"normal");
+        doc.text("Nama :", 10, 50);
+        doc.setFont(undefined,"normal");
+        doc.text(this.data['Nama Member'], 40, 50);
+        doc.setFont(undefined,"normald");
+        doc.text("Alamat :", 10, 60);
+        doc.setFont(undefined,"normal");
+        doc.text("Jl Babarsari 10 Sleman", 40, 60); //this.data['']
+        doc.setFont(undefined,"normal");
+        doc.text("Telpon :", 10, 70);
+        doc.setFont(undefined,"normal");
+        doc.text(this.data['No Telp'], 40, 70  );
+
+        // Menyimpan dokumen ke dalam PDF
+        doc.save(`${this.data['ID Member']}.pdf`);
+
     }
   }
 }
@@ -32,7 +79,10 @@ export default defineComponent({
       <p>{{key}} : {{data }}</p>
       <hr>
     </div>
-    <button class="btn btn-dark" @click.prevent="closeModal">Close</button>
+    <div class="d-flex justify-content-between" @click.prevent="cetakMemberCard()">
+      <button class="btn btn-primary">Cetak Member Card</button>
+      <button class="btn btn-dark" @click.prevent="closeModal">Close</button>
+    </div>
   </div>
 </div>
 </template>

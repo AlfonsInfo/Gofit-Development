@@ -63,6 +63,12 @@ const router = createRouter({
       component: () => import('../views/member/reset-password-member.vue')
     },
     {
+      path:'/member/generate-member-card',
+      name : 'generate-member-card',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/member/generate-member-card.vue')
+    },
+    {
       path:'/instruktur',
       name : 'instruktur',
       beforeEnter : beforeEnter,
