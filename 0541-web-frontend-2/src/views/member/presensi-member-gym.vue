@@ -14,13 +14,16 @@
     components:{
       HomeNavbar,
       BackButton
+      // TableData,
+    //   ModalDetail
     },
     
     data(){
         return{
             router : useRouter(),
-            ijinInstruktur : ref([]),
+            Presensigym : ref([]),
             countInit : 0,
+            showTable : true // true Stand for Presensi Member Gym
         }
     },
 
@@ -36,19 +39,14 @@
                 .appendTo('#example thead');
         
                 var table = $('#example').DataTable({
-                  "columnDefs": [
-                { "width": "10%", "targets": 0 },
-                { "width": "10%", "targets": 1 },
-                { "width": "10%", "targets": 2 }
-                ],
                     orderCellsTop: true,
                     fixedHeader: true,
                     initComplete: function () {
                         var api = this.api();
-
+            
                         // For each column
                         api
-                            .columns([0,1,2,3])
+                            .columns([0,1,2,3,4])
                             .eq(0)
                             .each(function (colIdx) {
                                 // Set the header cell to contain the input element
@@ -96,19 +94,19 @@
             });
         },
 
-        async confirmPermit(id){
-            const url = `http://localhost:8000/api/ijininstruktur/${id}`
-            const request = await axios.put(url,{status_ijin : 'dikonfirmasi'});
-            $toast.success('Berhasil Konfirmasi Ijin Instruktur')
+        async confirmPresence(id){
+            const url = `http://localhost:8000/api/presensigym/${id}`
+            const request = await axios.put(url,{status_kehadiran : 1});
+            $toast.success('Berhasil Konfirmasi Presensi')
             this.getAllPresence()
             console.log(request)
         },
     
-        async getAllPermit(message){
-            const url = "http://localhost:8000/api/ijininstruktur";
+        async getAllPresence(message){
+            const url = "http://localhost:8000/api/presensigym";
             const request = await axios.get(url)
-            this.ijinInstruktur = request.data.data
-            console.log(this.ijinInstruktur)
+            this.Presensigym = request.data.data
+            console.log(this.Presensigym)
             if(this.countInit == 0)
             {
                 this.DataTablesFeatures()
@@ -118,44 +116,48 @@
             },
 },
     mounted(){
-        this.getAllPermit('Berhasil Mengambil Data Ijin Instruktur');
+        this.getAllPresence('Berhasil Mengambil Data Presensi');
     },
 
 })
 </script>
 <template >
   <header>
-    <home-navbar :message="'Gofit - Olah Ijin Instruktur'"></home-navbar>
+    <home-navbar :message="'Gofit - Olah Presensi Gym Member'"></home-navbar>
   </header>
   <main>
       <div class="text-dark table-custom mt-5 ms-5 me-5 p-2 d-inline-block">
         <!-- <bu class="btn btn-primary">Presensi Gym</bu   tton> -->
       </div>
       <div class="content bg-white text-dark table-custom m-5 mt-2">
-        <div  class="container-fluid  p-4">
-            <h3 >Tabel Data Ijin Instruktur</h3>
+        <div v-if="showTable" class="container-fluid  p-4">
+            <h3 >Tabel Presensi member Gym</h3>
             <table id="example" class="#example table table-striped filters" style="width:100%;">
                 <thead>
                     <tr>
-                        <th>ID Ijin</th>
-                        <th>Tanggal Pengajuan</th>
-                        <th>Jadwal Harian</th>
-                        <th>Instruktur Ijin</th>
-                        <th>Instruktur Pengganti</th>
-                        <th>Status Ijin</th>
+                        <th>Tanggal Booking</th>
+                        <th>Tanggal Sesi Gym</th>
+                        <th>Status Kehadiran</th>
+                        <th>ID Member</th>
+                        <th>No Struk</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(row,key) in ijinInstruktur" :key="key">
-                        <td>{{row.id_ijin}}</td>
-                        <td>{{row.tanggal_pengajuan}}</td>
-                        <td>{{row.id_jadwal_harian}}</td>
-                        <td>{{ row.id_instruktur }}</td>
-                        <td>{{row.id_instruktur_pengganti}}</td>
-                        <td>{{ (row.status_ijin)? row.status_ijin : 'belum dikonfirmasi' }}</td>
+                    <tr v-for="(row,key) in Presensigym" :key="key">
+                        <td>{{row.tanggal_booking}}</td>
+                        <td>{{row.tanggal_sesi_gym}}</td>
+                        <td>{{(row.status_kehadiran == 0) ? 'Belum Hadir' : 'Telah Dikonfirmasi'}}</td>
+                        <td>{{ row.id_member }}</td>
                         <td>
-                            <button v-if="row.status_ijin == null" @click="confirmPresence(row.no_booking)" class="btn btn-success">Presensi</button>
+                            <div v-if="row.no_struk">{{ row.no_struk }}</div>
+                            <div v-else>
+                                <div v-if="row.status_kehadiran == 0">Belum Cetak Struk</div>
+                                <div v-else @click.prevent="" class="btn btn-warning">Cetak Struk</div>
+                            </div>
+                        </td>
+                        <td>
+                            <button v-if="row.status_kehadiran == 0" @click="confirmPresence(row.no_booking)" class="btn btn-success">Presensi</button>
                         </td>
                     </tr>
                 </tbody>

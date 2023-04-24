@@ -129,10 +129,23 @@ const router = createRouter({
       component: () => import('../views/instruktur/ijin-instruktur.vue')
     },
     {
+      path:'/presensi-member',
+      name : 'presensi-member',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/member/presensi-member.vue')
+    },
+
+    {
+      path:'/presensi-member-kelas',
+      name : 'presensi-member-kelas',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/member/presensi-member-kelas.vue')
+    },
+    {
       path:'/presensi-member-gym',
       name : 'presensi-member-gym',
       beforeEnter : beforeEnter,
-      component: () => import('../views/member/presensi-member.vue')
+      component: () => import('../views/member/presensi-member-gym.vue')
     },
     // route fallback
     {

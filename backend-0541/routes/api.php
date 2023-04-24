@@ -36,8 +36,9 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     // Route::post('/promo', 'promoController@index');
     Route::apiResource('/member', 'memberController');
     Route::apiResource('/pengguna', 'penggunaController');
-    Route::apiResource('/ijinInstruktur', 'ijinInstrukturController');  
+    Route::apiResource('/ijininstruktur', 'ijinInstrukturController');  
     Route::apiResource('/presensigym', 'presensiGymController');  
+    Route::apiResource('/presensikelas', 'presensiKelasController');  
     // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     //     return $request->user();         
     // });    
