@@ -1,641 +1,233 @@
 <script>
   import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
-  import TableData from '../../components/table-data.vue';
+  import BackButton from '../../components/BackButton.vue';
   import ModalDetail from '../../components/ModalDetail.vue';
-  import { onMounted ,ref, reactive} from 'vue';
+  import { ref, reactive, computed} from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import {  ActionRouteToCreate, ActionViewDetail,ActionUpdate,ActionDelete} from '../../data/actionData'
   import {$toast} from '../../plugins/notifHelper.js'
 
-  $(document).ready(function () {
-    $('#example').DataTable();
-});
 
-  // export default defineComponent({
-  //   //Component yang digunakan
-  //   components:{
-  //     HomeNavbar,
-  //     // TableData,
-  //     // ModalDetail
-  //   },
+
+  export default defineComponent({
+    //Component yang digunakan
+    components:{
+      HomeNavbar,
+      BackButton
+      // TableData,
+    //   ModalDetail
+    },
     
+    data(){
+        return{
+            router : useRouter(),
+            Presensigym : ref([]),
+            countInit : 0,
+            showTable : true // true Stand for Presensi Member Gym
+        }
+    },
 
-    //Setup
-    // setup(){
-    //   const router = useRouter();
-    //   let presensiGym = ref([])
-    //   const state = reactive({
-    //   modalToggle: false,
-    //   sendDataDetail : {},
-    //   searchInput : '',
-    // })
+    methods :{
 
-    //   function konversiMember(members){
-    //       members.value.forEach((e)=>{
-    //       const tanggalLengkap = e['tgl_lahir_member'].split(' ');
-    //       const tanggal = new Date(tanggalLengkap[0])
-    //       const formattedDate = tanggal.toLocaleDateString('en-GB');
-    //       return e['tgl_lahir_member'] = formattedDate;
-    //     })
-    //       members.value.forEach((e)=>{
-    //         e['aktivasi'] = (e.tgl_kadeluarsa_aktivasi == null) ? 'Tidak Aktif' : 'Aktif'  
-    //       })
-    //   }
+        DataTablesFeatures()
+        {
+            $(document).ready(function () {
+    // Setup - add a text input to each footer cell
+            $('#example thead tr')
+                .clone(true)
+                .addClass('filters')
+                .appendTo('#example thead');
+        
+                var table = $('#example').DataTable({
+                    orderCellsTop: true,
+                    fixedHeader: true,
+                    initComplete: function () {
+                        var api = this.api();
+            
+                        // For each column
+                        api
+                            .columns([0,1,2,3,4])
+                            .eq(0)
+                            .each(function (colIdx) {
+                                // Set the header cell to contain the input element
+                                var cell = $('.filters th').eq(
+                                    $(api.column(colIdx).header()).index()
+                                );
+                                var title = $(cell).text();
+                                $(cell).html('<input type="text" placeholder="' + title + '" />');
+            
+                                // On every keypress in this input
+                                $(
+                                    'input',
+                                    $('.filters th').eq($(api.column(colIdx).header()).index())
+                                )
+                                    .off('keyup change')
+                                    .on('change', function (e) {
+                                        // Get the search value
+                                        $(this).attr('title', $(this).val());
+                                        var regexr = '({search})'; //$(this).parents('th').find('select').val();
+            
+                                        var cursorPosition = this.selectionStart;
+                                        // Search the column for that value
+                                        api
+                                            .column(colIdx)
+                                            .search(
+                                                this.value != ''
+                                                    ? regexr.replace('{search}', '(((' + this.value + ')))')
+                                                    : '',
+                                                this.value != '',
+                                                this.value == ''
+                                            )
+                                            .draw();
+                                    })
+                                    .on('keyup', function (e) {
+                                        e.stopPropagation();
+            
+                                        $(this).trigger('change');
+                                        $(this)
+                                            .focus()[0]
+                                            .setSelectionRange(cursorPosition, cursorPosition);
+                                    });
+                            });
+                    },
+                });
+            });
+        },
 
-      //Fungsi mendapatkan semua member
-      // const getAllPresensi = async(message) => {
-      //   const dataRoute = "http://localhost:8000/api/presensi-instruktur";
-      //   const request = await axios.get(dataRoute)
-      //   presensiGym.value = request.data.data 
-      //   // konversiMember(members)
-      //   $toast.success(message)
-      // }
-
-      //Mounted
-      // onMounted(async () =>  {
-      //   getAllPresensi('Berhasil Menampilkan Data Member !!')
-      // })
-
-      //Navigasi Ke Create Member
-      // const ActionCreateMember =  ()=>{
-      //   ActionRouteToCreate(router,'member-tambah')
-      // }
-
-      //Fungsi Show Detail Data 
-      // const detailMember = async({id_member}) =>{
-      //   const showDetailMemberRoute = `http://localhost:8000/api/member/${id_member}`
-      //   try{
-      //     const detailRequest = await axios.get(showDetailMemberRoute)
-      //     const detailData = detailRequest.data.data[0];
-      //     state.modalToggle = true;
-      //     const mappedData = {
-      //       'ID Member': detailData.id_member,
-      //       'Nama Member': detailData.nama_member,
-      //       'Tanggal Lahir': detailData.tgl_lahir_member,
-      //       'No Telp': detailData.no_telp_member,
-      //       'Kadeluarsa Aktivasi': detailData.tgl_kadeluarsa_aktivasi,
-      //       'Total Deposit ': detailData.total_deposit_uang,
-      //       'Tanggal Gabung Member': detailData.tgl_gabung_member,
-      //       'Total Deposit Paket': detailData.total_deposit_paket,
-      //       'Tanggal Kadeluarsa Paket': detailData.tgl_kadeluarsa_paket,
-      //       'username': detailData.pengguna.username,
-      //     };
-
-      //     state.sendDataDetail = mappedData ;          
-      //   }catch(e){
-      //     alert(e)
-      //     alert('Gagal Menampilkan Detail')
-      //   }
-      // }
-
-      // ActionViewDetail.functionAction = (member) =>{
-      //     detailMember(member)
-      // }
-      //Fungsi Update
+        async confirmPresence(id){
+            const url = `http://localhost:8000/api/presensigym/${id}`
+            const request = await axios.put(url,{status_kehadiran : 1});
+            $toast.success('Berhasil Konfirmasi Presensi')
+            this.getAllPresence()
+            console.log(request)
+        },
+    
+        async getAllPresence(message){
+            const url = "http://localhost:8000/api/presensigym";
+            const request = await axios.get(url)
+            this.Presensigym = request.data.data
+            console.log(this.Presensigym)
+            if(this.countInit == 0)
+            {
+                this.DataTablesFeatures()
+                this.countInit++;
+                $toast.success(message)
+            }
+            },
+},
+    mounted(){
+        this.getAllPresence('Berhasil Mengambil Data Presensi');
+    },
+    computed : {
+        displayedData(){
+            if(this.showTable == true)
+            {
+                // <th>Tanggal Booking</th>
+                //         <th>Tanggal Sesi Gym</th>
+                //         <th>Status Kehadiran</th>
+                //         <th>ID Member</th>
+                //         <th>No Struk</th>
+                //         <th>Aksi</th>
+                return{
+                    'presensi' : this.Presensigym,
+                    'column' : ['Tanggal Booking','Tanggal Sesi Gym','Status Kehadiran','ID Member', 'No Struk', 'Aksi'],
+                } 
+            }else{
+                return{
+                    'presensi' :  this.PresensiKelas,
+                    'column' : 'test'
+                }
+            }
+        }
 
 
-      // ActionUpdate.functionAction = member => {
+    }
 
-      // }
-
-      //Fungsi Delete
-    //   const deleteData = async ({id_member}) => {
-    //     // alert(id.)
-    //     const deleteRoute = `http://localhost:8000/api/member/${id_member}`
-    //     try{
-    //       const deleteRequest = await axios.delete(deleteRoute)
-    //       // alert(deleteRequest.data.message)
-    //       $toast.success(deleteRequest.data.message)
-    //       getAllMember('Tabel Data Member di update')
-    //     }catch{
-    //       $toast.danger('Berhasil Menghapus Data')
-    //     }
-    //   }
-
-
-    //   ActionDelete.functionAction = (member) => {
-    //     deleteData(member)
-    //   }
-
-
-
-
-    //   const actions = [
-    //     ActionViewDetail,ActionUpdate,ActionDelete
-    // ]
-
-    //   return{
-    //     actions,
-    //     router,
-    //     presensiGym,
-    //     ActionCreateMember,
-    //     ModalDetail,
-    //     state,
-    //     // searchMember
-    //   }
-//     },
-//     computed: {
-//       displayedpresensiGym() {
-//         const searchKeyword = this.state.searchInput.toLowerCase();
-//         // console.log('Search Keyword', searchKeyword);
-//         return this.members.filter(member => {
-//           const memberString = Object.values(member).join(' ').toLowerCase();
-//           return memberString.includes(searchKeyword);
-//     });
-// }
-
-//     },
-
-// })
+})
 </script>
 <template >
   <header>
     <home-navbar :message="'Gofit - Olah Presensi Gym Member'"></home-navbar>
   </header>
   <main>
-    <div class="content bg-white text-dark">
-      <table id="example" class="display" style="width:100%">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>Tiger Nixon</td>
-                <td>System Architect</td>
-                <td>Edinburgh</td>
-                <td>61</td>
-                <td>2011-04-25</td>
-                <td>$320,800</td>
-            </tr>
-            <tr>
-                <td>Garrett Winters</td>
-                <td>Accountant</td>
-                <td>Tokyo</td>
-                <td>63</td>
-                <td>2011-07-25</td>
-                <td>$170,750</td>
-            </tr>
-            <tr>
-                <td>Ashton Cox</td>
-                <td>Junior Technical Author</td>
-                <td>San Francisco</td>
-                <td>66</td>
-                <td>2009-01-12</td>
-                <td>$86,000</td>
-            </tr>
-            <tr>
-                <td>Cedric Kelly</td>
-                <td>Senior Javascript Developer</td>
-                <td>Edinburgh</td>
-                <td>22</td>
-                <td>2012-03-29</td>
-                <td>$433,060</td>
-            </tr>
-            <tr>
-                <td>Airi Satou</td>
-                <td>Accountant</td>
-                <td>Tokyo</td>
-                <td>33</td>
-                <td>2008-11-28</td>
-                <td>$162,700</td>
-            </tr>
-            <tr>
-                <td>Brielle Williamson</td>
-                <td>Integration Specialist</td>
-                <td>New York</td>
-                <td>61</td>
-                <td>2012-12-02</td>
-                <td>$372,000</td>
-            </tr>
-            <tr>
-                <td>Herrod Chandler</td>
-                <td>Sales Assistant</td>
-                <td>San Francisco</td>
-                <td>59</td>
-                <td>2012-08-06</td>
-                <td>$137,500</td>
-            </tr>
-            <tr>
-                <td>Rhona Davidson</td>
-                <td>Integration Specialist</td>
-                <td>Tokyo</td>
-                <td>55</td>
-                <td>2010-10-14</td>
-                <td>$327,900</td>
-            </tr>
-            <tr>
-                <td>Colleen Hurst</td>
-                <td>Javascript Developer</td>
-                <td>San Francisco</td>
-                <td>39</td>
-                <td>2009-09-15</td>
-                <td>$205,500</td>
-            </tr>
-            <tr>
-                <td>Sonya Frost</td>
-                <td>Software Engineer</td>
-                <td>Edinburgh</td>
-                <td>23</td>
-                <td>2008-12-13</td>
-                <td>$103,600</td>
-            </tr>
-            <tr>
-                <td>Jena Gaines</td>
-                <td>Office Manager</td>
-                <td>London</td>
-                <td>30</td>
-                <td>2008-12-19</td>
-                <td>$90,560</td>
-            </tr>
-            <tr>
-                <td>Quinn Flynn</td>
-                <td>Support Lead</td>
-                <td>Edinburgh</td>
-                <td>22</td>
-                <td>2013-03-03</td>
-                <td>$342,000</td>
-            </tr>
-            <tr>
-                <td>Charde Marshall</td>
-                <td>Regional Director</td>
-                <td>San Francisco</td>
-                <td>36</td>
-                <td>2008-10-16</td>
-                <td>$470,600</td>
-            </tr>
-            <tr>
-                <td>Haley Kennedy</td>
-                <td>Senior Marketing Designer</td>
-                <td>London</td>
-                <td>43</td>
-                <td>2012-12-18</td>
-                <td>$313,500</td>
-            </tr>
-            <tr>
-                <td>Tatyana Fitzpatrick</td>
-                <td>Regional Director</td>
-                <td>London</td>
-                <td>19</td>
-                <td>2010-03-17</td>
-                <td>$385,750</td>
-            </tr>
-            <tr>
-                <td>Michael Silva</td>
-                <td>Marketing Designer</td>
-                <td>London</td>
-                <td>66</td>
-                <td>2012-11-27</td>
-                <td>$198,500</td>
-            </tr>
-            <tr>
-                <td>Paul Byrd</td>
-                <td>Chief Financial Officer (CFO)</td>
-                <td>New York</td>
-                <td>64</td>
-                <td>2010-06-09</td>
-                <td>$725,000</td>
-            </tr>
-            <tr>
-                <td>Gloria Little</td>
-                <td>Systems Administrator</td>
-                <td>New York</td>
-                <td>59</td>
-                <td>2009-04-10</td>
-                <td>$237,500</td>
-            </tr>
-            <tr>
-                <td>Bradley Greer</td>
-                <td>Software Engineer</td>
-                <td>London</td>
-                <td>41</td>
-                <td>2012-10-13</td>
-                <td>$132,000</td>
-            </tr>
-            <tr>
-                <td>Dai Rios</td>
-                <td>Personnel Lead</td>
-                <td>Edinburgh</td>
-                <td>35</td>
-                <td>2012-09-26</td>
-                <td>$217,500</td>
-            </tr>
-            <tr>
-                <td>Jenette Caldwell</td>
-                <td>Development Lead</td>
-                <td>New York</td>
-                <td>30</td>
-                <td>2011-09-03</td>
-                <td>$345,000</td>
-            </tr>
-            <tr>
-                <td>Yuri Berry</td>
-                <td>Chief Marketing Officer (CMO)</td>
-                <td>New York</td>
-                <td>40</td>
-                <td>2009-06-25</td>
-                <td>$675,000</td>
-            </tr>
-            <tr>
-                <td>Caesar Vance</td>
-                <td>Pre-Sales Support</td>
-                <td>New York</td>
-                <td>21</td>
-                <td>2011-12-12</td>
-                <td>$106,450</td>
-            </tr>
-            <tr>
-                <td>Doris Wilder</td>
-                <td>Sales Assistant</td>
-                <td>Sydney</td>
-                <td>23</td>
-                <td>2010-09-20</td>
-                <td>$85,600</td>
-            </tr>
-            <tr>
-                <td>Angelica Ramos</td>
-                <td>Chief Executive Officer (CEO)</td>
-                <td>London</td>
-                <td>47</td>
-                <td>2009-10-09</td>
-                <td>$1,200,000</td>
-            </tr>
-            <tr>
-                <td>Gavin Joyce</td>
-                <td>Developer</td>
-                <td>Edinburgh</td>
-                <td>42</td>
-                <td>2010-12-22</td>
-                <td>$92,575</td>
-            </tr>
-            <tr>
-                <td>Jennifer Chang</td>
-                <td>Regional Director</td>
-                <td>Singapore</td>
-                <td>28</td>
-                <td>2010-11-14</td>
-                <td>$357,650</td>
-            </tr>
-            <tr>
-                <td>Brenden Wagner</td>
-                <td>Software Engineer</td>
-                <td>San Francisco</td>
-                <td>28</td>
-                <td>2011-06-07</td>
-                <td>$206,850</td>
-            </tr>
-            <tr>
-                <td>Fiona Green</td>
-                <td>Chief Operating Officer (COO)</td>
-                <td>San Francisco</td>
-                <td>48</td>
-                <td>2010-03-11</td>
-                <td>$850,000</td>
-            </tr>
-            <tr>
-                <td>Shou Itou</td>
-                <td>Regional Marketing</td>
-                <td>Tokyo</td>
-                <td>20</td>
-                <td>2011-08-14</td>
-                <td>$163,000</td>
-            </tr>
-            <tr>
-                <td>Michelle House</td>
-                <td>Integration Specialist</td>
-                <td>Sydney</td>
-                <td>37</td>
-                <td>2011-06-02</td>
-                <td>$95,400</td>
-            </tr>
-            <tr>
-                <td>Suki Burks</td>
-                <td>Developer</td>
-                <td>London</td>
-                <td>53</td>
-                <td>2009-10-22</td>
-                <td>$114,500</td>
-            </tr>
-            <tr>
-                <td>Prescott Bartlett</td>
-                <td>Technical Author</td>
-                <td>London</td>
-                <td>27</td>
-                <td>2011-05-07</td>
-                <td>$145,000</td>
-            </tr>
-            <tr>
-                <td>Gavin Cortez</td>
-                <td>Team Leader</td>
-                <td>San Francisco</td>
-                <td>22</td>
-                <td>2008-10-26</td>
-                <td>$235,500</td>
-            </tr>
-            <tr>
-                <td>Martena Mccray</td>
-                <td>Post-Sales support</td>
-                <td>Edinburgh</td>
-                <td>46</td>
-                <td>2011-03-09</td>
-                <td>$324,050</td>
-            </tr>
-            <tr>
-                <td>Unity Butler</td>
-                <td>Marketing Designer</td>
-                <td>San Francisco</td>
-                <td>47</td>
-                <td>2009-12-09</td>
-                <td>$85,675</td>
-            </tr>
-            <tr>
-                <td>Howard Hatfield</td>
-                <td>Office Manager</td>
-                <td>San Francisco</td>
-                <td>51</td>
-                <td>2008-12-16</td>
-                <td>$164,500</td>
-            </tr>
-            <tr>
-                <td>Hope Fuentes</td>
-                <td>Secretary</td>
-                <td>San Francisco</td>
-                <td>41</td>
-                <td>2010-02-12</td>
-                <td>$109,850</td>
-            </tr>
-            <tr>
-                <td>Vivian Harrell</td>
-                <td>Financial Controller</td>
-                <td>San Francisco</td>
-                <td>62</td>
-                <td>2009-02-14</td>
-                <td>$452,500</td>
-            </tr>
-            <tr>
-                <td>Timothy Mooney</td>
-                <td>Office Manager</td>
-                <td>London</td>
-                <td>37</td>
-                <td>2008-12-11</td>
-                <td>$136,200</td>
-            </tr>
-            <tr>
-                <td>Jackson Bradshaw</td>
-                <td>Director</td>
-                <td>New York</td>
-                <td>65</td>
-                <td>2008-09-26</td>
-                <td>$645,750</td>
-            </tr>
-            <tr>
-                <td>Olivia Liang</td>
-                <td>Support Engineer</td>
-                <td>Singapore</td>
-                <td>64</td>
-                <td>2011-02-03</td>
-                <td>$234,500</td>
-            </tr>
-            <tr>
-                <td>Bruno Nash</td>
-                <td>Software Engineer</td>
-                <td>London</td>
-                <td>38</td>
-                <td>2011-05-03</td>
-                <td>$163,500</td>
-            </tr>
-            <tr>
-                <td>Sakura Yamamoto</td>
-                <td>Support Engineer</td>
-                <td>Tokyo</td>
-                <td>37</td>
-                <td>2009-08-19</td>
-                <td>$139,575</td>
-            </tr>
-            <tr>
-                <td>Thor Walton</td>
-                <td>Developer</td>
-                <td>New York</td>
-                <td>61</td>
-                <td>2013-08-11</td>
-                <td>$98,540</td>
-            </tr>
-            <tr>
-                <td>Finn Camacho</td>
-                <td>Support Engineer</td>
-                <td>San Francisco</td>
-                <td>47</td>
-                <td>2009-07-07</td>
-                <td>$87,500</td>
-            </tr>
-            <tr>
-                <td>Serge Baldwin</td>
-                <td>Data Coordinator</td>
-                <td>Singapore</td>
-                <td>64</td>
-                <td>2012-04-09</td>
-                <td>$138,575</td>
-            </tr>
-            <tr>
-                <td>Zenaida Frank</td>
-                <td>Software Engineer</td>
-                <td>New York</td>
-                <td>63</td>
-                <td>2010-01-04</td>
-                <td>$125,250</td>
-            </tr>
-            <tr>
-                <td>Zorita Serrano</td>
-                <td>Software Engineer</td>
-                <td>San Francisco</td>
-                <td>56</td>
-                <td>2012-06-01</td>
-                <td>$115,000</td>
-            </tr>
-            <tr>
-                <td>Jennifer Acosta</td>
-                <td>Junior Javascript Developer</td>
-                <td>Edinburgh</td>
-                <td>43</td>
-                <td>2013-02-01</td>
-                <td>$75,650</td>
-            </tr>
-            <tr>
-                <td>Cara Stevens</td>
-                <td>Sales Assistant</td>
-                <td>New York</td>
-                <td>46</td>
-                <td>2011-12-06</td>
-                <td>$145,600</td>
-            </tr>
-            <tr>
-                <td>Hermione Butler</td>
-                <td>Regional Director</td>
-                <td>London</td>
-                <td>47</td>
-                <td>2011-03-21</td>
-                <td>$356,250</td>
-            </tr>
-            <tr>
-                <td>Lael Greer</td>
-                <td>Systems Administrator</td>
-                <td>London</td>
-                <td>21</td>
-                <td>2009-02-27</td>
-                <td>$103,500</td>
-            </tr>
-            <tr>
-                <td>Jonas Alexander</td>
-                <td>Developer</td>
-                <td>San Francisco</td>
-                <td>30</td>
-                <td>2010-07-14</td>
-                <td>$86,500</td>
-            </tr>
-            <tr>
-                <td>Shad Decker</td>
-                <td>Regional Director</td>
-                <td>Edinburgh</td>
-                <td>51</td>
-                <td>2008-11-13</td>
-                <td>$183,000</td>
-            </tr>
-            <tr>
-                <td>Michael Bruce</td>
-                <td>Javascript Developer</td>
-                <td>Singapore</td>
-                <td>29</td>
-                <td>2011-06-27</td>
-                <td>$183,000</td>
-            </tr>
-            <tr>
-                <td>Donna Snider</td>
-                <td>Customer Support</td>
-                <td>New York</td>
-                <td>27</td>
-                <td>2011-01-25</td>
-                <td>$112,000</td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <th>Name</th>
-                <th>Position</th>
-                <th>Office</th>
-                <th>Age</th>
-                <th>Start date</th>
-                <th>Salary</th>
-            </tr>
-        </tfoot>
-    </table>
+    <div class="content bg-white text-dark table-custom m-5">
+        <div v-if="showTable" class="container-fluid  p-4">
+            <h3 >Tabel Presensi member Gym</h3>
+            <table id="example" class="#example table table-striped filters" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Tanggal Booking</th>
+                        <th>Tanggal Sesi Gym</th>
+                        <th>Status Kehadiran</th>
+                        <th>ID Member</th>
+                        <th>No Struk</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(row,key) in displayedData.presensi" :key="key">
+                        <td>{{row.tanggal_booking}}</td>
+                        <td>{{row.tanggal_sesi_gym}}</td>
+                        <td>{{(row.status_kehadiran == 0) ? 'Belum Hadir' : 'Telah Dikonfirmasi'}}</td>
+                        <td>{{ row.id_member }}</td>
+                        <td>
+                            <div v-if="row.no_struk">{{ row.no_struk }}</div>
+                            <div v-else>
+                                <div v-if="row.status_kehadiran == 0">Belum Cetak Struk</div>
+                                <div v-else @click.prevent="" class="btn btn-warning">Cetak Struk</div>
+                            </div>
+                        </td>
+                        <td>
+                            <button v-if="row.status_kehadiran == 0" @click="confirmPresence(row.no_booking)" class="btn btn-success">Presensi</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <back-button class="col-md-3" className="btn btn-dark"></back-button>
+                <!-- <button class="btn btn-success  col col-md-3">Cetak Struk</button> -->
+            </div>
+        </div>
+        <div v-else class="container-fluid  p-4">
+            <h3>Tabel Presensi Member Kelas</h3>
+            <table id="example" class="#example table table-striped filters" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Tanggal Booking</th>
+                        <th>Tanggal Sesi Gym</th>
+                        <th>Status Kehadiran</th>
+                        <th>ID Member</th>
+                        <th>No Struk</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(row,key) in Presensigym" :key="key">
+                        <td>{{row.tanggal_booking}}</td>
+                        <td>{{row.tanggal_sesi_gym}}</td>
+                        <td>{{(row.status_kehadiran == 0) ? 'Belum Hadir' : 'Telah Dikonfirmasi'}}</td>
+                        <td>{{ row.id_member }}</td>
+                        <td>
+                            <div v-if="row.no_struk">{{ row.no_struk }}</div>
+                            <div v-else>
+                                <div v-if="row.status_kehadiran == 0">Belum Cetak Struk</div>
+                                <div v-else @click.prevent="" class="btn btn-warning">Cetak Struk</div>
+                            </div>
+                        </td>
+                        <td>
+                            <button v-if="row.status_kehadiran == 0" @click="confirmPresence(row.no_booking)" class="btn btn-success">Presensi</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <back-button class="col-md-3" className="btn btn-dark"></back-button>
+                <!-- <button class="btn btn-success  col col-md-3">Cetak Struk</button> -->
+            </div>
+        </div>
+
   </div>
   </main>
 </template>
@@ -643,6 +235,17 @@
 
 
 <style scoped>
+    .table-custom{
+        border-radius: 10px;
+    }
 
+
+    .title.active {
+  background-color: #e6e6e6;
+}
+  
+.title:hover {
+  background-color: #f2f2f2;
+}
 
 </style>

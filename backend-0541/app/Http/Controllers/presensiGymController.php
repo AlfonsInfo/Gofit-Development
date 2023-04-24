@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\booking_gym;
 
-class presensiController extends Controller
+
+class presensiGymController extends Controller
 {
 
     //* Presensi Controller -> ke tabel booking juga,
@@ -13,10 +15,27 @@ class presensiController extends Controller
     //* id sesi
     //* id member
     //* status cetak struk
+
+    //* Ambil Seluruh Data yang is Canceled False
     public function index()
-    {
+    {   
+        $presensi_gym = booking_gym::where('is_canceled',0)->latest()->get();
+        return response([
+            'message' => 'success tampil data',
+            'data' => $presensi_gym
+        ],200);
     }
 
+    public function update(Request $request, $id)
+    {
+        $presensi_gym = booking_gym::find($id);
+        $presensi_gym->status_kehadiran = $request->status_kehadiran; 
+        $presensi_gym->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Konfirmasi Kehadiran Berhasil dilakukan'
+        ],200);
+    }
     /**
      * Show the form for creating a new resource.
      *  
@@ -67,10 +86,7 @@ class presensiController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
-    {
-        //
-    }
+
 
     /**
      * Remove the specified resource from storage.
