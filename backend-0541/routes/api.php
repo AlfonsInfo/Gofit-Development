@@ -39,6 +39,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/ijininstruktur', 'ijinInstrukturController');  
     Route::apiResource('/presensigym', 'presensiGymController');  
     Route::apiResource('/presensikelas', 'presensiKelasController');  
+    Route::apiResource('/transaksiaktivasi', 'aktivasiController');  
     // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     //     return $request->user();         
     // });    

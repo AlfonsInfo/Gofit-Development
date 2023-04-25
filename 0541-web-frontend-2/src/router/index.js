@@ -123,10 +123,28 @@ const router = createRouter({
       component: () => import('../views/instruktur/ijin-instruktur.vue')
     },
     {
-      path:'/transaksi',
-      name : 'transaksi',
+      path:'/transaksi-member',
+      name : 'transaksi-member',
       beforeEnter : beforeEnter,
-      component: () => import('../views/instruktur/ijin-instruktur.vue')
+      component: () => import('../views/transaksi/transaksi-member.vue')
+    },
+    {
+      path:'/transaksi-member/transaksi-aktivasi',
+      name : 'transaksi-aktivasi',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/transaksi/transaksi-aktivasi.vue')
+    },
+    {
+      path:'/transaksi-member/transaksi-deposit-uang',
+      name : 'transaksi-deposit-uang',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/transaksi/transaksi-deposit-uang.vue')
+    },
+    {
+      path:'/transaksi-member/transaksi-deposit-kelas',
+      name : 'transaksi-deposit-kelas',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/transaksi/transaksi-deposit-kelas.vue')
     },
     {
       path:'/presensi-member',
