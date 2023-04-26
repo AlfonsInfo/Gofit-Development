@@ -1,5 +1,4 @@
 <script>
-  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import BackButton from '../../components/BackButton.vue';
 //   import ModalDetail from '../../components/ModalDetail.vue';
@@ -93,16 +92,16 @@
         },
 
         async confirmPresence(id){
-            const url = `http://localhost:8000/api/presensikelas/${id}`
-            const request = await axios.put(url,{status_kehadiran : 1});
+            const url = `/presensikelas/${id}`
+            const request = await this.http.put(url,{status_kehadiran : 1});
             $toast.success('Berhasil Konfirmasi Presensi')
             this.getAllPresence()
             console.log(request)
         },
     
         async getAllPresence(message){
-            const url = "http://localhost:8000/api/presensikelas";
-            const request = await axios.get(url)
+            const url = "/presensikelas";
+            const request = await this.http.get(url)
             this.Presensikelas = request.data.data
             console.log(this.Presensikelas)
             if(this.countInit == 0)

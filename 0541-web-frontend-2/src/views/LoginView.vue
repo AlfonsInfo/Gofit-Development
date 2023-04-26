@@ -1,6 +1,5 @@
 <script>
-import axios from 'axios' ;
-import { defineComponent, reactive } from 'vue';
+import { defineComponent, reactive,inject } from 'vue';
 import { useRouter} from 'vue-router';
 import {$toast} from '../plugins/notifHelper.js'
 
@@ -8,13 +7,15 @@ export default defineComponent({
   mounted(){
     document.body.classList.add('body-center');
   },
-setup(){  
+
+  //setup dieksekusi sebelum data()
+  setup(){  
     const inputLogin = reactive({
       username : "",
       password : "",
     });
-    
-    const router = useRouter('router'); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
+    const http = inject('$http');
+    const router = useRouter(); //tidak boleh dalam fungsi login karena fungsi login await(event callback)
     let showPassword = false;
 
     const Login = async () => {
@@ -22,16 +23,13 @@ setup(){
       let username = inputLogin.username;
       let password = inputLogin.password;
 
-      const request = {
+      const data = {
         username : username,
         password : password
       }
-      const postUrl ='http://127.0.0.1:8000/api/login' 
 
       try{
-        //* Login Request
-        const Login = await axios.post(postUrl,request);
-        // Destructuring Login Response
+        const Login = await http.post('/login',data);
         let {user, access_token,pegawai} = Login.data;
         
         // Set Local Storage
@@ -44,7 +42,7 @@ setup(){
         router.push({name: "Home"});
       }catch(e)
       {
-        alert('Gagal Login')
+        $toast.warning(`Gagal Login`)
         // console.log(e)
       }
     

@@ -79,8 +79,8 @@ export default defineComponent({
       <p>{{key}} : {{data }}</p>
       <hr>
     </div>
-    <div class="d-flex justify-content-between" @click.prevent="cetakMemberCard()">
-      <button class="btn btn-primary">Cetak Member Card</button>
+    <div class="d-flex justify-content-between" >
+      <button class="btn btn-primary" @click.prevent="cetakMemberCard()">Cetak Member Card</button>
       <button class="btn btn-dark" @click.prevent="closeModal">Close</button>
     </div>
   </div>

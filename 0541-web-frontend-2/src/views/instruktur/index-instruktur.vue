@@ -2,7 +2,7 @@
   import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import TableData from '../../components/table-data.vue';
-  import { onMounted ,ref } from 'vue';
+  import { onMounted ,ref, inject } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import { ActionRouteToCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
@@ -19,6 +19,7 @@
     setup(){
       //Variable
       const router = useRouter('router'); 
+      const http = inject("$http");
       let instrukturs = ref([])
       
       //konversi Tanggal
@@ -33,8 +34,8 @@
       }
 
       const getAllInstruktur = async (message) => {
-        const dataRoute = "http://localhost:8000/api/instruktur";
-        const request = await axios.get(dataRoute)
+        const dataRoute = "/instruktur";
+        const request = await http.get(dataRoute)
         instrukturs.value = request.data.data 
         konversiTanggal(instrukturs)
         $toast.success(message)
@@ -54,9 +55,9 @@
       //Delete
       const deleteData = async ({id_instruktur}) => {
         console.log(id_instruktur)
-        const deleteRoute = `http://localhost:8000/api/instruktur/${id_instruktur}`
+        const deleteRoute = `/instruktur/${id_instruktur}`
         try{
-          const deleteRequest = await axios.delete(deleteRoute)
+          const deleteRequest = await http.delete(deleteRoute)
           $toast.success(deleteRequest.data.message)
           getAllInstruktur('Tabel Data Member di update')
         }catch{

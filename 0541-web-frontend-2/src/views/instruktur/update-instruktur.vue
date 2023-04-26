@@ -1,5 +1,4 @@
 <script>
-  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import BackButton from '../../components/BackButton.vue';
   import { reactive } from 'vue';
@@ -52,8 +51,8 @@
         const statusValidate = this.isValid(this.instruktur)
         if(statusValidate){
           try{
-            const url = `http://127.0.0.1:8000/api/instruktur/${this.instruktur.id_instruktur}`; 
-            const request = await axios.put(url,data); // ; 
+            const url = `/instruktur/${this.instruktur.id_instruktur}`; 
+            const request = await this.http.put(url,data); // ; 
             $toast.success(request.data.message)
             this.router.push({name:'instruktur'})
           }catch{

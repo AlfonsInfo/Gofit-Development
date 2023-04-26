@@ -1,16 +1,12 @@
 <script>
-  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import TableData from '../../components/table-data.vue';
-  import { onMounted ,ref, reactive} from 'vue';
+  import { onMounted ,ref, reactive , inject} from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import {  ActionResetPassword} from '../../data/actionData'
   import {$toast} from '../../plugins/notifHelper.js'
   //Modal Dialog
-  import ModalDialog from '../../components/ModalDialog.vue';
-  import { createConfirmDialog } from 'vuejs-confirm-dialog'
-  const { reveal, onConfirm, onCancel } = createConfirmDialog(ModalDialog)  
 
 
   export default defineComponent({
@@ -26,10 +22,12 @@
       const router = useRouter();
       let members = ref([])
       const state = reactive({
-      modalToggle: false,
-      sendDataDetail : {},
-      searchInput : '',
-    })
+        modalToggle: false,
+        sendDataDetail : {},
+        searchInput : '',
+      })
+      const http = inject('$http');
+
 
       function konversiMember(members){
           members.value.forEach((e)=>{
@@ -45,8 +43,8 @@
 
       //Fungsi mendapatkan semua member
       const getAllMember = async(message) => {
-        const dataRoute = "http://localhost:8000/api/member";
-        const request = await axios.get(dataRoute)
+        const dataRoute = "/member";
+        const request = await http.get(dataRoute)
         members.value = request.data.data 
         konversiMember(members)
         $toast.success(message)
@@ -80,8 +78,8 @@
         if(validPegawai == true)
         {
           try{
-            const url = `http://127.0.0.1:8000/api/pengguna/${id_pengguna}`
-            const request = await axios.put(url,{ tgl_lahir_member : tgl_lahir_member} ); // ; 
+            const url = `/pengguna/${id_pengguna}`
+            const request = await http.put(url,{ tgl_lahir_member : tgl_lahir_member} ); // ; 
             $toast.success(request.data.message)
           }catch{
             $toast.warning('Gagal Menambahkan Data')

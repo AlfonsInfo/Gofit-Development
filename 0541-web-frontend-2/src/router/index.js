@@ -1,6 +1,5 @@
-import { createRouter, createWebHistory , } from 'vue-router'
+import { createRouter, createWebHistory ,} from 'vue-router'
 import LoginView from '../views/LoginView.vue'
-
 
 const beforeEnter = (to, from, next) => {
   if (isLoggedIn()) { // fungsi isLoggedIn() akan mengembalikan true jika pengguna sudah terautentikasi
@@ -172,6 +171,7 @@ const router = createRouter({
     }
   ],
 })
+
 
 //Munkin nanti dipindahkan ke helper function
 function isLoggedIn()

@@ -1,9 +1,8 @@
 <script>
-  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import TableData from '../../components/table-data.vue';
   import ModalDetail from '../../components/ModalDetail.vue';
-  import { onMounted ,ref, reactive} from 'vue';
+  import { onMounted ,ref, reactive, inject} from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import {  ActionRouteToCreate, ActionViewDetail,ActionUpdate,ActionDelete} from '../../data/actionData'
@@ -27,6 +26,7 @@
       sendDataDetail : {},
       searchInput : '',
     })
+      const http = inject('$http');
 
       function konversiMember(members){
           members.value.forEach((e)=>{
@@ -42,8 +42,8 @@
 
       //Fungsi mendapatkan semua member
       const getAllMember = async(message) => {
-        const dataRoute = "http://localhost:8000/api/member";
-        const request = await axios.get(dataRoute)
+        const dataRoute = "/member";
+        const request = await http.get(dataRoute)
         members.value = request.data.data 
         konversiMember(members)
         $toast.success(message)
@@ -67,9 +67,9 @@
 
       //Fungsi Show Detail Data 
       const detailMember = async({id_member}) =>{
-        const showDetailMemberRoute = `http://localhost:8000/api/member/${id_member}`
+        const showDetailMemberRoute = `/member/${id_member}`
         try{
-          const detailRequest = await axios.get(showDetailMemberRoute)
+          const detailRequest = await http.get(showDetailMemberRoute)
           const detailData = detailRequest.data.data[0];
           state.modalToggle = true;
           const mappedData = {
@@ -105,9 +105,9 @@
       //Fungsi Delete
       const deleteData = async ({id_member}) => {
         // alert(id.)
-        const deleteRoute = `http://localhost:8000/api/member/${id_member}`
+        const deleteRoute = `/member/${id_member}`
         try{
-          const deleteRequest = await axios.delete(deleteRoute)
+          const deleteRequest = await http.delete(deleteRoute)
           // alert(deleteRequest.data.message)
           $toast.success(deleteRequest.data.message)
           getAllMember('Tabel Data Member di update')

@@ -34,6 +34,6 @@ export const menuPresensi = [
 ]
 export const menuTransaksi = [
   new functionalMenu('Transaksi Aktivasi', 'Fitur ini digunakan untuk melakukan aktivasi akun member' , '../../src/assets/image/activate.png','transaksi-aktivasi'),
-  new functionalMenu('Transaksi Deposit Kelas', 'Fitur ini digunakan untuk mengecek kehadiran member disetiap kelas yang diikutinnya' , '../../src/assets/image/save-on-fitness.jpeg','transaksi-deposit-uang'),
+  new functionalMenu('Transaksi Deposit Uang', 'Fitur ini digunakan untuk mengecek kehadiran member disetiap kelas yang diikutinnya' , '../../src/assets/image/save-on-fitness.jpeg','transaksi-deposit-uang'),
   new functionalMenu('Transaksi Deposit Paket', 'Fitur ini digunakan untuk mengecek kehadiran member disetiap kelas yang diikutinnya' , '../../src/assets/image/classgym.jpeg','transaksi-deposit-kelas')
 ]

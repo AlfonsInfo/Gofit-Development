@@ -46,8 +46,9 @@
         const statusValidate = this.isValid(this.member)
         if(statusValidate){
           try{
-            const url = `http://127.0.0.1:8000/api/member/${this.member.id_member}`; 
-            const request = await axios.put(url,this.member); // ; 
+            const url = `/member/${this.member.id_member}`; 
+            const request = await this.$http.put(url,this.member); 
+            console.log
             $toast.success(request.data.message)
             this.router.push({name:'member'})
           }catch{

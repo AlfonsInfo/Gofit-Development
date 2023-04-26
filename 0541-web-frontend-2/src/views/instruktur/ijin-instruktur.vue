@@ -1,5 +1,4 @@
 <script>
-  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import BackButton from '../../components/BackButton.vue';
 //   import ModalDetail from '../../components/ModalDetail.vue';
@@ -97,8 +96,8 @@
         },
 
         async confirmPermit(id){
-            const url = `http://localhost:8000/api/ijininstruktur/${id}`
-            const request = await axios.put(url,{status_ijin : 'dikonfirmasi'});
+            const url = `/ijininstruktur/${id}`
+            const request = await this.$http.put(url,{status_ijin : 'dikonfirmasi'});
             $toast.success('Berhasil Konfirmasi Ijin Instruktur')
             this.getAllPresence()
             console.log(request)
@@ -106,7 +105,7 @@
     
         async getAllPermit(message){
             const url = "http://localhost:8000/api/ijininstruktur";
-            const request = await axios.get(url)
+            const request = await this.$http.get(url)
             this.ijinInstruktur = request.data.data
             console.log(this.ijinInstruktur)
             if(this.countInit == 0)

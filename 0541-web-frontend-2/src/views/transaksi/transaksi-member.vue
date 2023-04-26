@@ -14,9 +14,8 @@
       changeClass(){
         document.body.classList.replace('body-center','body-normalflow');
       },
-    },
-  
 
+    },
     mounted(){
       this.changeClass()
     },

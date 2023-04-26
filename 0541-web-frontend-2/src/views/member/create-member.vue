@@ -1,8 +1,7 @@
 <script>
-  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import BackButton from '../../components/BackButton.vue';
-  import { reactive } from 'vue';
+  import { reactive , inject } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import {$toast} from '../../plugins/notifHelper.js'
@@ -31,12 +30,14 @@
     },
     //Setup
     setup(){
-      const router = useRouter('router'); 
+      const router = useRouter(); 
+      const http = inject('$http');
       const member = reactive({
         nama_member : '',
         tgl_lahir_member : '',
         no_telp_member : '',
         membership : false,
+        alamat_member : ''
       })
 
       const submitForm = (event) => {
@@ -81,8 +82,8 @@
         const statusAksiAktivasi = isActivateNow(member)
         if(statusValidate){
           try{
-            const post = "http://127.0.0.1:8000/api/member"; 
-            const request = await axios.post(post,member); // ; 
+            const post = "/member"; 
+            const request = await http.post(post,member); // ; 
             (statusAksiAktivasi)? transaksiAktivasi() : null;
             $toast.success(request.data.message)
           }catch{
@@ -125,6 +126,11 @@
           <div class="mb-3">
             <label for="notelp" class="form-label">No Telp Member</label>
             <input type="text" v-model="member.no_telp_member" class="form-control" id="notelp">
+            <div id="namaHelp" class="form-text">ex : 08123456789</div>
+          </div>
+          <div class="mb-3">
+            <label for="alamat" class="form-label">Alamat Member</label>
+            <input type="text" v-model="member.alamat_member" class="form-control" id="alamat">
             <div id="namaHelp" class="form-text">ex : 08123456789</div>
           </div>
           <div class="form-check mb-3">

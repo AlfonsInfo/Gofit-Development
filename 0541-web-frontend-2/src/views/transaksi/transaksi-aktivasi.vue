@@ -1,12 +1,4 @@
-<!-- Logicnya 
-1. Tampilkan Data Member yang tidak aktif ( yang tanggal kadeluarsa aktivasi null atau udah lewat)
-2. Lakukan Aktivasi 
-3. Update Tanggal Kadeluarsa Tabel Member + Current + 1 Years / Kadaluarsa + 1 years
-4. Create Transaksi Member -->
-
-
 <script>
-  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import BackButton from '../../components/BackButton.vue';
 //   import ModalDetail from '../../components/ModalDetail.vue';
@@ -22,8 +14,6 @@
     components:{
       HomeNavbar,
       BackButton
-      // TableData,
-    //   ModalDetail
     },
     
     data(){
@@ -36,6 +26,7 @@
             NoStruk : '',
             Kadeluarsa : new Date(),
             selectedMember : ref([]),
+            pegawaiPIC : '',
         }
     },
 
@@ -43,8 +34,7 @@
 
         async generateTransactionData(row)
         {
-            const url = 'http://localhost:8000/api/transaksiaktivasi'
-            const request = await axios.get(url);
+            const request = await this.$http.get('/transaksiaktivasi');
             const nextNoStruk = request.data + 1;
             const today = new Date();
             const year = today.getFullYear().toString().substr(-2); // Mengambil 2 digit terakhir dari tahun
@@ -64,12 +54,22 @@
                 this.Kadeluarsa.setFullYear(this.Kadeluarsa.getFullYear() + 1);
                 }
         },
+        
+        generateStrukAktivasi()
+        {
+            console.log('ini struk aktivasi')
+        },
 
         async confirmTransaction(){
             try{
-                const url = `http://localhost:8000/api/transaksiaktivasi`
-                const request = await axios.post(url,{status_kehadiran : 1});
-                console.log(request)
+                console.log(this.selectedMember)
+                const data = {
+                    id_pegawai : this.pegawaiPIC.id_pegawai,
+                    id_member : this.selectedMember.id_member,
+                }
+                const request = await this.$http.post('/transaksiaktivasi',data);
+                //Selanjutnya update table member kolom kadeluarsa aktivasi
+                this.generateStrukAktivasi()
                 $toast.success('Berhasil Konfirmasi Presensi')
                 this.getAllMember()
             }catch{
@@ -79,13 +79,11 @@
         
     
         async getAllMember(message){
-            const url = "http://localhost:8000/api/member";
-            const request = await axios.get(url)
+            const request = await this.$http.get('/member');
             this.inActiveMember = request.data.data.filter(values => (values.tgl_kadeluarsa_aktivasi == null || values.tgl_kadeluarsa_aktivasi > Date()))
             this.ActiveMember = request.data.data.filter(values => (values.tgl_kadeluarsa_aktivasi != null || values.tgl_kadeluarsa_aktivasi < Date()))
             console.log(this.ActiveMember)
             console.log(this.inActiveMember)
-            // console.log(this.inActiveMember)
             if(this.countInit == 0)
             {
                 DataTables('#table-active-member',[0,1,2])
@@ -94,9 +92,16 @@
                 $toast.success(message)
             }
         },
+        getDataPegawai()
+        {
+          let pegawai = localStorage.getItem('pegawaiData');
+          return JSON.parse(pegawai)
+        },  
 },
     mounted(){
         this.getAllMember('Berhasil Mengambil Data Presensi');
+        this.pegawaiPIC = this.getDataPegawai()
+        console.log(this.pegawaiPIC)
     },
 
 })
@@ -159,7 +164,7 @@
                         <td>{{ (row.tgl_kadeluarsa_aktivasi) ? row.tgl_kadeluarsa_aktivasi : 'Belum Pernah Aktivasi' }}</td>
                         <td>
                             <button @click="generateTransactionData(row)"  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-Perpanjang Aktivasi</button>
+                            Perpanjang Aktivasi</button>
                         </td>
                     </tr>
                 </tbody>
@@ -191,7 +196,7 @@ Perpanjang Aktivasi</button>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" @click="confirmTransaction(selectedMember)">Konfirmasi Transaksi</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="confirmTransaction(selectedMember)">Konfirmasi Transaksi</button>
             </div>
             </div>
         </div>

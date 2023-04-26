@@ -57,6 +57,7 @@ class memberController extends Controller
             'nama_member' => $request->nama_member,
             'tgl_lahir_member' => $request->tgl_lahir_member,
             'no_telp_member' => $request->no_telp_member,            
+            'alamat_member' => $request->alamat_member,            
         ]);
 
         $find = member::where('id_pengguna',$idPengguna)->first();

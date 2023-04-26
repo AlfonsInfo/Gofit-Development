@@ -1,5 +1,4 @@
 <script>
-import axios from 'axios';
 import HomeNavbar from '../../components/HomeNavbar.vue';
 import BackButton from '../../components/BackButton.vue';
 import { reactive } from 'vue';
@@ -40,20 +39,20 @@ export default defineComponent({
         //Method Get Data
 
         async getAllInstruktur() {
-            const dataRoute = "http://localhost:8000/api/instruktur";
-            const request = await axios.get(dataRoute)
+            const dataRoute = "/instruktur";
+            const request = await this.$http.get(dataRoute)
             this.instrukturs.value = request.data.data 
         },
 
         async getAllKelas ()  {
-            const dataRoute = "http://localhost:8000/api/kelas";
-            const request = await axios.get(dataRoute)
+            const dataRoute = "/kelas";
+            const request = await this.$http.get(dataRoute)
             this.kelas.value = request.data.kelas
         },
         
         async getAllJadwal() {
-            const dataRoute = "http://localhost:8000/api/jadwalumum";
-            const request = await axios.get(dataRoute)
+            const dataRoute = "/jadwalumum";
+            const request = await this.$http.get(dataRoute)
             this.jadwals.value = request.data.data
         },
 
@@ -144,8 +143,8 @@ export default defineComponent({
             const statusJadwalInstruktur = this.isNotConflict(this.jadwal)
             if( statusValidate && statusJadwalInstruktur){
                 try{
-                const url = `http://127.0.0.1:8000/api/jadwalumum/${this.jadwal.id_jadwal_umum}`; 
-                const request = await axios.put(url,this.jadwal); // ; 
+                const url = `/jadwalumum/${this.jadwal.id_jadwal_umum}`; 
+                const request = await this.http.put(url,this.jadwal); // ; 
                 $toast.success(request.data.message)
                 this.router.push({name:'jadwal-umum'})
               }catch{

@@ -1,19 +1,16 @@
 <script>
-  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import BackButton from '../../components/BackButton.vue';
-  import {  onMounted ,ref } from 'vue';
+  import {  onMounted ,ref,inject } from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import { $toast } from '../../plugins/notifHelper';
-  import createJadwalUmum from './create-jadwal-umum.vue';
 
   export default defineComponent({
     //Component yang digunakan
     components:{
       HomeNavbar,
       BackButton,
-      createJadwalUmum,
     },
 
     data() {
@@ -27,25 +24,16 @@
     setup(){
       //Variable
       const router = useRouter('router'); 
+      const http = inject('$http')
       let jadwalPagi = ref([])
       let jadwalSore = ref([])
       let maxPagi = ref([]);
       let maxSore = ref([]);
-      // let max = ref([])
-      // //konversi Tanggal
-      // function konversiTanggal(instruktur){
-      //   instruktur.value.forEach((e)=>{
-      //   const tanggalLengkap = e['tanggal_lahir_instruktur'].split(' ');
-      //   const tanggal = new Date(tanggalLengkap[0])
-      //   const formattedDate = tanggal.toLocaleDateString('en-GB');
-      //   console.log(formattedDate)  
-      //   return e['tanggal_lahir_instruktur'] = formattedDate;
-      // })
-      // }
 
+      //cek http dan $http update~~~~~~~`
       const getAllJadwal= async (message) => {
-        const dataRoute = "http://localhost:8000/api/jadwalumum";
-        const request = await axios.get(dataRoute)
+        const dataRoute = "/jadwalumum";
+        const request = await http.get(dataRoute)
         jadwalPagi.value = request.data.data.pagi
         maxPagi.value = Math.max(...Object.values(jadwalPagi.value).map(x => x.length)) 
         jadwalSore.value = request.data.data.sore
@@ -67,10 +55,9 @@
       //Delete
       const deleteDataCell = async ({id_jadwal_umum}) =>{
         console.log(id_jadwal_umum)
-        const deleteRoute = `http://localhost:8000/api/jadwalumum/${id_jadwal_umum}`
+        const deleteRoute = `/jadwalumum/${id_jadwal_umum}`
         try{
-          const deleteRequest = await axios.delete(deleteRoute)
-          // alert(deleteRequest.data.message)
+          const deleteRequest = await http.get(deleteRoute)
           $toast.success(deleteRequest.data.message)
           getAllJadwal('Tabel Data Jadwal di update')
         }catch{
