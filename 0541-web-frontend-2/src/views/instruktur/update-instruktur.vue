@@ -41,21 +41,24 @@
 
       async updateInstruktur(){
         let {nama_instruktur,tanggal_lahir_instruktur,alamat_instruktur,no_telp_instruktur} = this.instruktur;
-
         let data = {
             'nama_instruktur' : nama_instruktur,
             'tanggal_lahir_instruktur' : tanggal_lahir_instruktur,
             'alamat_instruktur' : alamat_instruktur,
             'no_telp_instruktur' : no_telp_instruktur
         }
+        console.log(data) 
         const statusValidate = this.isValid(this.instruktur)
         if(statusValidate){
           try{
             const url = `/instruktur/${this.instruktur.id_instruktur}`; 
-            const request = await this.http.put(url,data); // ; 
+            console.log(url);
+            const request = await this.$http.put(url,data); // ; 
+            console.log(request)
             $toast.success(request.data.message)
             this.router.push({name:'instruktur'})
-          }catch{
+          }catch(e){
+          console.log(e)
             $toast.warning('Gagal Menambahkan Data')
           }
         }
@@ -88,7 +91,6 @@
 
     mounted(){
       this.instruktur = this.$route.query
-      console.log(this.instruktur.tanggal_lahir_instruktur)
       this.instruktur.tanggal_lahir_instruktur = this.formatDate(this.instruktur.tanggal_lahir_instruktur)
       console.log(this.instruktur.tanggal_lahir_instruktur)
       window.onpopstate = () => {

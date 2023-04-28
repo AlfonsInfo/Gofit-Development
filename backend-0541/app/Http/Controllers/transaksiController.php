@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\transaksi_member;
 
 class transaksiController extends Controller
 {
@@ -11,6 +12,22 @@ class transaksiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    public function countTransaction()
+    {
+        $count= transaksi_member::count();
+        return $count;
+    }
+
+    public function todayTransaction()
+    {
+        $transaksi_member = transaksi_member::get();
+        return response([
+            'message'=>'Success Tampil Data',
+            'data' => $transaksi_member
+        ],200); 
+    }
+
     public function index()
     {
         //

@@ -47,7 +47,7 @@
       //Create
 
       //Update
-      const updateDataCell= (data) => {
+      const updateDataCell = (data) => {
           console.log(data)
           router.push({name:'jadwal-umum-ubah',query:data})
       }
@@ -57,7 +57,7 @@
         console.log(id_jadwal_umum)
         const deleteRoute = `/jadwalumum/${id_jadwal_umum}`
         try{
-          const deleteRequest = await http.get(deleteRoute)
+          const deleteRequest = await http.delete(deleteRoute)
           $toast.success(deleteRequest.data.message)
           getAllJadwal('Tabel Data Jadwal di update')
         }catch{

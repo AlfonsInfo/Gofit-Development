@@ -54,10 +54,10 @@ export default defineComponent({
         doc.text("Nama :", 10, 50);
         doc.setFont(undefined,"normal");
         doc.text(this.data['Nama Member'], 40, 50);
-        doc.setFont(undefined,"normald");
+        doc.setFont(undefined,"normal");
         doc.text("Alamat :", 10, 60);
         doc.setFont(undefined,"normal");
-        doc.text("Jl Babarsari 10 Sleman", 40, 60); //this.data['']
+        doc.text(this.data['Alamat'], 40, 60); //this.data['']
         doc.setFont(undefined,"normal");
         doc.text("Telpon :", 10, 70);
         doc.setFont(undefined,"normal");

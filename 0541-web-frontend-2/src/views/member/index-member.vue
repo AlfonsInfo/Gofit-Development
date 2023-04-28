@@ -2,6 +2,7 @@
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import TableData from '../../components/table-data.vue';
   import ModalDetail from '../../components/ModalDetail.vue';
+  import ModalConfirm from '../../components/ModalConfirm.vue';
   import { onMounted ,ref, reactive, inject} from 'vue';
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
@@ -13,7 +14,8 @@
     components:{
       HomeNavbar,
       TableData,
-      ModalDetail
+      ModalDetail,
+      ModalConfirm
     },
     
 
@@ -25,6 +27,8 @@
       modalToggle: false,
       sendDataDetail : {},
       searchInput : '',
+      modalConfirm : false,
+      modalReaction : false,
     })
       const http = inject('$http');
 
@@ -77,6 +81,7 @@
             'Nama Member': detailData.nama_member,
             'Tanggal Lahir': detailData.tgl_lahir_member,
             'No Telp': detailData.no_telp_member,
+            'Alamat' : detailData.alamat_member,
             'Kadeluarsa Aktivasi': detailData.tgl_kadeluarsa_aktivasi,
             'Total Deposit ': detailData.total_deposit_uang,
             'Tanggal Gabung Member': detailData.tgl_gabung_member,
@@ -102,17 +107,23 @@
 
       // }
 
+
       //Fungsi Delete
       const deleteData = async ({id_member}) => {
-        // alert(id.)
-        const deleteRoute = `/member/${id_member}`
-        try{
-          const deleteRequest = await http.delete(deleteRoute)
-          // alert(deleteRequest.data.message)
-          $toast.success(deleteRequest.data.message)
-          getAllMember('Tabel Data Member di update')
-        }catch{
-          $toast.warning('Gagal Menghapus Data')
+        state.modalConfirm = true;
+
+
+        console.log(state.modalReaction)
+        if(state.modalReaction == true){
+          const deleteRoute = `/member/${id_member}`
+          try{
+            const deleteRequest = await http.delete(deleteRoute)
+            // alert(deleteRequest.data.message)
+            $toast.success(deleteRequest.data.message)
+            getAllMember('Tabel Data Member di update')
+          }catch{
+            $toast.warning('Gagal Menghapus Data')
+          }
         }
       }
 
@@ -171,7 +182,12 @@
     <div>
       <modal-detail :display="state.modalToggle" :data="state.sendDataDetail"  @close-modal="state.modalToggle = false;" ></modal-detail>
     </div>
+    <div>
+      <modal-confirm :display="state.modalConfirm" @close-modal="state.modalConfirm = false;"  @status="getConfirmData" ></modal-confirm>
+    </div>
   </main>
+  
+  <div class="modal-dialog modal-sm"></div>
 </template>
 
 

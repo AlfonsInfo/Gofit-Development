@@ -101,7 +101,7 @@
     
         async getAllPresence(message){
             const url = "/presensikelas";
-            const request = await this.http.get(url)
+            const request = await this.$http.get(url)
             this.Presensikelas = request.data.data
             console.log(this.Presensikelas)
             if(this.countInit == 0)

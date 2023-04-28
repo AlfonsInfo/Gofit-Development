@@ -12,8 +12,8 @@ class promoController extends Controller {
         $promo = promo::latest()->get();
         return response(
             [
-                'message' => 'Show Sesi Gym Success',
-                'sesiGym' => $promo
+                'message' => 'Show Promo Success',
+                'promo' => $promo
             ],200
         );
     }

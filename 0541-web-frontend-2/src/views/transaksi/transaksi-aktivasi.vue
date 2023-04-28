@@ -1,19 +1,19 @@
 <script>
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import BackButton from '../../components/BackButton.vue';
+import HomeNavbar from '../../components/HomeNavbar.vue';
+import BackButton from '../../components/BackButton.vue';
 //   import ModalDetail from '../../components/ModalDetail.vue';
-  import { ref} from 'vue';
-  import { defineComponent  } from 'vue';
-  import { useRouter} from 'vue-router';
-  import {$toast} from '../../plugins/notifHelper.js'
-  import {DataTables} from '../../plugins/TableHelper.js'
+import { ref} from 'vue';
+import { defineComponent  } from 'vue';
+import { useRouter} from 'vue-router';
+import {$toast} from '../../plugins/notifHelper.js'
+import {DataTables} from '../../plugins/TableHelper.js'
 
 
-  export default defineComponent({
+export default defineComponent({
     //Component yang digunakan
     components:{
-      HomeNavbar,
-      BackButton
+        HomeNavbar,
+        BackButton
     },
     
     data(){

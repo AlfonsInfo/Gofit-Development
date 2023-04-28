@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\transaksi_deposit_reguler;
 
 class depositUangController extends Controller
 {
@@ -13,7 +14,22 @@ class depositUangController extends Controller
      */
     public function index()
     {
-        //
+        $transaksi_deposit_reguler = transaksi_deposit_reguler::with(['transaksi_member'])->get();
+        return response([
+            'message'=>'Success Tampil Data',
+            'data' => $transaksi_deposit_reguler
+        ],200); 
+    }
+
+    public function todayTransaction()
+    {
+        $transaksi_deposit_reguler = transaksi_deposit_reguler::with(['transaksi_member'])
+        ->whereDate('tanggal_deposit', now()->format('Y-m-d'))
+        ->get();
+        return response([
+            'message'=>'Success Tampil Data',
+            'data' => $transaksi_deposit_reguler
+        ],200); 
     }
 
     /**

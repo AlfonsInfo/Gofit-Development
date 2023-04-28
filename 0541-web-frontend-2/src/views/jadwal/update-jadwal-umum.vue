@@ -144,7 +144,7 @@ export default defineComponent({
             if( statusValidate && statusJadwalInstruktur){
                 try{
                 const url = `/jadwalumum/${this.jadwal.id_jadwal_umum}`; 
-                const request = await this.http.put(url,this.jadwal); // ; 
+                const request = await this.$http.put(url,this.jadwal); // ; 
                 $toast.success(request.data.message)
                 this.router.push({name:'jadwal-umum'})
               }catch{

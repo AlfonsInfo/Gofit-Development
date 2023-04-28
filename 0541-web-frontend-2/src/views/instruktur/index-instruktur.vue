@@ -1,9 +1,8 @@
 <script>
-  import axios from 'axios';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import TableData from '../../components/table-data.vue';
   import { onMounted ,ref, inject } from 'vue';
-  import { defineComponent  } from 'vue';
+  import { reactive, defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import { ActionRouteToCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
   import { $toast } from '../../plugins/notifHelper';
@@ -21,7 +20,9 @@
       const router = useRouter('router'); 
       const http = inject("$http");
       let instrukturs = ref([])
-      
+      const state = reactive({
+        searchInput : '',
+      })      
       //konversi Tanggal
       function konversiTanggal(instruktur){
         instruktur.value.forEach((e)=>{
@@ -79,9 +80,20 @@
         ActionCreateInstruktur,
         actions,
         router,
-        instrukturs
+        instrukturs,
+        state
       }
+    },
+
+    computed : {
+      displayedInstruktur() {
+        const searchKeyword = this.state.searchInput.toLowerCase();
+        return this.instrukturs.filter(instruktur => {
+          const instrukturString = Object.values(instruktur).join(' ').toLowerCase();
+          return instrukturString.includes(searchKeyword);
+    });
     }
+  }
 
 })
 </script>
@@ -92,9 +104,12 @@
   <main>
     <div class='content text-white p-5'>
       <h2 class="">Daftar Instruktur</h2>
+      <div class="input-group mt-3 mb-2">
+        <input type="search" class="form-control rounded me-2 " placeholder="Cari Member" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
+      </div>
       <table-data 
         :context="'instruktur'" 
-        :data="instrukturs" 
+        :data="displayedInstruktur" 
         :column="['ID Instruktur','Nama Instruktur','Tanggal Lahir','Alamat','No Telp']" 
         :actions="actions" 
         :fields="['id_instruktur','nama_instruktur','tanggal_lahir_instruktur','alamat_instruktur','no_telp_instruktur']"

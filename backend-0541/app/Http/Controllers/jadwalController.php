@@ -15,7 +15,7 @@ class jadwalController extends Controller
         $jadwalPagi = ['senin' => jadwal_umum::where('hari','senin')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
         'selasa' => jadwal_umum::where('hari','selasa')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
         'rabu' => jadwal_umum::where('hari','rabu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'kamis' => jadwal_umum::where('hari','kamis')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
+        'kamis' => jadwal_umum::where('hari',   'kamis')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
         'jumat' => jadwal_umum::where('hari','jumat')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
         'sabtu' => jadwal_umum::where('hari','sabtu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
         'minggu' => jadwal_umum::where('hari','minggu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),

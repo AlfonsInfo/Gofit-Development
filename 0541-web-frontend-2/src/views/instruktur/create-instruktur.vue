@@ -25,8 +25,8 @@
     },
 
     mounted(){
-      this.instruktur = this.$route.query
-      this.instruktur.tanggal_lahir_instruktur = this.formatDate(this.instrutanggal_lahir_instruktur.tgl_lahir_instruktur)
+      // this.instruktur = this.$route.query
+      // this.instruktur.tanggal_lahir_instruktur = this.formatDate(this.instruktur.tanggal_lahir_instruktur)
       window.onpopstate = () => {
         this.goBack();
       };
@@ -78,9 +78,6 @@
         }
         return status;
       }
-
-      
-
 
       const storeInstruktur = async() => {
         const statusValidate = isValid(instruktur)

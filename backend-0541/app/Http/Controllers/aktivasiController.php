@@ -41,10 +41,10 @@ class aktivasiController extends Controller
                 'id_member' => $request->id_member,
             ]);
             $transaksi_aktivasi = transaksi_member::where('jenis_transaksi', '=', 'transaksi-aktivasi')
-                                    ->where('id_pegawai', '=', $request->id_pegawai)
-                                    ->where('id_member', '=', $request->id_member)
-                                    ->orderBy('created_at', 'desc')
-                                    ->first();
+                ->where('id_pegawai', '=', $request->id_pegawai)
+                ->where('id_member', '=', $request->id_member)
+                ->orderBy('created_at', 'desc')
+                ->first();
             // dd($transaksi_aktivasi->no_struk_transaksi);
             $aktivasi = transaksi_aktivasi::create([
                 'tanggal_aktivasi' => date('Y-m-d H:i:s', strtotime('now')),

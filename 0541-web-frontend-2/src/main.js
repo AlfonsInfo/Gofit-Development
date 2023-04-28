@@ -18,6 +18,8 @@ import "https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js";
 import "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
 import { jsPDF } from "jspdf"
 import axios from 'axios'
+// import { BootstrapVue } from 'bootstrap-vue';
+
 
 console.log(router)
 const app = createApp(App)
@@ -25,8 +27,9 @@ app.use(VTooltip)
 app.use(router)
 app.use(jsPDF)
 app.use(ConfirmDialog)
+// app.use(BootstrapVue)
 app.config.globalProperties.$http = axios.create({baseURL : 'http://127.0.0.1:8000/api'})
-app.provide('$http',app.config.globalProperties.$http)
+app.provide('$http',app.config.globalProperties.$http) 
 app.mount('#app')
 
 const $toast = useToast();
