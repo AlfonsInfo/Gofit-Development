@@ -1,11 +1,7 @@
 <script>
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import TableData from '../../components/table-data.vue';
-  import { onMounted ,ref, inject } from 'vue';
-  import { reactive, defineComponent  } from 'vue';
-  import { useRouter} from 'vue-router';
-  import { ActionRouteToCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
-  import { $toast } from '../../plugins/notifHelper';
+import { HomeNavbar, TableData,  ref, useRouter, 
+  reactive,inject,$toast,onMounted,ActionRouteToCreate , 
+  ActionDelete,ActionUpdate, defineComponent} from '@/plugins/global.js'
 
   export default defineComponent({
     //Component yang digunakan
@@ -50,19 +46,22 @@
         ActionRouteToCreate(router,'instruktur-tambah') 
       }
 
-      //Update
-
-
       //Delete
       const deleteData = async ({id_instruktur}) => {
-        console.log(id_instruktur)
-        const deleteRoute = `/instruktur/${id_instruktur}`
-        try{
-          const deleteRequest = await http.delete(deleteRoute)
-          $toast.success(deleteRequest.data.message)
-          getAllInstruktur('Tabel Data Member di update')
-        }catch{
-          $toast.warning('Gagal Menghapus Data')
+
+        const confirmDelete = confirm('Yakin Ingin Menghapus ? ')
+
+        if(confirmDelete)
+        {
+          console.log(id_instruktur)
+          const deleteRoute = `/instruktur/${id_instruktur}`
+          try{
+            const deleteRequest = await http.delete(deleteRoute)
+            $toast.success(deleteRequest.data.message)
+            getAllInstruktur('Tabel Data Member di update')
+          }catch{
+            $toast.warning('Gagal Menghapus Data')
+          }
         }
       }
 

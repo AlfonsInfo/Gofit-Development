@@ -1,4 +1,6 @@
 <script>
+
+  // import { }
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import BackButton from '../../components/BackButton.vue';
   import { reactive } from 'vue';

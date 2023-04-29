@@ -1,10 +1,5 @@
 <script>
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import BackButton from '../../components/BackButton.vue';
-  import {  onMounted ,ref,inject } from 'vue';
-  import { defineComponent  } from 'vue';
-  import { useRouter} from 'vue-router';
-  import { $toast } from '../../plugins/notifHelper';
+import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackButton , inject} from '@/plugins/global.js'
 
   export default defineComponent({
     //Component yang digunakan

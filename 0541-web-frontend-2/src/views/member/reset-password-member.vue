@@ -1,12 +1,5 @@
 <script>
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import TableData from '../../components/table-data.vue';
-  import { onMounted ,ref, reactive , inject} from 'vue';
-  import { defineComponent  } from 'vue';
-  import { useRouter} from 'vue-router';
-  import {  ActionResetPassword} from '../../data/actionData'
-  import {$toast} from '../../plugins/notifHelper.js'
-  //Modal Dialog
+import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, TableData,reactive,inject,ActionResetPassword, onMounted } from '@/plugins/global.js'
 
 
   export default defineComponent({

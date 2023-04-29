@@ -1,21 +1,15 @@
 <script>
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import TableData from '../../components/table-data.vue';
-  import ModalDetail from '../../components/ModalDetail.vue';
-  import ModalConfirm from '../../components/ModalConfirm.vue';
-  import { onMounted ,ref, reactive, inject} from 'vue';
-  import { defineComponent  } from 'vue';
-  import { useRouter} from 'vue-router';
-  import {  ActionRouteToCreate, ActionViewDetail,ActionUpdate,ActionDelete} from '../../data/actionData'
-  import {$toast} from '../../plugins/notifHelper.js'
+import { HomeNavbar, TableData, ModalDetail, ref, useRouter, 
+  reactive,inject,$toast,onMounted,ActionRouteToCreate ,ActionViewDetail, 
+  ActionDelete,ActionUpdate, defineComponent} from '@/plugins/global.js'
 
   export default defineComponent({
-    //Component yang digunakan
+    //Component Custom yang digunakan
     components:{
       HomeNavbar,
       TableData,
       ModalDetail,
-      ModalConfirm
+      // ModalConfirm
     },
     
 
@@ -27,8 +21,8 @@
       modalToggle: false,
       sendDataDetail : {},
       searchInput : '',
-      modalConfirm : false,
-      modalReaction : false,
+      // modalConfirm : false,
+      // modalReaction : false,
     })
       const http = inject('$http');
 
@@ -52,12 +46,6 @@
         konversiMember(members)
         $toast.success(message)
       }
-      // const searchMember = () => {
-      //   console.log(state.searchInput.toLowerCase())
-      //   return members.value.filter(function(item){
-      //       return item.id_member.toLowerCase().includes(state.searchInput);
-      //   })
-      // }
 
       //Mounted
       onMounted(async () =>  {
@@ -100,22 +88,16 @@
       ActionViewDetail.functionAction = (member) =>{
           detailMember(member)
       }
-      //Fungsi Update
-
-
-      // ActionUpdate.functionAction = member => {
-
-      // }
-
 
       //Fungsi Delete
       const deleteData = async ({id_member}) => {
-        state.modalConfirm = true;
+        // state.modalConfirm = true;
+        // console.log(state.modalReaction)
 
+        const confirmDelete = confirm('Yakin ingin menghapus data member ?')
 
-        console.log(state.modalReaction)
-        if(state.modalReaction == true){
-          const deleteRoute = `/member/${id_member}`
+        if(confirmDelete){
+            const deleteRoute = `/member/${id_member}`
           try{
             const deleteRequest = await http.delete(deleteRoute)
             // alert(deleteRequest.data.message)
@@ -181,9 +163,6 @@
     </div>
     <div>
       <modal-detail :display="state.modalToggle" :data="state.sendDataDetail"  @close-modal="state.modalToggle = false;" ></modal-detail>
-    </div>
-    <div>
-      <modal-confirm :display="state.modalConfirm" @close-modal="state.modalConfirm = false;"  @status="getConfirmData" ></modal-confirm>
     </div>
   </main>
   

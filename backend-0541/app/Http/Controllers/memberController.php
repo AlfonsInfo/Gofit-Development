@@ -88,8 +88,6 @@ class memberController extends Controller
         //*Data yang ingin di update
         $member = Member::findOrFail($id);
 
-        //* Update
-
          //* Update
         $member->nama_member = $request->nama_member;
         $member->tgl_lahir_member = $request->tgl_lahir_member;

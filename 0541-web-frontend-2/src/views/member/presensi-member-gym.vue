@@ -1,12 +1,6 @@
 <script>
-  import axios from 'axios';
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import BackButton from '../../components/BackButton.vue';
-//   import ModalDetail from '../../components/ModalDetail.vue';
-  import { ref} from 'vue';
-  import { defineComponent  } from 'vue';
-  import { useRouter} from 'vue-router';
-  import {$toast} from '../../plugins/notifHelper.js'
+import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, BackButton } from '@/plugins/global.js'
+
 
 
   export default defineComponent({
@@ -96,7 +90,7 @@
 
         async confirmPresence(id){
             const url = `http://localhost:8000/api/presensigym/${id}`
-            const request = await axios.put(url,{status_kehadiran : 1});
+            const request = await this.$http.put(url,{status_kehadiran : 1});
             $toast.success('Berhasil Konfirmasi Presensi')
             this.getAllPresence()
             console.log(request)
@@ -104,7 +98,7 @@
     
         async getAllPresence(message){
             const url = "http://localhost:8000/api/presensigym";
-            const request = await axios.get(url)
+            const request = await this.$http.get(url)
             this.Presensigym = request.data.data
             console.log(this.Presensigym)
             if(this.countInit == 0)

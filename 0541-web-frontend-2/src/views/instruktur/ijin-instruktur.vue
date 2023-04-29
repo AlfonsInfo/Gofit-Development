@@ -1,14 +1,9 @@
 <script>
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import BackButton from '../../components/BackButton.vue';
-//   import ModalDetail from '../../components/ModalDetail.vue';
-  import { ref} from 'vue';
-  import { defineComponent  } from 'vue';
-  import { useRouter} from 'vue-router';
-  import {$toast} from '../../plugins/notifHelper.js'
+import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from '@/plugins/global.js'
 
 
-  export default defineComponent({
+
+  export default defineComponent({  
     //Component yang digunakan
     components:{
       HomeNavbar,

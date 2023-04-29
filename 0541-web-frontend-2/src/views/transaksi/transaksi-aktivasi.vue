@@ -1,12 +1,5 @@
 <script>
-import HomeNavbar from '../../components/HomeNavbar.vue';
-import BackButton from '../../components/BackButton.vue';
-//   import ModalDetail from '../../components/ModalDetail.vue';
-import { ref} from 'vue';
-import { defineComponent  } from 'vue';
-import { useRouter} from 'vue-router';
-import {$toast} from '../../plugins/notifHelper.js'
-import {DataTables} from '../../plugins/TableHelper.js'
+import { HomeNavbar,BackButton,ref,defineComponent,useRouter,$toast,DataTables } from '@/plugins/global';
 
 
 export default defineComponent({
@@ -68,6 +61,7 @@ export default defineComponent({
                     id_member : this.selectedMember.id_member,
                 }
                 const request = await this.$http.post('/transaksiaktivasi',data);
+                console.log(request)
                 //Selanjutnya update table member kolom kadeluarsa aktivasi
                 this.generateStrukAktivasi()
                 $toast.success('Berhasil Konfirmasi Presensi')

@@ -1,9 +1,8 @@
 <script>
-  // import LogoutButton from '../components/LogoutButton.vue';
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import MenuCard from '../../components/menu-card.vue'  
-  //bagaimana cara kondisi tertentu -> data tertentu
-  import {menuPresensi} from '../../data/staticData'
+import { HomeNavbar, MenuCard  } from '@/plugins/global.js'
+import {menuPresensi} from '../../data/staticData'
+
+
   export default{
     data(){
       return {

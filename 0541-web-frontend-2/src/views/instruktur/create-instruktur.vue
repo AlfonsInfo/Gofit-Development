@@ -1,13 +1,6 @@
 <script>
-  import axios from 'axios';
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import BackButton from '../../components/BackButton.vue';
-  import { reactive } from 'vue';
-  import { defineComponent  } from 'vue';
-  import { useRouter} from 'vue-router';
-  import {$toast} from '../../plugins/notifHelper.js'
+import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , inject} from '@/plugins/global.js'
 
-  // import { ActionCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
 
   export default defineComponent({
     //Component yang digunakan
@@ -25,14 +18,13 @@
     },
 
     mounted(){
-      // this.instruktur = this.$route.query
-      // this.instruktur.tanggal_lahir_instruktur = this.formatDate(this.instruktur.tanggal_lahir_instruktur)
       window.onpopstate = () => {
         this.goBack();
       };
     },
     //Setup
     setup(){
+      const http = inject('$http');
       const router = useRouter('router'); 
       const instruktur = reactive({
         nama_instruktur : '',
@@ -84,7 +76,7 @@
         if(statusValidate){
           try{
             const post = "http://127.0.0.1:8000/api/instruktur"; 
-            const request = await axios.post(post,instruktur); // ; 
+            const request = await http.post(post,instruktur); // ; 
             $toast.success(request.data.message)
             router.push({name:'instruktur'})
           }catch{

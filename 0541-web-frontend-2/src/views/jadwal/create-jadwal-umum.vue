@@ -1,11 +1,5 @@
 <script>
-  import axios from 'axios';
-  import HomeNavbar from '../../components/HomeNavbar.vue';
-  import BackButton from '../../components/BackButton.vue';
-  import { ref, reactive, onMounted } from 'vue';
-  import { defineComponent  } from 'vue';
-  import { useRouter} from 'vue-router';
-  import {$toast} from '../../plugins/notifHelper.js'
+import { HomeNavbar, ref, useRouter, reactive, BackButton, inject, $toast,onMounted, defineComponent} from '@/plugins/global.js'
 
 
   export default defineComponent({
@@ -49,6 +43,7 @@
       let jadwalSore = ref([])
       let maxPagi = ref([]);
       let maxSore = ref([]);
+      const http = inject('$http');
       
       //Input 1 : Days
       const days = ['senin','selasa','rabu','kamis','jumat','sabtu','minggu'];
@@ -57,14 +52,14 @@
       const instrukturs = ({});
       const getAllInstruktur = async () => {
         const dataRoute = "http://localhost:8000/api/instruktur";
-        const request = await axios.get(dataRoute)
+        const request = await http.get(dataRoute)
         instrukturs.value = request.data.data 
       }
       //Input 3 : 
       const kelas = ({});
       const getAllKelas = async () => {
         const dataRoute = "http://localhost:8000/api/kelas";
-        const request = await axios.get(dataRoute)
+        const request = await http.get(dataRoute)
         kelas.value = request.data.kelas
       }
       
@@ -81,7 +76,7 @@
       const jadwals  = reactive({})
       const getAllJadwal= async () => {
         const dataRoute = "http://localhost:8000/api/jadwalumum";
-        const request = await axios.get(dataRoute)
+        const request = await http.get(dataRoute)
         jadwals.value = request.data.data
 
         jadwalPagi.value = request.data.data.pagi
@@ -186,7 +181,7 @@
         if( statusValidate && statusJadwalInstruktur){
           try{
             const post = "http://127.0.0.1:8000/api/jadwalumum"; 
-            const request = await axios.post(post,jadwal); // ; 
+            const request = await http.post(post,jadwal); // ; 
             $toast.success(request.data.message)
             getAllJadwal()
           }catch{

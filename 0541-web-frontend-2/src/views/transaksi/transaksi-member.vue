@@ -1,5 +1,4 @@
 <script>
-  // import LogoutButton from '../components/LogoutButton.vue';
   import HomeNavbar from '../../components/HomeNavbar.vue';
   import MenuCard from '../../components/menu-card.vue'  
   //bagaimana cara kondisi tertentu -> data tertentu

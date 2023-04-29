@@ -1,7 +1,6 @@
 <script>
-import { defineComponent } from 'vue'
-import HomeNavbar from '../../components/HomeNavbar.vue';
-import { $toast } from '../../plugins/notifHelper';
+import { HomeNavbar,defineComponent,$toast, } from '@/plugins/global';
+
 export default defineComponent({
     components : {
       HomeNavbar,

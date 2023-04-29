@@ -1,10 +1,6 @@
 <script>
-import HomeNavbar from '../../components/HomeNavbar.vue';
-import BackButton from '../../components/BackButton.vue';
-import { reactive } from 'vue';
-import { defineComponent  } from 'vue';
-import { useRouter} from 'vue-router';
-import {$toast} from '../../plugins/notifHelper.js'
+import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton } from '@/plugins/global.js'
+
 
 
 export default defineComponent({
