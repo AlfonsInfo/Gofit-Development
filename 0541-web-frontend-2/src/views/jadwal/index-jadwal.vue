@@ -49,14 +49,17 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
 
       //Delete
       const deleteDataCell = async ({id_jadwal_umum}) =>{
-        console.log(id_jadwal_umum)
-        const deleteRoute = `/jadwalumum/${id_jadwal_umum}`
-        try{
-          const deleteRequest = await http.delete(deleteRoute)
-          $toast.success(deleteRequest.data.message)
-          getAllJadwal('Tabel Data Jadwal di update')
-        }catch{
-          $toast.warning('Gagal Menghapus Data')
+        const confirmDelete = confirm('Apakah Yakin ingin menghapus jadwal ini ? ');
+
+        if(confirmDelete){
+          const deleteRoute = `/jadwalumum/${id_jadwal_umum}`
+          try{
+            const deleteRequest = await http.delete(deleteRoute)
+            $toast.success(deleteRequest.data.message)
+            getAllJadwal('Tabel Data Jadwal di update')
+          }catch{
+            $toast.warning('Gagal Menghapus Data')
+          }
         }
 
       }

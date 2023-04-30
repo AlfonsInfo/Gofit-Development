@@ -66,19 +66,24 @@ import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, TableData,reacti
 
       //Fungsi ResetPW
       const ResetPw = async ({id_pengguna,tgl_lahir_member}) => {
-        tgl_lahir_member = formatDate(tgl_lahir_member)
-        const  validPegawai = validasiPIC();
-        if(validPegawai == true)
+        const confirmDelete = confirm('Yakin ingin melakukan reset password ?')
+
+        if(confirmDelete)
         {
-          try{
-            const url = `/pengguna/${id_pengguna}`
-            const request = await http.put(url,{ tgl_lahir_member : tgl_lahir_member} ); // ; 
-            $toast.success(request.data.message)
-          }catch{
-            $toast.warning('Gagal Menambahkan Data')
+          tgl_lahir_member = formatDate(tgl_lahir_member)
+          const  validPegawai = validasiPIC();
+          if(validPegawai == true)
+          {
+            try{
+              const url = `/pengguna/${id_pengguna}`
+              const request = await http.put(url,{ tgl_lahir_member : tgl_lahir_member} ); // ; 
+              $toast.success(request.data.message)
+            }catch{
+              $toast.warning('Gagal Menambahkan Data')
+            }
+          }else{
+            $toast.warning('Gagal Validasi Pegawai')
           }
-        }else{
-          $toast.warning('Gagal Validasi Pegawai')
         }
       }
 

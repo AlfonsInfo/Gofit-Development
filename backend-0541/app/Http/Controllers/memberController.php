@@ -117,4 +117,22 @@ class memberController extends Controller
             ], 404);
         } 
     }
+
+    public function updateExpireDate($id)
+    {
+        $member = member::where('id_member', $id)->first();
+        if ($member->tgl_kadeluarsa_aktivasi == null) {
+            $tgl_aktivasi = date('Y-m-d H:i:s'); // jika kosong, gunakan tanggal hari ini
+        } else {
+            $tgl_aktivasi = $member->tgl_kadeluarsa_aktivasi; // gunakan tanggal aktivasi yang ada di database
+        }
+        // tambahkan 1 tahun
+        $tgl_kadaluarsa = date('Y-m-d H:i:s', strtotime('+1 year', strtotime($tgl_aktivasi)));
+        $member->tgl_kadeluarsa_aktivasi = $tgl_kadaluarsa;
+        $member->save();
+            return response()->json([
+            'success' => true,
+            'message' => 'Tanggal Kadaluarsa Member berhasil diupdate',
+        ], 200);
+    }
 }

@@ -91,11 +91,8 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
 
       //Fungsi Delete
       const deleteData = async ({id_member}) => {
-        // state.modalConfirm = true;
-        // console.log(state.modalReaction)
 
         const confirmDelete = confirm('Yakin ingin menghapus data member ?')
-
         if(confirmDelete){
             const deleteRoute = `/member/${id_member}`
           try{

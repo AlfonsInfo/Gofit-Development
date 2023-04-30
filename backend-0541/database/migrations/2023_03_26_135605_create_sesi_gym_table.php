@@ -19,7 +19,8 @@ return new class extends Migration
             $table->time('waktu_selesai')->nullable();
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
-            $table->softDeletes();    });
+            $table->softDeletes();    
+        });
     }
 
     /**

@@ -9,7 +9,7 @@ import {DataTables} from './TableHelper.js'
 import { onMounted ,ref, reactive, inject} from 'vue';
 import { defineComponent  } from 'vue';
 import { useRouter} from 'vue-router';
-import {  ActionRouteToCreate, ActionViewDetail,ActionUpdate,ActionDelete} from '@/data/actionData'
+import {  ActionRouteToCreate, ActionViewDetail,ActionUpdate,ActionDelete, ActionResetPassword } from '@/data/actionData'
 import {$toast} from '@/plugins/notifHelper.js'
 
 
@@ -17,5 +17,5 @@ import {$toast} from '@/plugins/notifHelper.js'
 export{
     HomeNavbar, TableData,ModalDetail, onMounted, ref, reactive , inject , defineComponent
     ,useRouter, ActionRouteToCreate , ActionViewDetail, ActionUpdate , ActionDelete, $toast
-    ,BackButton, DataTables
+    ,BackButton, DataTables ,  ActionResetPassword
 }

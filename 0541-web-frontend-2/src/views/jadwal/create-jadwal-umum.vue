@@ -180,7 +180,7 @@ import { HomeNavbar, ref, useRouter, reactive, BackButton, inject, $toast,onMoun
         const statusJadwalInstruktur = isNotConflict(jadwal)
         if( statusValidate && statusJadwalInstruktur){
           try{
-            const post = "http://127.0.0.1:8000/api/jadwalumum"; 
+            const post = "/api/jadwalumum"; 
             const request = await http.post(post,jadwal); // ; 
             $toast.success(request.data.message)
             getAllJadwal()

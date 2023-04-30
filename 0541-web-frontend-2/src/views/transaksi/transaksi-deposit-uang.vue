@@ -7,95 +7,145 @@ export default defineComponent({
 
     },
     data(){
-        return{
-          FormTransactionUang : {
-            jenis_transaksi : '',
-            id_pegawai : this.getDataPegawai().id_pegawai,
-            id_member : '',
-            NoStruk : '',
-            nominalDeposit : 0,
-            id_promo : '',
-          },
-          promos : null,
-          selectedPromo : null,
-          PromoMessage : 'Dapatkan Promo Menarik!!!'
-        }
+      return{
+        FormTransactionUang : {
+          jenis_transaksi : '',
+          id_pegawai : this.getDataPegawai().id_pegawai,
+          id_member : '',
+          NoStruk : '',
+          nominalDeposit : 0,
+          id_promo : '',
+        },
+        promos : null,
+        selectedPromo : null,
+        PromoMessage : 'Dapatkan Promo Menarik!!!',
+        allMember : null
+      }
     },
     methods : {
+
+    //Submit Form
+    async submitForm()
+    {
+      let  confirmTransaction = false;
+      const confirmDataTransaction = confirm('Apakah Anda Yakin Data Transaksinya sudah benar ? ');
+      if(confirmDataTransaction){
+        confirmTransaction = true;
+        if(this.FormTransactionUang.id_promo == ''){
+          const confirmNoPromo = confirm('Apakah Anda yakin tidak ingin menggunakan promo ');
+          if(!confirmNoPromo){
+            confirmTransaction = false;
+          }
+        }
+      }
+
+      if(confirmTransaction){
+        const url = '/transaksideposituang'
+        const response = await this.$http.post()
+      }
+      
+    },
+
+    //Generate Next No Struk
     async generateTransactionData()
     {
       const request = await this.$http.get('/transaksiaktivasi');
-      const nextNoStruk = request.data + 1;
+      const nextNoStruk = request.data + 1
       const today = new Date();
       const year = today.getFullYear().toString().substr(-2); // Mengambil 2 digit terakhir dari tahun
       const month = ('0' + (today.getMonth() + 1)).slice(-2); // Menambahkan 0 di depan jika bulan kurang dari 10
       this.FormTransactionUang.NoStruk =  year + '.' + month + '.' + nextNoStruk;
     },
 
+
+    //Generate Promo
     async getPromo(){
       const request = await this.$http.get('/promo');
       this.promos =  request.data.promo
     },
       
+
+    //Select Promo Otomatis
     updateSelectedPromo() {
+      //Promo yang bisa didapatkan
       let promo = this.availablePromo();
-      let [lackOfTranscaction, {nama_promo, bonus_promo}] = this.nearestPromo();
-      // console.log(lackOfTranscaction, )
-        $toast.clear();
-        // Menampilkan Form promo sesuai dengan promo yang bisa didapatkan
-        console.log(promo)
-        console.log(promo)
-        if (promo && promo.id_promo != null) {
-          this.FormTransactionUang.id_promo = promo.id_promo;
-        }
-        if(lackOfTranscaction != Infinity)
-        {
-            this.PromoMessage = `Transaksi kurang ${lackOfTranscaction} untuk mendapatkan promo ${nama_promo} dengan bonus ${bonus_promo}!!!`
-            $toast.success(`Tambah ${lackOfTranscaction} untuk mendapatkan bonus ${bonus_promo}`,);
-        }
-        if(lackOfTranscaction == Infinity) { $toast.clear()}
-        //  
+        
+      //Promo lain yang bisa didapatkan jika menambah transakasi dengan jumlah tertentu
+      let nearestPromo = this.nearestPromo();
+      let [lackOfTranscaction, {nama_promo = '-'  , bonus_promo  = '-' }] = nearestPromo;
+
+      //Clear toast
+      $toast.clear( )
+
+      //Set Form Promo
+      if (promo && promo.id_promo != null) {
+        this.FormTransactionUang.id_promo = promo.id_promo;
+      }else{
+        this.FormTransactionUang.id_promo = 0 ;
+      }
+      
+      //Set PromoMessage & Toast Berdasarkan Kondisi Kekurangan Transaksi
+      if (lackOfTranscaction != Infinity) {
+        this.PromoMessage = `Transaksi kurang ${lackOfTranscaction} untuk mendapatkan promo ${nama_promo || 'yang tersedia'} dengan bonus deposit ${bonus_promo}!!!`
+        $toast.info(`Tambah ${lackOfTranscaction} untuk mendapatkan bonus ${bonus_promo}`, {queue: true, duration:2000});
+      }
+      if (lackOfTranscaction == Infinity) {
+        this.PromoMessage = `Selamat Anda berhasil Mendapatkan promo Menarik!!`
+        $toast.success(`Selamat Anda, Berhasil mendapatkan promo paling menarik!!`, {queue: true, duration:2000});
+      }
     },
 
 
+    //Get Data Pegawai Yang Login dan Bertangggung jawab
     getDataPegawai()
-      {
-        let pegawai = localStorage.getItem('pegawaiData');
-        return JSON.parse(pegawai)
-      },
+    {
+      let pegawai = localStorage.getItem('pegawaiData');
+      return JSON.parse(pegawai)
+    },
+
+    //Dapatkan data promo yang cocok
     availablePromo() {
-        let data = this.promos;
-        let promo = null;
-        data = data.filter((dt) => dt.jenis_promo === 'promo_reguler');
-        data.forEach((value) => {
+      let data = this.promos;
+      let promo = null;
+      data = data.filter((dt) => dt.jenis_promo === 'promo_reguler');
+      data.forEach((value) => {
         if (value.minimal_deposit <= this.FormTransactionUang.nominalDeposit && (promo === null || value.minimal_deposit > promo.minimal_deposit)) {
           promo = value;
         }
       });
-    return promo;
-  },
+      return promo;
+    },
 
-      nearestPromo() {
-        let data = this.promos;
-        console.log(this.nearestPromo())
-        let promo = null;
-        let differenceFromPromo = null;
-        let finalNearestPromo = Infinity;
-        data = data.filter((dt) => dt.jenis_promo === 'promo_reguler');
-        data.forEach((value) => {
-          differenceFromPromo = value.minimal_deposit - this.FormTransactionUang.nominalDeposit;
-          if (differenceFromPromo > 0 && finalNearestPromo > differenceFromPromo) {
-            finalNearestPromo = differenceFromPromo;
-            promo = value;
-          }
-        });
-        // console.log('Promo terdekat:', promo);
+    //Dapatkan promo yang nilainya dekat
+    nearestPromo() {
+      let data = this.promos;
+      let promo = null;
+      let differenceFromPromo = null;
+      let finalNearestPromo = Infinity;
+      data = data.filter((dt) => dt.jenis_promo === 'promo_reguler');
+      data.forEach((value) => {
+        differenceFromPromo = value.minimal_deposit - this.FormTransactionUang.nominalDeposit;
+        if (differenceFromPromo > 0 && finalNearestPromo > differenceFromPromo) {
+          finalNearestPromo = differenceFromPromo;
+          promo = value;
+        }
+      });
+      if(promo != null){
         return [finalNearestPromo,promo];
-      },  
-      },
+      }
+      return [finalNearestPromo,{nama_promo : '-', bonus_promo : '-'} ];
+    },  
+
+      async getAllMember(){
+        const dataRoute = "/member";
+        const response = await this.$http.get(dataRoute)
+        this.allMember = response.data.data
+      }
+    },
     mounted(){
       this.generateTransactionData();
       this.getPromo();
+      this.getAllMember()
     }
 })
 
@@ -121,8 +171,15 @@ export default defineComponent({
             </div>
             <div class="mb-3">
               <label for="jenis-transaksi" class="form-label">Jenis Transaksi</label>
-                <input type="text" value="transaksi-deposit-reguler" class="form-control" id="jenis-transaksi"  disabled>
+              <input type="text" value="transaksi-deposit-reguler" class="form-control" id="jenis-transaksi"  disabled>
             </div>
+            <div class="mb-3">
+              <label for="exampleDataList" class="form-label">ID Pegawai</label>
+              <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Ketik untuk mencari id pegawai">
+              <datalist id="datalistOptions">
+                <option v-for="(mb,index) in allMember" :key="index" :value="mb.id_member">{{mb.id_member}}</option>
+              </datalist>
+              </div>
             <div class="mb-3">
               <label for="nominal-deposit" class="form-label">Nominal Deposit</label>
                 <input type="text" v-model="FormTransactionUang.nominalDeposit" @input="updateSelectedPromo" class="form-control" id="nominal-deposit" >
@@ -130,8 +187,8 @@ export default defineComponent({
             <div class="mb-3">
               <label for="promo" class="form-label">Promo</label>
               <select  v-model="FormTransactionUang.id_promo" class="form-select" disabled>
-                <option value='0'>Default Value</option>
-                <option v-for="(pm,index) in promos" :key="index" :value="pm.id_promo">{{pm}}</option>
+                <option value=null>Default Value</option>
+                <option v-for="(pm,index) in promos" :key="index" :value="pm.id_promo">{{pm.nama_promo}}</option>
               </select>
               <div id="promoHelp" class="form-text">{{PromoMessage}}</div>
             </div>

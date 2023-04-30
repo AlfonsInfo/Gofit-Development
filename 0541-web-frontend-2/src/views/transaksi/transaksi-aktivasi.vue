@@ -53,7 +53,18 @@ export default defineComponent({
             console.log('ini struk aktivasi')
         },
 
-        async confirmTransaction(){
+        async updateExpiredMember({id_member})
+        {
+            try{
+                const response = await this.$http.get(`/updatememberexpired/${id_member}`)
+                $toast.success(response.data.message);
+            }catch(e){
+                console.error('Error Update Data Member');
+            }
+        },
+
+        async confirmTransaction()
+        {
             try{
                 console.log(this.selectedMember)
                 const data = {
@@ -62,7 +73,9 @@ export default defineComponent({
                 }
                 const request = await this.$http.post('/transaksiaktivasi',data);
                 console.log(request)
-                //Selanjutnya update table member kolom kadeluarsa aktivasi
+                // Selanjutnya update table member kolom kadeluarsa aktivasi -> Menggunakan Trigger / Fungsi updateMemberData
+                this.updateExpiredMember(data)
+                // Generate StrukAktivasi
                 this.generateStrukAktivasi()
                 $toast.success('Berhasil Konfirmasi Presensi')
                 this.getAllMember()
@@ -165,14 +178,13 @@ export default defineComponent({
             </table>
             <div class="row">
                 <back-button class="col-md-3" className="btn btn-dark"></back-button>
-                <!-- <button class="btn btn-success  col col-md-3">Cetak Struk</button> -->
             </div>
         </div>
 
         <!-- Button trigger modal -->
 
         <!-- Modal -->
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
             <div class="modal-header">
@@ -185,7 +197,7 @@ export default defineComponent({
                 <p><strong> Transaksi : </strong> transaksi-aktivasi</p>
                 <p><strong> Nominal Transaksi : </strong>  300.000</p>
                 <p><strong> ID Member :  </strong>      {{ selectedMember.id_member }}</p>
-                <p><strong> Kadeluarsa :  </strong>  {{  Kadeluarsa }}</p>
+                <!-- <p><strong> Kadeluarsa :  </strong>  {{  Kadeluarsa }}</p> -->
                 <p><strong> Kadeluarsa :  </strong>  {{ ` ${Kadeluarsa.getDate()} - ${Kadeluarsa.getMonth()+1} - ${Kadeluarsa.getFullYear()}  ` }}</p>
             </div>
             <div class="modal-footer">
@@ -208,11 +220,19 @@ export default defineComponent({
 
 
     .title.active {
-  background-color: #e6e6e6;
+    background-color: #e6e6e6;
 }
   
 .title:hover {
-  background-color: #f2f2f2;
+    background-color: #f2f2f2;
+}
+
+.modal {
+    z-index: 1055;
+}
+
+.modal-backdrop {
+    z-index: 1030;    
 }
 
 </style>

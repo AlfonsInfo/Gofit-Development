@@ -44,7 +44,9 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::get('/transaksihariini' , 'transaksiController@todayTransaction');
     Route::apiResource('/transaksiaktivasi', 'aktivasiController');  
     Route::apiResource('/transaksideposituang', 'depositUangController');  
-    Route::get('/td-deposituang', 'depositUangController@todayTransaction');  
+    Route::get('/td-deposituang', 'depositUangController@todayTransaction');
+    
+    Route::get('/updatememberexpired/{id}',  'memberController@updateExpireDate');
     // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     //     return $request->user();         
     // });    
