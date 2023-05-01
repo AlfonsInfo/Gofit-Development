@@ -48,7 +48,7 @@ class aktivasiController extends Controller
             // dd($transaksi_aktivasi->no_struk_transaksi);
             $aktivasi = transaksi_aktivasi::create([
                 'tanggal_aktivasi' => date('Y-m-d H:i:s', strtotime('now')),
-                'nominal_aktivasi' => '300000',
+                'nominal_aktivasi' => '3000000',
                 'no_struk' => $transaksi_aktivasi['no_struk_transaksi']
             ]);
                                     

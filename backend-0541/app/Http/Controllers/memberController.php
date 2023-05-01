@@ -135,4 +135,17 @@ class memberController extends Controller
             'message' => 'Tanggal Kadaluarsa Member berhasil diupdate',
         ], 200);
     }
+    public function updateTotalDeposit($id, Request $request)
+    {   
+        $member = member::where('id_member', $id)->first();
+        // dd($member);
+        $total_deposit = $member->total_deposit_uang;
+        $total_deposit +=  $request->total_deposit; 
+        $member->total_deposit_uang = $total_deposit;
+        $member->save();
+        return response()->json([
+            'success' => true,
+            'message' => 'Deposit Member berhasil diupdate',
+        ], 200);
+    }
 }

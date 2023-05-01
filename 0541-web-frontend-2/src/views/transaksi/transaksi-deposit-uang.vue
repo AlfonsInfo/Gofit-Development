@@ -9,11 +9,10 @@ export default defineComponent({
     data(){
       return{
         FormTransactionUang : {
-          jenis_transaksi : '',
           id_pegawai : this.getDataPegawai().id_pegawai,
           id_member : '',
           NoStruk : '',
-          nominalDeposit : 0,
+          nominal_deposit : 0,
           id_promo : '',
         },
         promos : null,
@@ -38,12 +37,28 @@ export default defineComponent({
           }
         }
       }
-
       if(confirmTransaction){
-        const url = '/transaksideposituang'
-        const response = await this.$http.post()
+        try{
+          const url = '/transaksideposituang';
+          const response = await this.$http.post(url,this.FormTransactionUang);
+          // console.log(response.data.total);
+          // this.updateDepositBalance(response.data.total)
+          $toast.success(response.data.message);
+          
+        }catch{
+          $toast.warning('Ada kesalahan dalam inputan transaksi');
+        }
       }
-      
+    },
+    
+    async updateDepositBalance(data){
+      try{
+        const url = `/updatedepositbalanceuang/${this.FormTransactionUang.id_member}`;
+        const response = await this.$http.put(url,{total_deposit : data });
+        $toast.success(response.data.message);
+      }catch{
+        $toast.warning('gagal update')
+      }
     },
 
     //Generate Next No Struk
@@ -70,7 +85,7 @@ export default defineComponent({
       //Promo yang bisa didapatkan
       let promo = this.availablePromo();
         
-      //Promo lain yang bisa didapatkan jika menambah transakasi dengan jumlah tertentu
+      //Promo lain yang bisa didapatkan jika menambah tSransakasi dengan jumlah tertentu
       let nearestPromo = this.nearestPromo();
       let [lackOfTranscaction, {nama_promo = '-'  , bonus_promo  = '-' }] = nearestPromo;
 
@@ -109,7 +124,7 @@ export default defineComponent({
       let promo = null;
       data = data.filter((dt) => dt.jenis_promo === 'promo_reguler');
       data.forEach((value) => {
-        if (value.minimal_deposit <= this.FormTransactionUang.nominalDeposit && (promo === null || value.minimal_deposit > promo.minimal_deposit)) {
+        if (value.minimal_deposit <= this.FormTransactionUang.nominal_deposit && (promo === null || value.minimal_deposit > promo.minimal_deposit)) {
           promo = value;
         }
       });
@@ -124,7 +139,7 @@ export default defineComponent({
       let finalNearestPromo = Infinity;
       data = data.filter((dt) => dt.jenis_promo === 'promo_reguler');
       data.forEach((value) => {
-        differenceFromPromo = value.minimal_deposit - this.FormTransactionUang.nominalDeposit;
+        differenceFromPromo = value.minimal_deposit - this.FormTransactionUang.nominal_deposit;
         if (differenceFromPromo > 0 && finalNearestPromo > differenceFromPromo) {
           finalNearestPromo = differenceFromPromo;
           promo = value;
@@ -174,15 +189,15 @@ export default defineComponent({
               <input type="text" value="transaksi-deposit-reguler" class="form-control" id="jenis-transaksi"  disabled>
             </div>
             <div class="mb-3">
-              <label for="exampleDataList" class="form-label">ID Pegawai</label>
-              <input class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Ketik untuk mencari id pegawai">
+              <label for="exampleDataList" class="form-label">ID Member</label>
+              <input class="form-control" list="datalistOptions" id="exampleDataList" v-model="FormTransactionUang.id_member" placeholder="Ketik untuk mencari id pegawai">
               <datalist id="datalistOptions">
                 <option v-for="(mb,index) in allMember" :key="index" :value="mb.id_member">{{mb.id_member}}</option>
               </datalist>
               </div>
             <div class="mb-3">
               <label for="nominal-deposit" class="form-label">Nominal Deposit</label>
-                <input type="text" v-model="FormTransactionUang.nominalDeposit" @input="updateSelectedPromo" class="form-control" id="nominal-deposit" >
+                <input type="text" v-model="FormTransactionUang.nominal_deposit" @input="updateSelectedPromo" class="form-control" id="nominal-deposit" >
             </div>
             <div class="mb-3">
               <label for="promo" class="form-label">Promo</label>

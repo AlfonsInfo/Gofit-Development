@@ -38,7 +38,7 @@ a, .green {
     display: grid;
     grid-template-columns: 1fr 1fr;
     /* padding: 3rem 2rem; */
-  }
+}
 
   .body-normalflow #app  {
     display: grid;

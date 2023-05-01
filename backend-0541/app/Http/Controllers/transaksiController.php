@@ -7,11 +7,6 @@ use App\Models\transaksi_member;
 
 class transaksiController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
 
     public function countTransaction()
     {

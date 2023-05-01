@@ -47,7 +47,5 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::get('/td-deposituang', 'depositUangController@todayTransaction');
     
     Route::get('/updatememberexpired/{id}',  'memberController@updateExpireDate');
-    // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    //     return $request->user();         
-    // });    
+    Route::put('/updatedepositbalanceuang/{id}',  'memberController@updateTotalDeposit');
 });

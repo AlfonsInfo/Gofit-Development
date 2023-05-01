@@ -75,7 +75,7 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
         const statusValidate = isValid(instruktur)
         if(statusValidate){
           try{
-            const post = "http://127.0.0.1:8000/api/instruktur"; 
+            const post = "/api/instruktur"; 
             const request = await http.post(post,instruktur); // ; 
             $toast.success(request.data.message)
             router.push({name:'instruktur'})
@@ -106,7 +106,7 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
       <h2>Tambah Instruktur</h2>
       <div  class= 'container-fluid form-custom p-4 text-dark'>
         <h3 class="title">Tambah Data Instruktur <span class="mdi mdi-account-plus"></span></h3>
-        <hr>
+      <hr>
         <form @submit.prevent="submitForm($event)">
           <div class="mb-3">
             <label for="nama_member" class="form-label">Nama Instruktur</label>
