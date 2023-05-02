@@ -162,12 +162,17 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
       <modal-detail :display="state.modalToggle" :data="state.sendDataDetail"  @close-modal="state.modalToggle = false;" ></modal-detail>
     </div>
   </main>
+
+
   
   <div class="modal-dialog modal-sm"></div>
 </template>
 
 
 
+
+
 <style scoped>
+
 
 </style>

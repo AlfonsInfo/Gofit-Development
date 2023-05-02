@@ -5,9 +5,21 @@
       <router-link to="/about">About</router-link>
     </nav>
     <router-view/>
+    <button @click="showAlert">Tampilkan Alert</button>
   </div>
 </template>
 
+<script>
+import Swal from 'sweetalert2'
+
+export default {
+  methods: {
+    showAlert() {
+      Swal.fire('Hello SweetAlert')
+    }
+  }
+}
+</script>
 <style>
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

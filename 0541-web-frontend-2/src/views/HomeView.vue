@@ -2,6 +2,8 @@
   // import LogoutButton from '../components/LogoutButton.vue';
   import HomeNavbar from '../components/HomeNavbar.vue';
   import MenuCard from '../components/menu-card.vue'  
+  import Swal from 'sweetalert2'
+
   //bagaimana cara kondisi tertentu -> data tertentu
   import {functionalKasir, functionalAdmin, functionalMO} from '../data/staticData'
   export default{
@@ -43,7 +45,12 @@
       {
         let pegawai = localStorage.getItem('pegawaiData');
         return JSON.parse(pegawai)
-      }    
+      },    
+
+      showAlert() {
+      console.log('fungsi show alert')
+      Swal.fire('Hello SweetAlert')
+    }
     },
   
 
@@ -86,8 +93,10 @@
           <menu-card :data ="functionalKasir"></menu-card>
         </div>
       </div>
+      <div>
+     <button @click="this.showAlert">Tampilkan Alert</button>
+  </div>
   </main>
-  div
 </template>
 
 <style scoped>

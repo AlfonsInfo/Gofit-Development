@@ -73,7 +73,25 @@ export default {
         value = value[fields[i]];
       }
       return value;
+    },
+
+
+    // Modal Delete dan Reset
+
+    getToggle(action) {
+    if (action.aksi === 'Hapus' || action.aksi ===  'Reset Password') {
+      return 'modal';
+    } else {
+      return null; // kosongkan atribut jika tidak sesuai dengan aksi
     }
+  },
+  getTarget(action) {
+    if (action.aksi === 'Hapus' || action.aksi ===  'Reset Password') {
+      return '#staticBackdrop';
+    } else {
+      return null; // kosongkan atribut jika tidak sesuai dengan jenis
+    }
+  },
   },
 
   //computed properties
@@ -117,7 +135,13 @@ export default {
                     </td>                    
                     <td>  
                       <span v-for="(action,index) in actions" :key="index" class="mx-2">
-                        <router-link @click="action.functionAction(dt)" :to="{name : createPathName(context,action,dt), query : {...dt}  }"  :class="action.kelas"> {{action.aksi}}</router-link>
+                        <router-link 
+                        @click="action.functionAction(dt)" 
+                        :to="{name : createPathName(context,action,dt), query : {...dt}  }"  
+                        :class="action.kelas" 
+                        > {{action.aksi}}</router-link>
+                        <!-- :data-bs-toggle="getToggle(action)" 
+                        :data-bs-target="getTarget(action)" -->
                     </span>
                   </td>
                   </tr>
@@ -138,6 +162,26 @@ export default {
                 <back-button className="btn btn-dark"></back-button>
               </nav> 
             </div> 
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
 </template>
 
 <style scoped>
@@ -154,6 +198,10 @@ export default {
 }
 .pagination.pagination-dark .page-item.active .page-link {
   background-color: black;
+}
+
+.modal{
+  z-index: 1500;
 }
 
 
