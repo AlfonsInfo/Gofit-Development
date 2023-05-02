@@ -27,7 +27,7 @@ class pegawaiController extends Controller
 
     public function show($id)
     {
-
+        
     }
 
     public static function searchByIdPengguna($idpengguna){

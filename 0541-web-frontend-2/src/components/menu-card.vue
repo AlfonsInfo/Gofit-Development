@@ -50,7 +50,7 @@ export default defineComponent({
         {{items.description}}
       </p>
       <div class="mt-auto d-flex justify-content-start">
-        <router-link  :to="{name: items.route}" class="mdi mdi-location-enter mt-auto"> Masuk</router-link>
+        <router-link  :to="{name: items.route}" class="mdi mdi-location-enter mt-auto p-2 rounded"> Masuk</router-link>
           <!-- <router-link  :to="`/${items.route}`" class="mdi mdi-location-enter mt-auto"> Masuk</router-link> -->
         </div>
       </div>

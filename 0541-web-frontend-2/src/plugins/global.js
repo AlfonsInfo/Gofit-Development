@@ -1,4 +1,5 @@
 import HomeNavbar from '@/components/HomeNavbar.vue';
+import MenuCard from '@/components/menu-card.vue';
 import TableData from '@/components/table-data.vue';
 import ModalDetail from '@/components/ModalDetail.vue';
 import BackButton from '@/components/BackButton.vue';
@@ -17,5 +18,5 @@ import {$toast} from '@/plugins/notifHelper.js'
 export{
     HomeNavbar, TableData,ModalDetail, onMounted, ref, reactive , inject , defineComponent
     ,useRouter, ActionRouteToCreate , ActionViewDetail, ActionUpdate , ActionDelete, $toast
-    ,BackButton, DataTables ,  ActionResetPassword
+    ,BackButton, DataTables ,  ActionResetPassword,MenuCard
 }

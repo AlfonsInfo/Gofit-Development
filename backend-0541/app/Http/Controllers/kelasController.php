@@ -15,7 +15,7 @@ class kelasController extends Controller
         $kelas = kelas::latest()->get();
         return response(
             [
-                'message' => 'Show Sesi Gym Success',
+                'message' => 'Berhasil Mengambil data kelas',
                 'kelas' => $kelas
             ],200
         );

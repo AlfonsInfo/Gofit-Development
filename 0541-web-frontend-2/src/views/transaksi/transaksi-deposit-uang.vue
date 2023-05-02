@@ -18,7 +18,8 @@ export default defineComponent({
         promos : null,
         selectedPromo : null,
         PromoMessage : 'Dapatkan Promo Menarik!!!',
-        allMember : null
+        allMember : null,
+        member : null
       }
     },
     methods : {
@@ -39,12 +40,11 @@ export default defineComponent({
       }
       if(confirmTransaction){
         try{
+          this.getMember(this.FormTransactionUang)
           const url = '/transaksideposituang';
           const response = await this.$http.post(url,this.FormTransactionUang);
-          // console.log(response.data.total);
-          // this.updateDepositBalance(response.data.total)
+          // this.updateDepositBalance(response.data.total) Incase trigger tidak boleh digunakan
           $toast.success(response.data.message);
-          
         }catch{
           $toast.warning('Ada kesalahan dalam inputan transaksi');
         }
@@ -155,7 +155,15 @@ export default defineComponent({
         const dataRoute = "/member";
         const response = await this.$http.get(dataRoute)
         this.allMember = response.data.data
+      },
+
+
+      getMember({id_member}){
+        this.member =  this.allMember.filter((item)=> { return item.id_member == id_member})[0];
       }
+
+
+
     },
     mounted(){
       this.generateTransactionData();
@@ -190,7 +198,7 @@ export default defineComponent({
             </div>
             <div class="mb-3">
               <label for="exampleDataList" class="form-label">ID Member</label>
-              <input class="form-control" list="datalistOptions" id="exampleDataList" v-model="FormTransactionUang.id_member" placeholder="Ketik untuk mencari id pegawai">
+              <input class="form-control" list="datalistOptions" id="exampleDataList" v-model="FormTransactionUang.id_member" placeholder="Ketik untuk mencari id member">
               <datalist id="datalistOptions">
                 <option v-for="(mb,index) in allMember" :key="index" :value="mb.id_member">{{mb.id_member}}</option>
               </datalist>
