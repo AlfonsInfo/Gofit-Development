@@ -1,7 +1,7 @@
 <script>
 import { HomeNavbar, TableData,  ref, useRouter, 
   reactive,inject,$toast,onMounted,ActionRouteToCreate , 
-  ActionDelete,ActionUpdate, defineComponent} from '@/plugins/global.js'
+  ActionDelete,ActionUpdate, defineComponent, Swal} from '@/plugins/global.js'
 
   export default defineComponent({
     //Component yang digunakan
@@ -49,19 +49,35 @@ import { HomeNavbar, TableData,  ref, useRouter,
       //Delete
       const deleteData = async ({id_instruktur}) => {
 
-        const confirmDelete = confirm('Yakin Ingin Menghapus ? ')
+        const result = await Swal.fire({
+          title: 'Apakah Anda yakin ingin menghapus data ini?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#dc3545',
+          confirmButtonText: 'Hapus',
+          cancelButtonText: 'Batal',
+        })
+        //Jika di confirm
+      if (result.isConfirmed) {
+        try{
 
-        if(confirmDelete)
-        {
-          console.log(id_instruktur)
           const deleteRoute = `/instruktur/${id_instruktur}`
-          try{
-            const deleteRequest = await http.delete(deleteRoute)
-            $toast.success(deleteRequest.data.message)
-            getAllInstruktur('Tabel Data Member di update')
-          }catch{
-            $toast.warning('Gagal Menghapus Data')
-          }
+          const deleteRequest = await http.delete(deleteRoute)
+          $toast.success(deleteRequest.data.message)
+          getAllInstruktur('Tabel Data Member di update')
+          
+
+          // Tampilkan notifikasi SweetAlert setelah data dihapus
+      Swal.fire({
+        title: 'Data berhasil dihapus!',
+        icon: 'success',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      })
+    }catch{
+      $toast.warning('Gagal Menghapus Data')
+    }
         }
       }
 

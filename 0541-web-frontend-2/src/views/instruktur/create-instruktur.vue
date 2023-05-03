@@ -75,7 +75,7 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
         const statusValidate = isValid(instruktur)
         if(statusValidate){
           try{
-            const post = "/api/instruktur"; 
+            const post = "/instruktur"; 
             const request = await http.post(post,instruktur); // ; 
             $toast.success(request.data.message)
             router.push({name:'instruktur'})
@@ -143,8 +143,8 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
           </div>
           <hr>
           <div class="d-flex justify-content-between">
-            <back-button :className="'btn btn-dark'" @click="goBack"></back-button>
             <button type="submit" class="btn btn-primary">Submit</button>
+            <back-button :className="'btn btn-dark'" @click="goBack"></back-button>
           </div>
         </form>
         <hr>

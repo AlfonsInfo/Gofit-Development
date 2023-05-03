@@ -14,9 +14,7 @@ use App\Models\transaksi_member;
 use App\Models\transaksi_aktivasi;
 use App\Models\transaksi_deposit_reguler;
 use App\Models\transaksi_deposit_paket;
-use App\Models\jadwal_umum;
 use App\Models\jadwal_harian;
-use App\Models\kelas_jadwal;
 use App\Models\presensi_instruktur;
 use App\Models\booking_gym;
 use App\Models\booking_kelas;
@@ -28,12 +26,6 @@ use Carbon\Carbon;
 
 class DatabaseSeeder extends Seeder
 {
-
-    /**
-     * Seed the application's database.
-     *
-     * @return void
-     */
     public function run()
     {
 

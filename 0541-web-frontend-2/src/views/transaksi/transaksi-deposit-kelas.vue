@@ -1,5 +1,5 @@
 <script>
-import { HomeNavbar,defineComponent,$toast, BackButton } from '@/plugins/global';
+import { HomeNavbar,defineComponent,$toast, BackButton, Swal } from '@/plugins/global';
 import { reactive } from 'vue';
 
 export default defineComponent({
@@ -42,29 +42,32 @@ export default defineComponent({
     // Submit Form Depost Kelas
     async submitForm()
     {
-      let  confirmTransaction = false;
-      const confirmDataTransaction = confirm('Apakah Anda Yakin Data Transaksinya sudah benar ? ');
-      if(confirmDataTransaction){
-        confirmTransaction = true;
-        if(this.FormTransactionUang.id_promo == ''){
-          const confirmNoPromo = confirm('Apakah Anda yakin tidak ingin menggunakan promo ');
-          if(!confirmNoPromo){
-            confirmTransaction = false;
+        const result = await Swal.fire({
+              title: 'Apakah Anda yakin ingin melakukan transaksi ini?',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                confirmButtonText: 'Lanjutkan',
+                cancelButtonText: 'Batal',
+              })
+        if(result.isConfirmed){
+          try{
+            console.log(this.FormTransactionUang)
+            const url = '/transaksidepositpaket';
+            const response = await this.$http.post(url,this.FormTransactionUang);
+            $toast.success(response.data.message);        
+            Swal.fire({
+              title: 'Transaksi Berhasil!',
+              icon: 'success',
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false,
+            })
+          }catch{
+            $toast.warning('Transaksi Gagal, Cek Data Transaksi !!')
           }
-        }
       }
-      if(confirmTransaction){
-        try{
-          const url = '/transaksideposituang';
-          const response = await this.$http.post(url,this.FormTransactionUang);
-          // console.log(response.data.total);
-          // this.updateDepositBalance(response.data.total)
-          $toast.success(response.data.message);
-          
-        }catch{
-          $toast.warning('Ada kesalahan dalam inputan transaksi');
-        }
-      }
+              // Akhir
+
     },
     
     //Generate No struk berikutnya
@@ -83,6 +86,7 @@ export default defineComponent({
       const dataRoute = "/member";
       const response = await this.$http.get(dataRoute)
       this.allMember = response.data.data
+      console.log(this.allMember);
     },
 
     //Get Data Kelas untuk option kelas
@@ -202,6 +206,9 @@ export default defineComponent({
     </header>
     <main>
       <div class='content text-white p-5 mb-5'>
+        <div class="w-100 p-2 ml-auto">
+              <back-button className="btn btn-dark "></back-button>
+            </div>
         <div class="form-custom text-dark p-4 mb-3">
           <p><strong>Daftar Promo :</strong></p>
           <ul>
@@ -210,6 +217,7 @@ export default defineComponent({
               <p v-if="promo.jenis_promo == 'promo_reguler'">{{ promo.nama_promo }} Manfaat : Bonus Deposit Rp {{ promo.bonus_promo  }} , Syarat minimal deposit Rp : {{ promo.minimal_deposit }}</p>
             </li>
           </ul>
+          
         </div>
         <div  class= 'container-fluid form-custom p-4 text-dark' ref="sectionForm">
           <div class="d-flex justify-content-between" >
@@ -280,17 +288,16 @@ export default defineComponent({
               {{ summaryMessage }}
             </div>
             <div class="d-flex justify-content-between">
-              <back-button className="btn btn-dark"></back-button>
               <button type="submit" class="btn btn-primary">Submit</button>
             </div>
-          </form>
-          <hr>
-        </div>
-        <div>
-          <div class="container-fluid form-custom p-4 text-dark mt-5" ref="sectionTable">   
-                <!-- <table class="table table-dark table-striped table-bordered table-hover mt-4 scrollme">
+            </form>
+            <hr>
+          </div>
+          <div>
+            <div class="container-fluid form-custom p-4 text-dark mt-5" ref="sectionTable">   
+              <!-- <table class="table table-dark table-striped table-bordered table-hover mt-4 scrollme">
                 <thead>
-                    <tr class="text-white bg-dark text-center">
+                  <tr class="text-white bg-dark text-center">
                     <th>#</th>
                     <th v-for="i in max" :key="i" >Jadwal {{i}}</th>
                     </tr>

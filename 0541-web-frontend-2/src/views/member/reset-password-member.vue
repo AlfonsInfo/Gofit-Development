@@ -1,5 +1,5 @@
 <script>
-import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, TableData,reactive,inject,ActionResetPassword, onMounted } from '@/plugins/global.js'
+import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, TableData,reactive,inject,ActionResetPassword, onMounted, Swal } from '@/plugins/global.js'
 
 
   export default defineComponent({
@@ -53,39 +53,51 @@ import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, TableData,reacti
       return `${yyyy}-${mm}-${dd}`;
       }
 
-      const validasiPIC = ()=>{
-        let user =localStorage.getItem('userData');
-        user = JSON.parse(user);
-        let konfirmUsername = prompt('Konfirmasi username sebelum melakukan reset password');
-        if(user.username == konfirmUsername)
-        {
-          return true;
-        }
-        return false;
-      }
+      // const validasiPIC = ()=>{
+      //   let user =localStorage.getItem('userData');
+      //   user = JSON.parse(user);
+      //   let konfirmUsername = prompt('Konfirmasi username sebelum melakukan reset password');
+      //   if(user.username == konfirmUsername)
+      //   {
+      //     return true;
+      //   }
+      //   return false;
+      // }
 
       //Fungsi ResetPW
       const ResetPw = async ({id_pengguna,tgl_lahir_member}) => {
-        const confirmDelete = confirm('Yakin ingin melakukan reset password ?')
 
-        if(confirmDelete)
-        {
-          tgl_lahir_member = formatDate(tgl_lahir_member)
-          const  validPegawai = validasiPIC();
-          if(validPegawai == true)
-          {
-            try{
+        tgl_lahir_member = formatDate(tgl_lahir_member)
+        const result = await Swal.fire({
+          title: 'Apakah Anda yakin ingin menghapus data ini?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#dc3545',
+          confirmButtonText: 'Reset',
+          cancelButtonText: 'Batal',
+        })
+        //Jika di confirm
+      if (result.isConfirmed) {
+          try{
               const url = `/pengguna/${id_pengguna}`
               const request = await http.put(url,{ tgl_lahir_member : tgl_lahir_member} ); // ; 
               $toast.success(request.data.message)
-            }catch{
+          }catch{
               $toast.warning('Gagal Menambahkan Data')
-            }
-          }else{
-            $toast.warning('Gagal Validasi Pegawai')
           }
-        }
+
+        // Tampilkan notifikasi SweetAlert setelah data dihapus
+        Swal.fire({
+          title: 'Password berhasil direset!',
+          icon: 'success',
+          timer: 2000,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        })
       }
+    }
+
+
 
       ActionResetPassword.functionAction = (member) => {
         ResetPw(member)

@@ -44,6 +44,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::get('/transaksihariini' , 'transaksiController@todayTransaction');
     Route::apiResource('/transaksiaktivasi', 'aktivasiController');  
     Route::apiResource('/transaksideposituang', 'depositUangController');  
+    Route::apiResource('/transaksidepositpaket', 'depositPaketController');  
     Route::get('/td-deposituang', 'depositUangController@todayTransaction');
     
     Route::get('/updatememberexpired/{id}',  'memberController@updateExpireDate');

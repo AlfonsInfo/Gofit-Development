@@ -2,20 +2,16 @@
   // import LogoutButton from '../components/LogoutButton.vue';
   import HomeNavbar from '../components/HomeNavbar.vue';
   import MenuCard from '../components/menu-card.vue'  
-  import Swal from 'sweetalert2'
 
   //bagaimana cara kondisi tertentu -> data tertentu
   import {functionalKasir, functionalAdmin, functionalMO} from '../data/staticData'
   export default{
     data(){
       return {
-        showMenuAdmin : false,
-        showMenuMO : false,
-        showMenuKasir : false,
         functionalKasir ,
         functionalAdmin,
-        functionalMO        
-
+        functionalMO,
+        showMenu : null ,        
       }
     },
     methods : {
@@ -26,16 +22,17 @@
       {
         if(jabatan_pegawai == 'kasir')
         {
-          this.showMenuKasir = true;
+         this.showMenu = this.functionalKasir;
         }else if(jabatan_pegawai == 'MO')
         {
-          this.showMenuMO = true;
+          this.showMenu = this.functionalMO;
         }else if(jabatan_pegawai == 'Admin')
         {
-          this.showMenuAdmin = true;
+          this.showMenu = this.functionalAdmin;
         }
-        console.log(this.showMenuAdmin) 
       },
+
+
       getDataUser()
       {
         let user =localStorage.getItem('userData');
@@ -47,24 +44,19 @@
         return JSON.parse(pegawai)
       },    
 
-      showAlert() {
-      console.log('fungsi show alert')
-      Swal.fire('Hello SweetAlert')
-      }
     },
   
 
     mounted(){
-      console.log(functionalKasir)
-      console.log(this.showMenuAdmin)
       //Change Class For Change CSS Styles
       this.changeClass()
       //Get dataPegawai
       const dataPegawai = this.getDataPegawai();
       //Render  based on Data
       this.renderContent(dataPegawai);
-    },
 
+      console.log(this.showMenu)
+    },
 
     components : {
       // LogoutButton,
@@ -78,12 +70,12 @@
     <home-navbar :message = "'Selamat Datang Di Aplikasi Gofit'"></home-navbar>
   </header>
   <main class="">
-      <div class="pegawai-admin p-5" v-show="showMenuAdmin">
+      <div class="pegawai-admin p-5">
         <div class="row row-cols-2 row-cols-md-12" >
-          <menu-card :data ="functionalAdmin"></menu-card>
+          <menu-card :data ="showMenu"></menu-card>
         </div>
       </div>
-      <div class="pegawai-mo p-5 " v-show="showMenuMO">
+      <!-- <div class="pegawai-mo p-5 " v-show="showMenuMO">
         <div class=" row row-cols-2 row-cols-md-12" >
           <menu-card :data ="functionalMO"></menu-card>
         </div>
@@ -92,7 +84,7 @@
         <div class=" row row-cols-2 row-cols-md-12" >
           <menu-card :data ="functionalKasir"></menu-card>
         </div>
-      </div>
+      </div> -->
       <div>
   </div>
   </main>

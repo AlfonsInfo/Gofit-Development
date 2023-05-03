@@ -1,5 +1,5 @@
 <script>
-import { HomeNavbar,defineComponent,$toast, } from '@/plugins/global';
+import { HomeNavbar,defineComponent,$toast, Swal } from '@/plugins/global';
 
 export default defineComponent({
     components : {
@@ -27,26 +27,30 @@ export default defineComponent({
     //Submit Form
     async submitForm()
     {
-      let  confirmTransaction = false;
-      const confirmDataTransaction = confirm('Apakah Anda Yakin Data Transaksinya sudah benar ? ');
-      if(confirmDataTransaction){
-        confirmTransaction = true;
-        if(this.FormTransactionUang.id_promo == ''){
-          const confirmNoPromo = confirm('Apakah Anda yakin tidak ingin menggunakan promo ');
-          if(!confirmNoPromo){
-            confirmTransaction = false;
-          }
-        }
-      }
-      if(confirmTransaction){
+    //Confirm
+    const result = await Swal.fire({
+      title: 'Apakah Anda yakin ingin melakukan transaksi ini?',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        confirmButtonText: 'Lanjutkan',
+        cancelButtonText: 'Batal',
+      })
+      if(result.isConfirmed){
         try{
           this.getMember(this.FormTransactionUang)
           const url = '/transaksideposituang';
           const response = await this.$http.post(url,this.FormTransactionUang);
-          // this.updateDepositBalance(response.data.total) Incase trigger tidak boleh digunakan
-          $toast.success(response.data.message);
+                // this.updateDepositBalance(response.data.total) Incase trigger tidak boleh digunakan
+          $toast.success(response.data.message);        
+          Swal.fire({
+            title: 'Transaksi Berhasil!',
+            icon: 'success',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          })
         }catch{
-          $toast.warning('Ada kesalahan dalam inputan transaksi');
+          $toast.warning('Transaksi Gagal, Cek Data Transaksi !!')
         }
       }
     },
