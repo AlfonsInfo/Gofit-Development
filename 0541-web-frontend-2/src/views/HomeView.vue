@@ -50,7 +50,7 @@
       showAlert() {
       console.log('fungsi show alert')
       Swal.fire('Hello SweetAlert')
-    }
+      }
     },
   
 
@@ -94,7 +94,6 @@
         </div>
       </div>
       <div>
-     <button @click="this.showAlert">Tampilkan Alert</button>
   </div>
   </main>
 </template>

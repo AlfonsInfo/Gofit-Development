@@ -1,7 +1,8 @@
 <script>
 import { HomeNavbar, TableData, ModalDetail, ref, useRouter, 
   reactive,inject,$toast,onMounted,ActionRouteToCreate ,ActionViewDetail, 
-  ActionDelete,ActionUpdate, defineComponent} from '@/plugins/global.js'
+  ActionDelete,ActionUpdate, defineComponent, Swal} from '@/plugins/global.js'
+
 
   export default defineComponent({
     //Component Custom yang digunakan
@@ -89,22 +90,38 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
           detailMember(member)
       }
 
+      //Confirm Delete
+      
       //Fungsi Delete
       const deleteData = async ({id_member}) => {
-
-        const confirmDelete = confirm('Yakin ingin menghapus data member ?')
-        if(confirmDelete){
-            const deleteRoute = `/member/${id_member}`
-          try{
-            const deleteRequest = await http.delete(deleteRoute)
-            // alert(deleteRequest.data.message)
-            $toast.success(deleteRequest.data.message)
-            getAllMember('Tabel Data Member di update')
-          }catch{
-            $toast.warning('Gagal Menghapus Data')
-          }
-        }
-      }
+        //Confirm
+        const result = await Swal.fire({
+          title: 'Apakah Anda yakin ingin menghapus data ini?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#dc3545',
+          confirmButtonText: 'Hapus',
+          cancelButtonText: 'Batal',
+        })
+        //Jika di confirm
+      if (result.isConfirmed) {
+        const deleteRoute = `/member/${id_member}`
+        console.log(deleteRoute);
+        const deleteRequest = await http.delete(deleteRoute)
+        getAllMember('Tabel Data Member di update')
+        $toast.success(deleteRequest.data.message)
+      // Tampilkan notifikasi SweetAlert setelah data dihapus
+    
+      Swal.fire({
+        title: 'Data berhasil dihapus!',
+        icon: 'success',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      })
+    
+    }
+  }
 
 
       ActionDelete.functionAction = (member) => {
@@ -162,9 +179,6 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
       <modal-detail :display="state.modalToggle" :data="state.sendDataDetail"  @close-modal="state.modalToggle = false;" ></modal-detail>
     </div>
   </main>
-
-
-  
   <div class="modal-dialog modal-sm"></div>
 </template>
 
