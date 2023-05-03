@@ -5,6 +5,7 @@ import ModalDetail from '@/components/ModalDetail.vue';
 import BackButton from '@/components/BackButton.vue';
 import Swal from 'sweetalert2'
 import {DataTables} from './TableHelper.js'
+import { jsPDF } from "jspdf";
 
 
 // import ModalConfirm from '../../components/ModalConfirm.vue';
@@ -19,5 +20,5 @@ import {$toast} from '@/plugins/notifHelper.js'
 export{
     HomeNavbar, TableData,ModalDetail, onMounted, ref, reactive , inject , defineComponent
     ,useRouter, ActionRouteToCreate , ActionViewDetail, ActionUpdate , ActionDelete, $toast
-    ,BackButton, DataTables ,  ActionResetPassword,MenuCard, Swal
+    ,BackButton, DataTables ,  ActionResetPassword,MenuCard, Swal, jsPDF
 }

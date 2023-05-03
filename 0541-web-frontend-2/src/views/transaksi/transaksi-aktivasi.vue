@@ -1,5 +1,5 @@
 <script>
-import { HomeNavbar,BackButton,ref,defineComponent,useRouter,$toast,DataTables } from '@/plugins/global';
+import { HomeNavbar,BackButton,ref,defineComponent,useRouter,$toast,DataTables, Swal ,jsPDF} from '@/plugins/global';
 
 
 export default defineComponent({
@@ -27,12 +27,13 @@ export default defineComponent({
 
         async generateTransactionData(row)
         {
-            const request = await this.$http.get('/transaksiaktivasi');
-            const nextNoStruk = request.data + 1;
+            console.log(row)
+            // const request = await this.$http.get('/transaksiaktivasi');
+            // const nextNoStruk = request.data + 1;
             const today = new Date();
-            const year = today.getFullYear().toString().substr(-2); // Mengambil 2 digit terakhir dari tahun
-            const month = ('0' + (today.getMonth() + 1)).slice(-2); // Menambahkan 0 di depan jika bulan kurang dari 10
-            this.NoStruk =  year + '.' + month + '.' + nextNoStruk;
+            // const year = today.getFullYear().toString().substr(-2); // Mengambil 2 digit terakhir dari tahun
+            // const month = ('0' + (today.getMonth() + 1)).slice(-2); // Menambahkan 0 di depan jika bulan kurang dari 10
+            // this.NoStruk =  year + '.' + month + '.' + nextNoStruk;
             
             this.selectedMember = row;
             if(row.tgl_kadeluarsa_aktivasi == null)
@@ -48,9 +49,31 @@ export default defineComponent({
                 }
         },
         
-        generateStrukAktivasi()
-        {
-            console.log('ini struk aktivasi')
+        generateStrukAktivasi() {
+            // Mendapatkan elemen HTML yang akan dicetak
+            const pdfContent = document.querySelector("#pdfContent");
+            pdfContent.style.display = "block";
+
+            // Mengubah properti CSS elemen yang di-hidden menjadi 'block'
+
+            // Membuat instance jsPDF
+            const doc = new jsPDF({
+                orientation: 'l', // set orientation page, 'p' for portrait and 'l' for landscape
+                unit: 'cm', // set unit of measurement
+                format: [400,150] // set page size format, ex: 'a4', 'letter', 'legal', etc.
+            });
+
+            doc.setFontSize(2)
+
+            // Menambahkan konten HTML ke dokumen PDF
+            doc.html(pdfContent, {
+            callback: function (doc) {
+                // Setelah selesai menghasilkan dokumen PDF, reset properti CSS elemen yang di-hidden
+                pdfContent.style.display = "none";
+                // Mencetak dokumen PDF
+                doc.save('test.pdf');
+            },
+            });
         },
 
         async updateExpiredMember({id_member})
@@ -63,7 +86,53 @@ export default defineComponent({
             }
         },
 
-        async confirmTransaction()
+        async confirmTransaction(row)
+        {
+            this.generateTransactionData(row)
+            console.log(this.Kadeluarsa)
+            //Confirm
+            const result = await Swal.fire({
+            title: 'Apakah Anda yakin melakukan konfirmasi transaksi aktivasi ? ',
+            html: `
+                <p>Detail Transaksi :</p>
+                <ul>
+                <p>ID Member: ${row.id_member}</p>
+                <p>Jumlah Transaksi: Rp 3.000.0000</p>
+                <p>Tanggal Kadaluarsa: ${this.Kadeluarsa.getDate()} - ${this.Kadeluarsa.getMonth()+1} - ${this.Kadeluarsa.getFullYear()} </p>
+                </ul>`,
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                confirmButtonText: 'Lanjutkan',
+                cancelButtonText: 'Batal',
+            })
+            if(result.isConfirmed){
+                try{
+                const data = 
+                {
+                    id_pegawai : this.pegawaiPIC.id_pegawai,
+                    id_member : this.selectedMember.id_member,
+                }
+                const response = await this.$http.post('/transaksiaktivasi',data);
+                // Selanjutnya update table member kolom kadeluarsa aktivasi -> Menggunakan Trigger / Fungsi updateMemberData
+                this.updateExpiredMember(data)
+                // Generate StrukAktivasi
+                this.generateStrukAktivasi()
+                $toast.success('Berhasil Konfirmasi Presensi')
+                this.getAllMember()
+                $toast.success(response.data.message);        
+                Swal.fire({
+                    title: 'Transaksi Berhasil!',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                })
+                }catch{
+                $toast.warning('Transaksi Gagal, Cek Data Transaksi !!')
+                }
+            }
+        },
+        async confirmTransaction2()
         {
             try{
                 console.log(this.selectedMember)
@@ -89,8 +158,6 @@ export default defineComponent({
             const request = await this.$http.get('/member');
             this.inActiveMember = request.data.data.filter(values => (values.tgl_kadeluarsa_aktivasi == null || values.tgl_kadeluarsa_aktivasi > Date()))
             this.ActiveMember = request.data.data.filter(values => (values.tgl_kadeluarsa_aktivasi != null || values.tgl_kadeluarsa_aktivasi < Date()))
-            console.log(this.ActiveMember)
-            console.log(this.inActiveMember)
             if(this.countInit == 0)
             {
                 DataTables('#table-active-member',[0,1,2])
@@ -108,7 +175,6 @@ export default defineComponent({
     mounted(){
         this.getAllMember('Berhasil Mengambil Data Presensi');
         this.pegawaiPIC = this.getDataPegawai()
-        console.log(this.pegawaiPIC)
     },
 
 })
@@ -120,6 +186,7 @@ export default defineComponent({
   <main>
       <div class="text-dark table-custom mt-5 ms-5 me-5 p-2 d-inline-block">
         <!-- <bu class="btn btn-primary">Presensi Gym</bu   tton> -->
+            
       </div>
       <div class="content bg-white text-dark table-custom m-5 mt-2">
         <div  class="container-fluid  p-4">
@@ -141,7 +208,8 @@ export default defineComponent({
                         <td>{{row.no_telp_member}}</td>
                         <td>{{ (row.tgl_kadeluarsa_aktivasi) ? row.tgl_kadeluarsa_aktivasi : 'Belum Pernah Aktivasi' }}</td>
                         <td>
-                            <button @click="generateTransactionData(row)" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Aktivasi</button>
+                            <button  type="button" class="btn btn-success" @click="confirmTransaction(row)" >Aktivasi</button>
+                            <!-- <button @click="generateTransactionData(row)" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">Aktivasi</button> -->
                         </td>
                     </tr>
                 </tbody>
@@ -170,7 +238,7 @@ export default defineComponent({
                         <td>{{row.nama_member}}</td>
                         <td>{{ (row.tgl_kadeluarsa_aktivasi) ? row.tgl_kadeluarsa_aktivasi : 'Belum Pernah Aktivasi' }}</td>
                         <td>
-                            <button @click="generateTransactionData(row)"  type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <button @click="confirmTransaction(row)"  type="button" class="btn btn-primary">
                             Perpanjang Aktivasi</button>
                         </td>
                     </tr>
@@ -180,38 +248,56 @@ export default defineComponent({
                 <back-button class="col-md-3" className="btn btn-dark"></back-button>
             </div>
         </div>
-
+        
         <!-- Button trigger modal -->
 
         <!-- Modal -->
         <div class="modal " id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="exampleModalLabel">Aktivasi</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Aktivasi</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h2>No Struk : {{ NoStruk }}</h2>
+                    <hr>
+                    <p><strong> Transaksi : </strong> transaksi-aktivasi</p>
+                    <p><strong> Nominal Transaksi : Rp </strong>  3.000.000</p>
+                    <p><strong> ID Member :  </strong>      {{ selectedMember.id_member }}</p>
+                    <!-- <p><strong> Kadeluarsa :  </strong>  {{  Kadeluarsa }}</p> -->
+                    <p><strong> Kadeluarsa :  </strong>  {{ ` ${Kadeluarsa.getDate()} - ${Kadeluarsa.getMonth()+1} - ${Kadeluarsa.getFullYear()}  ` }}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="confirmTransaction(selectedMember)">Konfirmasi Transaksi</button>
+                </div>
+                </div>
             </div>
-            <div class="modal-body">
-                <h2>No Struk : {{ NoStruk }}</h2>
-                <hr>
-                <p><strong> Transaksi : </strong> transaksi-aktivasi</p>
-                <p><strong> Nominal Transaksi : </strong>  300.000</p>
-                <p><strong> ID Member :  </strong>      {{ selectedMember.id_member }}</p>
-                <!-- <p><strong> Kadeluarsa :  </strong>  {{  Kadeluarsa }}</p> -->
-                <p><strong> Kadeluarsa :  </strong>  {{ ` ${Kadeluarsa.getDate()} - ${Kadeluarsa.getMonth()+1} - ${Kadeluarsa.getFullYear()}  ` }}</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="confirmTransaction(selectedMember)">Konfirmasi Transaksi</button>
-            </div>
-            </div>
-        </div>
+            
         </div>
   </div>
+  <div>
+        transaksi hari ini
+    </div>
   </main>
+<!-- Ini Awal Struk -->
+    <div>
+        <button @click="generateStrukAktivasi">Cetak Struk</button>
+        <div  id="pdfContent" style="display: none;" class="text-dark test">
+            <div class="m-2 p-5 border">
+                <p>Gofit</p>
+                <p>Jl. Centralpark No. 10 Yogyakarta</p>
+                <p>Aktivasi Tahunan</p>
+                <p><strong>Member</strong></p>
+                <p>Masa Aktif Member</p>
+            </div>
+        </div>
+    </div>
+<!-- Ini Akhir Struk -->
+
+
 </template>
-
-
 
 <style scoped>
     .table-custom{
@@ -233,6 +319,17 @@ export default defineComponent({
 
 .modal-backdrop {
     z-index: 1030;    
+}
+
+.test{
+    height: 200px;
+    width: 1000px;
+}
+@media print {
+  /* Menampilkan elemen yang di-hidden saat dicetak */
+  #pdfContent {
+    display: block !important;
+  }
 }
 
 </style>
