@@ -144,13 +144,13 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
       }
     },
     computed: {
-      displayedMembers() {
+    displayedMembers() {
         const searchKeyword = this.state.searchInput.toLowerCase();
         return this.members.filter(member => {
           const memberString = Object.values(member).join(' ').toLowerCase();
           return memberString.includes(searchKeyword);
     });
-}
+    }
 
     },
 

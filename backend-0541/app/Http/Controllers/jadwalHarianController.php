@@ -15,52 +15,32 @@ class jadwalHarianController extends Controller
     public function index()
     {
         //* find all data
-        $semua = [];
         $start_date = Carbon::now()->startOfWeek(Carbon::SUNDAY);
-        $end_date =  Carbon::now()->startOfWeek(Carbon::SUNDAY)->addMonth(1);
-        
-        for($date = $start_date; $date->lte($end_date); $date->addDays(7)){
-            
-            $jadwal = ['senin' => jadwal_harian::whereDate('tanggal_jadwal_harian',$date->addDay())->get(),
-                'selasa' => jadwal_harian::where('tanggal_jadwal_harian',$date->addDays(2))->get(),
-                'rabu' => jadwal_harian::where('tanggal_jadwal_harian',$date->addDays(3))->get(),
-                'kamis' => jadwal_harian::where('tanggal_jadwal_harian',   $date->addDays(4))->get(),
-                'jumat' => jadwal_harian::where('tanggal_jadwal_harian',$date->addDays(5))->get(),
-                'sabtu' => jadwal_harian::where('tanggal_jadwal_harian',$date->addDays(6))->get(),
-                'minggu' => jadwal_harian::where('tanggal_jadwal_harian',$date->addDays(7))->get(),
-            ];
 
-            array_push($semua,$jadwal); 
-        }
+        $jadwal = [$start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
+    ];
+
         return response([
         //* return response
             'message'=>'Success Tampil Data',
-            'data' => $semua
+            'data' => $jadwal
         ],200); 
 
     }
 
-    public function show($id_jadwal_umum)
+    public function findData(Request $request)
     {
-        //* find data based on params
-        $jadwal_umum = jadwal_umum::where('id_jadwal_umum', $id_jadwal_umum)->with(['instruktur'])->first();
-        
-        //* not found
-        if($jadwal_umum == null)
-        {
-            return response([
-                'Jadwal Umum Not Found'
-            ],404);
-        }
-
-        //* return response
-        return response([
-            'message'=>'Success Tampil Data',
-            'data' => $jadwal_umum
-        ],200);
+        $start_date = Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDay();
+        $end_date =  Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDays(7);
     }
-
-
+    
+    
     public function store(Request $request)
     {
         $start_date = Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDay();
@@ -76,18 +56,25 @@ class jadwalHarianController extends Controller
         ];
         for($date = $start_date; $date->lte($end_date); $date->addDay()){
             $hari = Carbon::parse($date)->format('l');
-
             $jadwalUmum = DB::table('jadwal_umum')
             ->where('jadwal_umum.hari', '=', $mapHari[strtolower($hari)])
             ->get();
             // menyimpan data ke tabel jadwal_harian
             foreach ($jadwalUmum as $jadwal) {
                 
-                DB::table('jadwal_harian')->insert([
-                    'tanggal_jadwal_harian' => $date->toDateString(),
-                    'status' => 'berjalan',
-                    'id_jadwal_umum' => $jadwal->id_jadwal_umum,
-                ]);
+                $jadwalHarian = DB::table('jadwal_harian')
+                ->where('tanggal_jadwal_harian', '=', $date->toDateString())
+                ->where('id_jadwal_umum', '=', $jadwal->id_jadwal_umum)
+                ->first();
+                // jika belum ada, maka dilakukan insert
+                if (!$jadwalHarian) {
+                    DB::table('jadwal_harian')->insert([
+                        'tanggal_jadwal_harian' => $date->toDateString(),
+                        'status' => 'berjalan',
+                        'id_jadwal_umum' => $jadwal->id_jadwal_umum,
+                    ]);
+            }
+            
         }
     }
         // dd($jadwalHarian);
@@ -98,7 +85,7 @@ class jadwalHarianController extends Controller
         //*return response
         return response([
         ]);
-
+        
 
     }
 
@@ -144,7 +131,7 @@ class jadwalHarianController extends Controller
         //*found
         if($jadwal_umum){
             $jadwal_umum->delete();
-
+            
             return response()->json([
                 'success' => true,
                 'message' => 'jadwal_umum Deleted',
@@ -159,3 +146,62 @@ class jadwalHarianController extends Controller
         }   
     }
 }
+
+                
+                // $jadwalHarian = DB::table('jadwal_harian')
+                // ->get();
+                // dd($jadwalHarian);
+                // ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal_umum')
+                // ->join('kelas', 'jadwal_umum.id_kelaas', '=', 'kelas.id_kelas')
+                // ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id_instruktur')
+                // // ->leftJoin('status_jadwal_harian', 'jadwal_harian.status_id', '=', 'status_jadwal_harian.id')
+                // // ->leftJoin('izin_instruktur', function ($join) {
+                //     // $join->on('jadwal_umum.id', '=', 'izin_instruktur.jadwal_umum_id')
+                //         // ->on('jadwal_harian.tanggal', '=', 'izin_instruktur.tanggal_izin')
+                //         // ->where('izin_instruktur.is_confirmed', true);
+                // // })
+                // ->leftJoin('instruktur as instruktur_penganti', 'izin_instruktur.instruktur_penganti_id', '=', 'instruktur_penganti.id')
+                // ->select('jadwal_harian.id', 'jadwal_harian.tanggal', 'jadwal_umum.jam_mulai', 'jadwal_umum.hari' ,'kelas.nama as nama_kelas', 'instruktur.nama as nama_instruktur', DB::raw('IFNULL(status_jadwal_harian.jenis_status, "") as jenis_status'), DB::raw('IFNULL(instruktur_penganti.nama, "") as instruktur_penganti'))
+                
+                // ->orWhere('jadwal_harian.tanggal', 'like', '%'.$request->data.'%')
+                //     ->orWhere('jadwal_umum.jam_mulai', 'like', '%'.$request->data.'%')
+                //     ->orWhere('kelas.nama', 'like', '%'.$request->data.'%')
+                //     ->orWhere('instruktur.nama', 'like', '%'.$request->data.'%')
+                //     ->orWhere('status_jadwal_harian.jenis_status', 'like', '%'.$request->data.'%')
+                //     ->orWhere('instruktur_penganti.nama', 'like', '%'.$request->data.'%')
+            
+                // ->orderBy('jadwal_harian.tanggal', 'asc')
+                // ->orderBy('jadwal_umum.jam_mulai')
+                // ->get()
+                // ->groupBy('tanggal')
+                // ->map(function ($items) {
+                //     return $items->map(function ($item) {
+                //         $item->jam_mulai = date('H:i', strtotime($item->jam_mulai));
+                //         return $item;
+                //     })->sortBy('jam_mulai');
+                // })
+                // ->groupBy(function ($items, $key) {
+                //     return Carbon::parse($key)->startOfWeek()->format('Y-m-d');
+                // }, true);
+            
+                // return response()->json([
+                //     'success' => true,
+                //     'message' => 'Daftar Jadwal harian',
+                //     'data' => $jadwalHarian
+                // ], 200);
+                // //* find data based on params
+                // $jadwal_umum = jadwal_umum::where('id_jadwal_umum', $id_jadwal_umum)->with(['instruktur'])->first();
+                
+                // //* not found
+                // if($jadwal_umum == null)
+                // {
+                //     return response([
+                //         'Jadwal Umum Not Found'
+                //     ],404);
+                // }
+            
+                // //* return response
+                // return response([
+                //     'message'=>'Success Tampil Data',
+                //     'data' => $jadwal_umum
+                // ],200);

@@ -1,5 +1,5 @@
 <script>
-import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackButton , inject} from '@/plugins/global.js'
+import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackButton , inject, reactive} from '@/plugins/global.js'
 
   export default defineComponent({
     //Component yang digunakan
@@ -10,9 +10,8 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
 
     data() {
       return {
-        toggle:true,
-        toggleModeTabel : false,
-    } 
+        
+      } 
 },
 
     //Setup
@@ -21,21 +20,27 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
       const router = useRouter('router'); 
       const http = inject('$http')
       let jadwalHarian = ref([])
-      let maxPagi = ref([]);
-      // let jadwalPagi = ref([])
-      // let jadwalSore = ref([])
-      // let maxSore = ref([]);
+      let maxJadwal= ref([]);
+      const state = reactive({
+      searchInput : '',
+      // modalConfirm : false,
+      // modalReaction : false,
+    })
 
+
+      const querySearch = async () => {
+
+      }
       //cek http dan $http update~~~~~~~`
       const getAllJadwal= async (message) => {
         const dataRoute = "/jadwalharian";
         const response= await http.get(dataRoute)
-        console.log(response.data.data);
         jadwalHarian.value = response.data.data
-        console.log(jadwalHarian)
-        maxPagi.value = jadwalHarian.value.map(x => Math.max(...Object.values(x).map(y => y.length))) 
-        // jadwalSore.value = request.data.data.sore
-        // maxSore.value = Math.max(...Object.values(jadwalSore.value).map(x => x.length)) 
+        
+        console.log(jadwalHarian.value)
+        // const filterData = Object.value(jadwalHarian.value).filter((tanggal,{id_jadwal_umum})=> tanggal == '2023-05-04');
+        // console.log(filterData)
+        maxJadwal.value = Math.max(...Object.values(jadwalHarian.value).map(x => x.length)) 
         $toast.success(message)
       }
       onMounted(async () =>  {
@@ -70,8 +75,9 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
       return{
         // jadwalPagi,
         // jadwalSore,
+        state,
         jadwalHarian,
-        maxPagi,
+        maxJadwal,
         // maxSore,
         updateDataCell,
         deleteDataCell
@@ -79,18 +85,26 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
     },
     computed:{
       displayedJadwal(){
-        if(this.toggle){
-          return this.jadwalPagi;
-        }
-        return this.jadwalSore
-      },
-      max(){
-        if(this.toggle){ 
-          return this.maxPagi;
-        }
-        return this.maxSore
+        let searchInput = this.state.searchInput;
+        let contentJadwal = Object.entries(this.jadwalHarian);
+        // let Content = {};
+      if (searchInput !== '') {
+        contentJadwal = contentJadwal.filter(([key, value]) => {
+          return key.includes(searchInput) ||
+            Object.values(value).some(function(obj){
+              return obj.jadwal_umum.kelas.jenis_kelas.includes(searchInput) ||
+              obj.jadwal_umum.instruktur.nama_instruktur.includes(searchInput)
+            } 
+            );
+        }).map(([key, value]) => [key, value.filter(obj => {
+            return obj.jadwal_umum.kelas.jenis_kelas.includes(searchInput);
+        })]);
+      }      
+        return contentJadwal;
+      }
+    // );
     }
-  }
+   
 })
 </script>
 <template >
@@ -100,49 +114,53 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
   <main>
     <div class='content text-white p-5'>
       <h2 class="">Jadwal</h2>
+      <div class="input-group mt-3 mb-2">
+        <input type="search" class="form-control rounded me-2 " placeholder="Cari Jadwal" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
+      <button class="btn btn-primary">Cari Jadwal</button>
+      </div>
+
       <div class="class='container-fluid table-custom p-4 text-dark'">
         <!-- Button -->
         <div class="d-flex justify-content-between ">
           <router-link type="button"  class="btn btn-outline-dark" :to="{name:'jadwal-umum-tambah'}">Tambah Jadwal</router-link>
-          <div>
+          <!-- <div>
             <button type="button"  class="btn btn-outline-dark" v-if="toggle" @click="toggle = !toggle">Jadwal Malam</button>              
             <button type="button"  class="btn btn-outline-dark" v-else @click="toggle = !toggle">Jadwal Pagi</button>              
-          </div>              
+          </div>               -->
         </div>
         <table class="table table-dark table-striped table-bordered table-hover mt-4 scrollme">
           <thead>
             <tr class="text-white bg-dark text-center">
               <th>#</th>
-              <th v-for="i in max" :key="i" >Jadwal {{i}}</th>
+              <th v-for="i in maxJadwal" :key="i" >Jadwal {{i}}</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(jd,index) in displayedJadwal" :key="index">
-              <th scope="row" class="text-white bg-dark text-center">{{index}}</th>
-              <td v-for="(column,idx) in jd" :key="idx" class="text-center"> 
+              <th scope="row" class="text-white bg-dark text-center">
                 <p>
-                  Jadwal : {{column.jam_mulai}} - {{ column.jam_selesai }}
+                  {{jd[0]}} {{ new Date(jd[0]).toLocaleDateString('en-US', {weekday: 'long'}) }}
+                </p>
+              </th>
+              <td v-for="(column,idx) in jd[1]" :key="idx">
+                <p>
+                  Kelas : {{ column.jadwal_umum.kelas.jenis_kelas }}
                 </p>
                 <p>
-                  Nama Kelas : {{column.kelas.jenis_kelas }}  
+                  Instruktur : {{column.jadwal_umum.instruktur.nama_instruktur}}
                 </p>
-                <p>
-                  Instruktur : {{ column.instruktur.nama_instruktur }}
-                </p>
-                <div v-show="toggleModeTabel">
-                  <button class="btn btn-warning m-2" @click.prevent="updateDataCell(column)">Update</button>
-                  <button class="btn btn-danger" @click.prevent="deleteDataCell(column)">Delete</button>
-                </div>
+                <p>{{ column.jadwal_umum.jam_mulai }} - {{ column.jadwal_umum.jam_selesai }}</p>
               </td>
-              <td v-for="i in (max - jd.length)" :key="i" class="text-center">*</td>
+              <td v-for="i in (maxJadwal - jd[1].length)" :key="i" class="text-center">*</td>
+              
             </tr>
           </tbody>
         </table>
         <div class="d-flex justify-content-between">
-          <div>
+          <!-- <div>
             <button class="btn btn-primary" v-if="!toggleModeTabel" @click="toggleModeTabel = !toggleModeTabel">Mode Edit</button>
             <button class="btn btn-success" v-else @click=" toggleModeTabel =!toggleModeTabel">Mode Tampil</button>
-          </div>
+          </div> -->
           <back-button className="btn btn-dark"></back-button>
         </div>
       </div>
