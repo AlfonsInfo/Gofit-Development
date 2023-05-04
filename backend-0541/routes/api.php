@@ -35,6 +35,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/jadwalumum', 'jadwalController');
     Route::apiResource('/jadwalharian', 'jadwalHarianController');
     Route::post('/jadwalharianfind', 'jadwalHarianController@findData');
+    Route::get('/jadwalharianlibur/{id}', 'jadwalHarianController@updateLibur');
     Route::apiResource('/promo', 'promoController');
     Route::apiResource('/member', 'memberController');
     Route::apiResource('/pengguna', 'penggunaController');

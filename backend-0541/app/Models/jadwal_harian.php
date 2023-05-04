@@ -16,4 +16,8 @@ class jadwal_harian extends Model
         return $this->hasOne(jadwal_umum::class,'id_jadwal_umum','id_jadwal_umum');
     }
 
+    public function ijin_instruktur(){
+        return $this->belongsTo(ijin_instruktur::class,'id_jadwal_harian','id_jadwal_harian');
+    }
+
 }

@@ -1,5 +1,6 @@
 <script>
-import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackButton , inject, reactive} from '@/plugins/global.js'
+import { HomeNavbar,  ref ,onMounted, $toast, defineComponent, BackButton , inject, reactive
+        , Swal } from '@/plugins/global.js'
 
   export default defineComponent({
     //Component yang digunakan
@@ -10,27 +11,21 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
 
     data() {
       return {
-        
+        toggleModeTabel  : false
       } 
 },
 
     //Setup
     setup(){
       //Variable
-      const router = useRouter('router'); 
       const http = inject('$http')
       let jadwalHarian = ref([])
       let maxJadwal= ref([]);
       const state = reactive({
       searchInput : '',
-      // modalConfirm : false,
-      // modalReaction : false,
     })
 
 
-      const querySearch = async () => {
-
-      }
       //cek http dan $http update~~~~~~~`
       const getAllJadwal= async (message) => {
         const dataRoute = "/jadwalharian";
@@ -38,8 +33,6 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
         jadwalHarian.value = response.data.data
         
         console.log(jadwalHarian.value)
-        // const filterData = Object.value(jadwalHarian.value).filter((tanggal,{id_jadwal_umum})=> tanggal == '2023-05-04');
-        // console.log(filterData)
         maxJadwal.value = Math.max(...Object.values(jadwalHarian.value).map(x => x.length)) 
         $toast.success(message)
       }
@@ -47,40 +40,83 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
         getAllJadwal('Mendapatkan data jadwal')
       })
 
-      //Create
+      const confirmChangeStatus = async ({id_jadwal_harian}) => {
+        //Confirm
+        const result = await Swal.fire({
+          title: 'Apakah Anda yakin ingin meliburkan jadwal ini?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#dc3545',
+          confirmButtonText: 'Liburkan',
+          cancelButtonText: 'Batal',
+        })
+        //Jika di confirm
+      if (result.isConfirmed) {
+        const url = `/jadwalharianlibur/${id_jadwal_harian}`
+        console.log(url);
+        const response = await http.get(url)
+        getAllJadwal('Tabel Data Jadwal di update')
+        $toast.success(response.data.message)
+      // Tampilkan notifikasi SweetAlert setelah data dihapus
+    
+      Swal.fire({
+        title: 'Data berhasil dihapus!',
+        icon: 'success',
+        timer: 2000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+      })
+    
+    }
+  }
 
-      //Update
-      const updateDataCell = (data) => {
-          console.log(data)
-          router.push({name:'jadwal-umum-ubah',query:data})
-      }
-
-      //Delete
-      const deleteDataCell = async ({id_jadwal_umum}) =>{
-        const confirmDelete = confirm('Apakah Yakin ingin menghapus jadwal ini ? ');
-
-        if(confirmDelete){
-          const deleteRoute = `/jadwalumum/${id_jadwal_umum}`
-          try{
-            const deleteRequest = await http.delete(deleteRoute)
-            $toast.success(deleteRequest.data.message)
-            getAllJadwal('Tabel Data Jadwal di update')
-          }catch{
-            $toast.warning('Gagal Menghapus Data')
-          }
+  const generateJadwal = async () => {
+        //Confirm
+        const result = await Swal.fire({
+          title: 'Apakah Anda yakin ingin melakukan generate jadwal untuk minggu ini ?',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: 'blue',
+          confirmButtonText: 'Generate',
+          cancelButtonText: 'Batal',
+        })
+      if (result.isConfirmed) {
+        try{
+          const url = `/jadwalharian`
+          const response = await http.post(url,{})
+          console.log(response)
+          getAllJadwal('Tabel Data Jadwal Berhasil digenerate')
+          $toast.success(response.data.message)
+          Swal.fire({
+            title: 'Data berhasil dihapus!',
+            icon: 'success',
+            timer: 2000,
+            timerProgressBar: true,
+            showConfirmButton: false,
+          })
+        }catch(e){
+          console.log(e.response.data.message)
+          $toast.info('Gagal Generate')
         }
+      // Tampilkan notifikasi SweetAlert setelah data dihapus
+    
+    
+    }
+  }
 
-      }
+    // const changeStatus = async(id_jadwal_harian) => {
+
+    // }
+
+      
 
       return{
-        // jadwalPagi,
-        // jadwalSore,
         state,
         jadwalHarian,
+        confirmChangeStatus,
         maxJadwal,
-        // maxSore,
-        updateDataCell,
-        deleteDataCell
+        generateJadwal
+        // changeStatus
       }
     },
     computed:{
@@ -113,21 +149,14 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
   </header>
   <main>
     <div class='content text-white p-5'>
-      <h2 class="">Jadwal</h2>
+      <h2 class="">Jadwal Harian</h2>
       <div class="input-group mt-3 mb-2">
         <input type="search" class="form-control rounded me-2 " placeholder="Cari Jadwal" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
-      <button class="btn btn-primary">Cari Jadwal</button>
+      <button class="btn btn-primary" @click="generateJadwal">Generate Jadwal +</button>
       </div>
 
       <div class="class='container-fluid table-custom p-4 text-dark'">
         <!-- Button -->
-        <div class="d-flex justify-content-between ">
-          <router-link type="button"  class="btn btn-outline-dark" :to="{name:'jadwal-umum-tambah'}">Tambah Jadwal</router-link>
-          <!-- <div>
-            <button type="button"  class="btn btn-outline-dark" v-if="toggle" @click="toggle = !toggle">Jadwal Malam</button>              
-            <button type="button"  class="btn btn-outline-dark" v-else @click="toggle = !toggle">Jadwal Pagi</button>              
-          </div>               -->
-        </div>
         <table class="table table-dark table-striped table-bordered table-hover mt-4 scrollme">
           <thead>
             <tr class="text-white bg-dark text-center">
@@ -146,10 +175,22 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
                 <p>
                   Kelas : {{ column.jadwal_umum.kelas.jenis_kelas }}
                 </p>
-                <p>
+                <p>{{ column.jadwal_umum.jam_mulai }} - {{ column.jadwal_umum.jam_selesai }}</p>
+                <p v-if="column.ijin_instruktur == null"> 
                   Instruktur : {{column.jadwal_umum.instruktur.nama_instruktur}}
                 </p>
-                <p>{{ column.jadwal_umum.jam_mulai }} - {{ column.jadwal_umum.jam_selesai }}</p>
+                <p v-else class="bg-success rounded p-2">
+                  {{ column.ijin_instruktur.instruktur_pengganti.nama_instruktur }}
+                  (menggantikan {{ column.ijin_instruktur.instruktur.nama_instruktur }})
+                  <!-- Instruktur Test : {{column.jadwal_umum}} -->
+                  <!-- (menggantikan {{ column.jadwal_umum.ijin_instruktur.instrukturPengganti.nama_instruktur }}) -->
+                </p>
+                <p v-if="column.status == 'diliburkan'" class="bg-danger rounded p-2"> Diliburkan🙏 </p>
+                <div v-show="toggleModeTabel" v-if="column.status != 'diliburkan'">
+                  <button class="btn btn-warning m-2" @click.prevent="confirmChangeStatus(column)">Liburkan</button>
+                </div>
+              </td>
+              <td>
               </td>
               <td v-for="i in (maxJadwal - jd[1].length)" :key="i" class="text-center">*</td>
               
@@ -157,10 +198,10 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
           </tbody>
         </table>
         <div class="d-flex justify-content-between">
-          <!-- <div>
+          <div>
             <button class="btn btn-primary" v-if="!toggleModeTabel" @click="toggleModeTabel = !toggleModeTabel">Mode Edit</button>
             <button class="btn btn-success" v-else @click=" toggleModeTabel =!toggleModeTabel">Mode Tampil</button>
-          </div> -->
+          </div>
           <back-button className="btn btn-dark"></back-button>
         </div>
       </div>

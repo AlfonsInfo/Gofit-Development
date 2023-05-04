@@ -1,5 +1,5 @@
 <script>
-import { HomeNavbar,defineComponent,$toast, BackButton, Swal } from '@/plugins/global';
+import { HomeNavbar,defineComponent,$toast, BackButton, Swal ,jsPDF, ref} from '@/plugins/global';
 import { reactive } from 'vue';
 
 export default defineComponent({
@@ -13,7 +13,9 @@ export default defineComponent({
           id_pegawai : this.getDataPegawai().id_pegawai,
           id_member : '',
           NoStruk : '',
-          id_kelas : null,
+          id_kelas : ref({
+            id_kelas : ''
+          }),
           nominal_deposit_kelas : 0,
           nominal_deposit_kelas_send : 0,
           nominal_uang : 0,
@@ -23,6 +25,12 @@ export default defineComponent({
         promos : null,
         allMember : null,
         allKelas : null,
+        hasilTransaksi : ref({
+            transaksi_deposit_paket : {no_struk :''},
+            transaksi_member :{},
+            member :{},
+            kelas : {},
+        }),
 
         //Object
         selectedPromo : null,
@@ -54,7 +62,10 @@ export default defineComponent({
             console.log(this.FormTransactionUang)
             const url = '/transaksidepositpaket';
             const response = await this.$http.post(url,this.FormTransactionUang);
-            $toast.success(response.data.message);        
+            this.hasilTransaksi = response.data.data
+            console.log(response.data.data)
+            $toast.success(response.data.message);     
+            this.generateStrukDepositPaket();   
             Swal.fire({
               title: 'Transaksi Berhasil!',
               icon: 'success',
@@ -62,14 +73,51 @@ export default defineComponent({
               timerProgressBar: true,
               showConfirmButton: false,
             })
-          }catch{
+          }catch(error){
+            console.log(error.response.data.message)
+            Swal.fire({
+              icon: 'warning',
+              title: 'Mohon Maaf',
+              text: error.response.data.message,
+              timer: 2000,
+              timerProgressBar: true,
+              showConfirmButton: false
+            })
             $toast.warning('Transaksi Gagal, Cek Data Transaksi !!')
           }
       }
               // Akhir
 
     },
-    
+    // Generate Struk
+    generateStrukDepositPaket() {
+            window.jspPDF = window.jspdf.jsPDF;
+            var elementHTML = document.querySelector('#pdfContent2');
+            elementHTML.style.display = "block";
+            elementHTML.style.fontSize = '5px';
+
+            //Spasi
+            elementHTML.style.lineHeight = '1.2'; 
+            elementHTML.style.margin = '0';
+            elementHTML.style.padding = '0';
+            
+            let doc = new jsPDF({
+                orientation: 'l', // orientasi landscape
+                unit: 'mm', // satuan millimeter
+                format: ['300','100'], // ukuran kertas A4
+            });
+
+            doc.html(elementHTML, {
+            callback: function (doc) {
+                doc.save('file.pdf');
+                elementHTML.style.display = "none";
+            },
+            x: 10,
+            y: 10
+            });
+        },
+
+
     //Generate No struk berikutnya
     async generateTransactionData()
     {
@@ -328,6 +376,66 @@ export default defineComponent({
       </div>
     </div>
     </main>
+
+    <!-- Struk Boy -->
+    <div class="bg light" >
+        <!-- <button @click="generateStrukDepositUang">Cetak Struk</button> -->
+        <!-- PDFFF -->
+        <div  width="600px" id="pdfContent2" style="  display: none;  margin:500px;" class=" text-dark">
+            <div width="600px" class="p-1 ">
+                <table class="border border-dark">
+                    <tr>
+                      <td style="width: 50%;">
+                        <strong>Gofit</strong>  
+                      </td>
+                      <td>
+                        No Struk : {{ hasilTransaksi.transaksi_deposit_paket.no_struk }}
+                      </td>
+                    </tr>
+                      <td>
+                        <p>Jl Centralpark No 10 Yogyakarta</p>
+                      </td>
+                        <td>Tanggal :  {{ new Date(hasilTransaksi.transaksi_deposit_paket.tanggal_deposit ).toLocaleDateString('en-GB') }}</td>
+                    <tr></tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr style="width: 80%;">
+                                    <td><strong>Member</strong></td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.member.id_member }}/{{ hasilTransaksi.member.nama_member }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Deposit(nominal deposit {{ hasilTransaksi.transaksi_deposit_paket.nominal_deposit_kelas}} gratis {{FormTransactionUang.nominal_deposit_kelas_send - hasilTransaksi.transaksi_deposit_paket.nominal_deposit_kelas}})</td>
+                                    <td>:</td>
+                                    <td>Rp.{{hasilTransaksi.transaksi_deposit_paket.nominal_uang}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Jenis Kelas</td>
+                                    <td>:</td>
+                                    <td> {{hasilTransaksi.kelas.jenis_kelas }} </td>
+                                </tr>
+                                <tr>
+                                    <td>Total Deposit {{ hasilTransaksi.kelas.jenis_kelas }}</td>
+                                    <td>:</td>
+                                    <td>{{ FormTransactionUang.nominal_deposit_kelas_send}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Masa Berlaku</td>
+                                    <td>:</td>
+                                    <td>{{ new Date(hasilTransaksi.transaksi_deposit_paket.tanggal_kadeluarsa).toLocaleDateString('en-GB') }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Kasir : {{getDataPegawai().id_pegawai}}/{{ getDataPegawai().nama_pegawai }} </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
   </template>
 
 

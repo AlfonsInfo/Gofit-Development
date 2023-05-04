@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\kelas;
 use Illuminate\Http\Request;
 use App\Models\promo;
 use App\Models\transaksi_member;
@@ -20,7 +21,14 @@ class depositPaketController extends Controller
         //cek nominalDeposit > promo[where id.promo].minimal.deposit
         $id_promo = null;
         $masa_berlaku = null;   
-        
+        $member = member::findOrFail($request->id_member);
+        if($member->total_deposit_paket != 0 && $member->tgl_kadeluarsa_paket != null){
+            return response()->json([
+                'success' => false,
+                'message' => 'Saldo Anda Belum Habis, Anda Belum Bisa melakukan transaksi lagi',
+                'data' => null
+            ], 401);
+        }
         if($request->id_promo != null){
             //* jika memakai promo
             $promo = promo::findorfail($request->id_promo);
@@ -72,7 +80,6 @@ class depositPaketController extends Controller
             'tanggal_kadeluarsa' => Carbon::now()->addMonth($masa_berlaku)
         ]);
 
-        $member = member::findOrFail($request->id_member);
         // $member = member::where('id_member', $request->id_member)->first();
         $member->total_deposit_paket = $nominal_deposit;
         $member->tgl_kadeluarsa_paket = Carbon::now()->addMonth($masa_berlaku);
@@ -81,9 +88,11 @@ class depositPaketController extends Controller
         {
             dd($e);
         }
+        
+        $kelas = kelas::findOrFail($request->id_kelas);
         return response([
             'message' => 'Berhasil Melakukan Transaksi',
-            'data' => ['member' => $member , 'deposit-paket' => $depositPaket, 'member' => $member]
+            'data' => ['member' => $member , 'transaksi_member'=>$transaksi_member,'transaksi_deposit_paket' => $depositPaket, 'kelas' => $kelas]
         ]);
     
         }

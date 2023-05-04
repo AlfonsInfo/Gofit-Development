@@ -12,18 +12,30 @@ use Illuminate\Support\Facades\DB;
 class jadwalHarianController extends Controller
 {
 
+        //cek apakah sudah generate jadwal harian
+    public function cekAutoGenerate(){
+        $jadwalHarian = jadwal_harian::where('tanggal_jadwal_harian', '>', Carbon::now()->startOfWeek(Carbon::SUNDAY)->format('Y-m-d'))
+            ->first();
+        if(is_null($jadwalHarian)){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public function index()
     {
+
         //* find all data
         $start_date = Carbon::now()->startOfWeek(Carbon::SUNDAY);
 
-        $jadwal = [$start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
-        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
-        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
-        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
-        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
-        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
-        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas'])->get(),
+        $jadwal = [$start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get(),
+        $start_date->addDay()->toDateString() => jadwal_harian::whereDate('tanggal_jadwal_harian',$start_date)->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get(),
     ];
 
         return response([
@@ -41,8 +53,15 @@ class jadwalHarianController extends Controller
     }
     
     
-    public function store(Request $request)
+    public function store()
     {
+        if(self::cekAutoGenerate()){
+            return response()->json([
+                'success' => false,
+                'message' => 'Jadwal harian minggu ini sudah di generate',
+                'data' => null,
+            ], 400);
+        }
         $start_date = Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDay();
         $end_date =  Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDays(7);
         $mapHari = [
@@ -144,6 +163,14 @@ class jadwalHarianController extends Controller
                 'message' => 'jadwal_umum Not Found',
             ], 404);
         }   
+    }
+
+
+    public function updateLibur($id){
+        $jadwal_harian = jadwal_harian::find($id);
+        $jadwal_harian->status = 'diliburkan';
+        $jadwal_harian->save();
+        return response()->json(['message' => 'Jadwal Harian berhasil diliburkan'], 200);
     }
 }
 
