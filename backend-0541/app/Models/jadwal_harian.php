@@ -10,6 +10,7 @@ class jadwal_harian extends Model
     use HasFactory;
     protected $table = 'jadwal_harian';
     protected $primaryKey = 'id_jadwal_harian';
+    protected $guarded = [];
 
     public function jadwal_umum(){
         return $this->hasOne(jadwal_umum::class,'id_jadwal_umum','id_jadwal_umum');

@@ -33,6 +33,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     // Route::post('/instruktur/{id}', 'instrukturController@show');
     Route::apiResource('/instruktur', 'instrukturController')->middleware('cors');
     Route::apiResource('/jadwalumum', 'jadwalController');
+    Route::apiResource('/jadwalharian', 'jadwalHarianController');
     Route::apiResource('/promo', 'promoController');
     Route::apiResource('/member', 'memberController');
     Route::apiResource('/pengguna', 'penggunaController');

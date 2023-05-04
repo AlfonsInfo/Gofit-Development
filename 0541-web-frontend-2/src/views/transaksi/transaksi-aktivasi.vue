@@ -1,95 +1,40 @@
 <script>
 import { HomeNavbar,BackButton,ref,defineComponent,useRouter,$toast,DataTables, Swal ,jsPDF} from '@/plugins/global';
-
-
 export default defineComponent({
     //Component yang digunakan
     components:{
         HomeNavbar,
         BackButton
     },
+    //Akhir dari Definisi Components yang digunakan
     
+    //Awal dari Data
     data(){
         return{
             router : useRouter(),
             inActiveMember : ref([]),
             ActiveMember : ref([]),
             countInit : 0,
-            showTable : true, // true Stand for Presensi Member Gym
             NoStruk : '',
             Kadeluarsa : new Date(),
             selectedMember : ref([]),
             pegawaiPIC : '',
+            tanggalTransaksi : new Date(),
+            hasilTransaksi : ref({
+                transaksi_aktivasi : {no_struk :''},
+                transaksi_member :{},
+            }),
         }
     },
+    //Akhir dari Data
 
+
+    //Awal Dari Methods
     methods :{
-
-        async generateTransactionData(row)
-        {
-            console.log(row)
-            // const request = await this.$http.get('/transaksiaktivasi');
-            // const nextNoStruk = request.data + 1;
-            const today = new Date();
-            // const year = today.getFullYear().toString().substr(-2); // Mengambil 2 digit terakhir dari tahun
-            // const month = ('0' + (today.getMonth() + 1)).slice(-2); // Menambahkan 0 di depan jika bulan kurang dari 10
-            // this.NoStruk =  year + '.' + month + '.' + nextNoStruk;
-            
-            this.selectedMember = row;
-            if(row.tgl_kadeluarsa_aktivasi == null)
-            {
-                this.Kadeluarsa = new Date();
-                this.Kadeluarsa.setFullYear(today.getFullYear() + 1) 
-            }else{
-                // Convert the date string to a Date object
-                this.Kadeluarsa = new Date(row.tgl_kadeluarsa_aktivasi);
-
-                // Add one year to the date
-                this.Kadeluarsa.setFullYear(this.Kadeluarsa.getFullYear() + 1);
-                }
-        },
-        
-        generateStrukAktivasi() {
-            // Mendapatkan elemen HTML yang akan dicetak
-            const pdfContent = document.querySelector("#pdfContent");
-            pdfContent.style.display = "block";
-
-            // Mengubah properti CSS elemen yang di-hidden menjadi 'block'
-
-            // Membuat instance jsPDF
-            const doc = new jsPDF({
-                orientation: 'l', // set orientation page, 'p' for portrait and 'l' for landscape
-                unit: 'cm', // set unit of measurement
-                format: [400,150] // set page size format, ex: 'a4', 'letter', 'legal', etc.
-            });
-
-            doc.setFontSize(2)
-
-            // Menambahkan konten HTML ke dokumen PDF
-            doc.html(pdfContent, {
-            callback: function (doc) {
-                // Setelah selesai menghasilkan dokumen PDF, reset properti CSS elemen yang di-hidden
-                pdfContent.style.display = "none";
-                // Mencetak dokumen PDF
-                doc.save('test.pdf');
-            },
-            });
-        },
-
-        async updateExpiredMember({id_member})
-        {
-            try{
-                const response = await this.$http.get(`/updatememberexpired/${id_member}`)
-                $toast.success(response.data.message);
-            }catch(e){
-                console.error('Error Update Data Member');
-            }
-        },
 
         async confirmTransaction(row)
         {
-            this.generateTransactionData(row)
-            console.log(this.Kadeluarsa)
+            this.generateTransactionData(row)            
             //Confirm
             const result = await Swal.fire({
             title: 'Apakah Anda yakin melakukan konfirmasi transaksi aktivasi ? ',
@@ -106,18 +51,29 @@ export default defineComponent({
                 cancelButtonText: 'Batal',
             })
             if(result.isConfirmed){
-                try{
-                const data = 
-                {
+                this.ActivationTransaction()
+            }
+        },
+
+
+        async ActivationTransaction(){
+            try{
+                const data = {
                     id_pegawai : this.pegawaiPIC.id_pegawai,
                     id_member : this.selectedMember.id_member,
-                }
+                };
+                //Request transaksi-aktivasi
                 const response = await this.$http.post('/transaksiaktivasi',data);
-                // Selanjutnya update table member kolom kadeluarsa aktivasi -> Menggunakan Trigger / Fungsi updateMemberData
+                //Jika berhasil update ExpiredMember
                 this.updateExpiredMember(data)
-                // Generate StrukAktivasi
+                //Hasil Transaksi
+                this.hasilTransaksi = response.data.data
+
                 this.generateStrukAktivasi()
-                $toast.success('Berhasil Konfirmasi Presensi')
+
+                $toast.success('Berhasil Konfirmasi Aktivasi')
+                
+                //Ambil kembali data member yang telah diupdate
                 this.getAllMember()
                 $toast.success(response.data.message);        
                 Swal.fire({
@@ -127,33 +83,76 @@ export default defineComponent({
                     timerProgressBar: true,
                     showConfirmButton: false,
                 })
-                }catch{
+            }catch{
                 $toast.warning('Transaksi Gagal, Cek Data Transaksi !!')
-                }
             }
         },
-        async confirmTransaction2()
+
+
+        formatDateStruk(){
+            this.tanggalTransaksi = new Date(this.hasilTransaksi.transaksi_aktivasi.tanggal_aktivasi );
+            this.hasilTransaksi.transaksi_aktivasi.tanggal_aktivasi = this.tanggalTransaksi.toLocaleString('id-ID', {day: '2-digit', month: '2-digit', year: 'numeric'}) + " " + this.tanggalTransaksi.toLocaleTimeString("id-ID", {hour: '2-digit', minute:'2-digit'}).replace(".",":");
+        },
+
+        async generateTransactionData(row)
         {
-            try{
-                console.log(this.selectedMember)
-                const data = {
-                    id_pegawai : this.pegawaiPIC.id_pegawai,
-                    id_member : this.selectedMember.id_member,
-                }
-                const request = await this.$http.post('/transaksiaktivasi',data);
-                console.log(request)
-                // Selanjutnya update table member kolom kadeluarsa aktivasi -> Menggunakan Trigger / Fungsi updateMemberData
-                this.updateExpiredMember(data)
-                // Generate StrukAktivasi
-                this.generateStrukAktivasi()
-                $toast.success('Berhasil Konfirmasi Presensi')
-                this.getAllMember()
-            }catch{
-                $toast.warning('Gagal Melakukan Transaksi')
+            console.log(row)
+            const today = new Date();
+            this.selectedMember = row;
+            if(row.tgl_kadeluarsa_aktivasi == null)
+            {
+                this.Kadeluarsa = new Date();
+                this.Kadeluarsa.setFullYear(today.getFullYear() + 1) 
+            }else{
+                this.Kadeluarsa = new Date(row.tgl_kadeluarsa_aktivasi);
+                this.Kadeluarsa.setFullYear(this.Kadeluarsa.getFullYear() + 1);
             }
         },
         
-    
+        // JSPDFF
+        generateStrukAktivasi() {
+            this.formatDateStruk();
+            window.jspPDF = window.jspdf.jsPDF;
+            var elementHTML = document.querySelector('#pdfContent');
+            elementHTML.style.display = "block";
+            elementHTML.style.fontSize = '5px';
+            //Spasi
+            elementHTML.style.lineHeight = '1.2'; 
+            elementHTML.style.margin = '0';
+            elementHTML.style.padding = '0';
+
+            let doc = new jsPDF({
+                orientation: 'l', // orientasi landscape
+                unit: 'mm', // satuan millimeter
+                format: ['300','100'], // ukuran kertas A4
+            });
+
+            doc.html(elementHTML, {
+            callback: function (doc) {
+                doc.save('file.pdf');
+                elementHTML.style.display = "none";
+            },
+            x: 10,
+            y: 10
+            });
+        },
+
+        async updateExpiredMember({id_member})
+        {
+            try{
+                const response = await this.$http.get(`/updatememberexpired/${id_member}`)
+                console.log('response',response.data.tgl_kadaluarsa);
+                this.Kadeluarsa = response.data.tgl_kadaluarsa;
+                $toast.success(response.data.message);
+                console.log(this.kadeluarsa)
+            }catch(e){
+                console.error('Error Update Data Member');
+            }
+        },
+
+        
+        //Getting Data
+        //Get All Member
         async getAllMember(message){
             const request = await this.$http.get('/member');
             this.inActiveMember = request.data.data.filter(values => (values.tgl_kadeluarsa_aktivasi == null || values.tgl_kadeluarsa_aktivasi > Date()))
@@ -166,16 +165,24 @@ export default defineComponent({
                 $toast.success(message)
             }
         },
+
+        //Get All Pegawai
         getDataPegawai()
         {
           let pegawai = localStorage.getItem('pegawaiData');
           return JSON.parse(pegawai)
         },  
 },
+
+
+
+
+    //Mounted
     mounted(){
         this.getAllMember('Berhasil Mengambil Data Presensi');
         this.pegawaiPIC = this.getDataPegawai()
     },
+    //Akhir Dari Mounted
 
 })
 </script>
@@ -264,9 +271,9 @@ export default defineComponent({
                     <hr>
                     <p><strong> Transaksi : </strong> transaksi-aktivasi</p>
                     <p><strong> Nominal Transaksi : Rp </strong>  3.000.000</p>
-                    <p><strong> ID Member :  </strong>      {{ selectedMember.id_member }}</p>
+                    <p><strong> ID Member :  </strong>      {{ selectedMember.id_member }}/{{ selectedMember.nama_member }}</p>
                     <!-- <p><strong> Kadeluarsa :  </strong>  {{  Kadeluarsa }}</p> -->
-                    <p><strong> Kadeluarsa :  </strong>  {{ ` ${Kadeluarsa.getDate()} - ${Kadeluarsa.getMonth()+1} - ${Kadeluarsa.getFullYear()}  ` }}</p>
+                    <!-- <p><strong> Kadeluarsa :  </strong>  {{ ` ${Kadeluarsa.getDate()} - ${Kadeluarsa.getMonth()+1} - ${Kadeluarsa.getFullYear()}  ` }}</p> -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
@@ -278,19 +285,53 @@ export default defineComponent({
         </div>
   </div>
   <div>
-        transaksi hari ini
     </div>
   </main>
+
+
 <!-- Ini Awal Struk -->
-    <div>
-        <button @click="generateStrukAktivasi">Cetak Struk</button>
-        <div  id="pdfContent" style="display: none;" class="text-dark test">
-            <div class="m-2 p-5 border">
-                <p>Gofit</p>
-                <p>Jl. Centralpark No. 10 Yogyakarta</p>
-                <p>Aktivasi Tahunan</p>
-                <p><strong>Member</strong></p>
-                <p>Masa Aktif Member</p>
+    <div class="bg light" >
+        <!-- <button @click="generateStrukAktivasi">Cetak Struk</button> -->
+        <div  width="600px" id="pdfContent" style=" display: none; margin:500px;" class=" text-dark">
+            <div width="600px" class="p-1 ">
+                <table class="border border-dark">
+                    <tr>
+                        <td style="width: 70%;"><strong>Gofit</strong>
+                        <p>Jl Centralpark No 10 Yogyakarta</p></td>
+                        <td>No Struk : {{ hasilTransaksi.transaksi_aktivasi.no_struk }}</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Tanggal : {{ hasilTransaksi.transaksi_aktivasi.tanggal_aktivasi }}</td>
+                    </tr>
+                    <tr></tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr style="width: 80%;">
+                                    <td><strong>Member</strong></td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.transaksi_member.id_member }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Aktivasi Tahunan</td>
+                                    <td>:</td>
+                                    <td>Rp.3.0000.0000,-</td>
+                                </tr>
+                                <tr>
+                                    <td>Masa Aktif Member</td>
+                                    <td>:</td>
+                                    <td>{{ ` ${Kadeluarsa.getDate()}/${Kadeluarsa.getMonth()+1}/${Kadeluarsa.getFullYear()}` }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Kasir : {{pegawaiPIC.id_pegawai}}/{{ pegawaiPIC.nama_pegawai }} </td>
+                    </tr>
+                    
+                </table>
             </div>
         </div>
     </div>
@@ -324,6 +365,15 @@ export default defineComponent({
 .test{
     height: 200px;
     width: 1000px;
+}
+
+#pdfContent{
+    margin-right: 10px;
+}
+
+
+#pdfContent p {
+  margin: 0;
 }
 @media print {
   /* Menampilkan elemen yang di-hidden saat dicetak */

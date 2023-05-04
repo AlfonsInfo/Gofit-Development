@@ -113,7 +113,7 @@ const router = createRouter({
       path:'/jadwal-harian',
       name : 'jadwal-harian',
       beforeEnter : beforeEnter,
-      component: () => import('../views/instruktur/ijin-instruktur.vue')
+      component: () => import('../views/jadwal/index-jadwal-harian.vue')
     },
     {
       path:'/laporan',

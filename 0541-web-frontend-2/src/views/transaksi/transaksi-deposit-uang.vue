@@ -1,46 +1,66 @@
 <script>
-import { HomeNavbar,defineComponent,$toast, Swal } from '@/plugins/global';
+import { HomeNavbar,defineComponent,$toast, Swal ,jsPDF, ref} from '@/plugins/global';
 
 export default defineComponent({
-    components : {
+  //Component
+  components : {
       HomeNavbar,
-
     },
-    data(){
-      return{
-        FormTransactionUang : {
-          id_pegawai : this.getDataPegawai().id_pegawai,
-          id_member : '',
-          NoStruk : '',
-          nominal_deposit : 0,
-          id_promo : '',
-        },
-        promos : null,
-        selectedPromo : null,
-        PromoMessage : 'Dapatkan Promo Menarik!!!',
-        allMember : null,
-        member : null
-      }
-    },
-    methods : {
 
-    //Submit Form
-    async submitForm()
-    {
-    //Confirm
-    const result = await Swal.fire({
-      title: 'Apakah Anda yakin ingin melakukan transaksi ini?',
-        showCancelButton: true,
-        confirmButtonColor: '#28a745',
-        confirmButtonText: 'Lanjutkan',
-        cancelButtonText: 'Batal',
+  data(){
+    return{
+      FormTransactionUang : {
+        id_pegawai : this.getDataPegawai().id_pegawai,
+        id_member : '',
+        NoStruk : '',
+        nominal_deposit : 0,
+        id_promo : '',
+      },
+
+      //Array of Object
+      promos : null,
+      allMember : null,
+      PromoMessage : 'Dapatkan Promo Menarik!!!',
+      selectedPromo : null,
+      member : ref({}),
+      hasilTransaksi : ref({
+                transaksi_deposit_reguler : {no_struk :''},
+                transaksi_member :{},
+            }),
+      newMember : null,
+    }
+  },
+
+  methods : {
+
+  //Submit Form
+  async submitForm()
+  {
+  //Confirm
+  const result = await Swal.fire({
+    title: 'Apakah Anda yakin ingin melakukan transaksi ini?',
+      showCancelButton: true,
+      confirmButtonColor: '#28a745',
+      confirmButtonText: 'Lanjutkan',
+      cancelButtonText: 'Batal',
       })
       if(result.isConfirmed){
-        try{
+        this.depositMoneyTransaction()
+      }
+    },
+
+    async depositMoneyTransaction(){
+      try{
           this.getMember(this.FormTransactionUang)
           const url = '/transaksideposituang';
           const response = await this.$http.post(url,this.FormTransactionUang);
-                // this.updateDepositBalance(response.data.total) Incase trigger tidak boleh digunakan
+          this.hasilTransaksi = response.data.data  
+          //Untuk Data Saldo Total
+          this.requestNewestMember(this.FormTransactionUang.id_member);
+          //Tampung hasil transaksi
+          console.log(this.newMember);
+          this.generateStrukDepositUang()
+          // this.updateDepositBalance(response.data.total) Incase trigger tidak digunakan
           $toast.success(response.data.message);        
           Swal.fire({
             title: 'Transaksi Berhasil!',
@@ -49,10 +69,10 @@ export default defineComponent({
             timerProgressBar: true,
             showConfirmButton: false,
           })
+
         }catch{
           $toast.warning('Transaksi Gagal, Cek Data Transaksi !!')
         }
-      }
     },
     
     async updateDepositBalance(data){
@@ -75,6 +95,34 @@ export default defineComponent({
       const month = ('0' + (today.getMonth() + 1)).slice(-2); // Menambahkan 0 di depan jika bulan kurang dari 10
       this.FormTransactionUang.NoStruk =  year + '.' + month + '.' + nextNoStruk;
     },
+
+    //PDFFF
+    generateStrukDepositUang() {
+            window.jspPDF = window.jspdf.jsPDF;
+            var elementHTML = document.querySelector('#pdfContent2');
+            elementHTML.style.display = "block";
+            elementHTML.style.fontSize = '5px';
+
+            //Spasi
+            elementHTML.style.lineHeight = '1.2'; 
+            elementHTML.style.margin = '0';
+            elementHTML.style.padding = '0';
+            
+            let doc = new jsPDF({
+                orientation: 'l', // orientasi landscape
+                unit: 'mm', // satuan millimeter
+                format: ['300','100'], // ukuran kertas A4
+            });
+
+            doc.html(elementHTML, {
+            callback: function (doc) {
+                doc.save('file.pdf');
+                elementHTML.style.display = "none";
+            },
+            x: 10,
+            y: 10
+            });
+        },
 
 
     //Generate Promo
@@ -159,11 +207,19 @@ export default defineComponent({
         const dataRoute = "/member";
         const response = await this.$http.get(dataRoute)
         this.allMember = response.data.data
+        console.log(this.allMember)
       },
 
 
       getMember({id_member}){
         this.member =  this.allMember.filter((item)=> { return item.id_member == id_member})[0];
+      },
+
+      async requestNewestMember(id_member){
+        console.log(id_member);
+        const url = `/member/${id_member}`;
+        const response = await this.$http.get(url);
+        this.newMember = response.data.data[0];
       }
 
 
@@ -172,7 +228,8 @@ export default defineComponent({
     mounted(){
       this.generateTransactionData();
       this.getPromo();
-      this.getAllMember()
+      this.getAllMember();
+      this.requestNewestMember('23.04.010');
     }
 })
 
@@ -258,6 +315,67 @@ export default defineComponent({
       </div>
     </div>
     </main>
+    <div class="bg light" >
+        <button @click="generateStrukDepositUang">Cetak Struk</button>
+        <!-- PDFFF -->
+        <div  width="600px" id="pdfContent2" style=" /* display: none;*/  margin:500px;" class=" text-dark">
+            <div width="600px" class="p-1 ">
+                <table class="border border-dark">
+                    <tr>
+                      <td style="width: 50%;">
+                        <strong>Gofit</strong>  
+                      </td>
+                      <td>
+                        No Struk : {{ hasilTransaksi.transaksi_deposit_reguler.no_struk }}
+                      </td>
+                    </tr>
+                      <td>
+                        <p>Jl Centralpark No 10 Yogyakarta</p>
+                      </td>
+                      <td>
+                        Tanggal : {{ hasilTransaksi.transaksi_deposit_reguler.tanggal_deposit }}
+                      </td>
+     
+                    <tr></tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr style="width: 80%;">
+                                    <td><strong>Member</strong></td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.transaksi_member.id_member }}/{{ member.nama_member }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Nominal Deposit</td>
+                                    <td>:</td>
+                                    <td>Rp.{{hasilTransaksi.transaksi_deposit_reguler.nominal_deposit}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Bonus Deposit</td>
+                                    <td>:</td>
+                                    <td>{{  (hasilTransaksi.transaksi_deposit_reguler.nominal_total)-(hasilTransaksi.transaksi_deposit_reguler.nominal_deposit)}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Sisa Deposit</td>
+                                    <td>:</td>
+                                    <td>{{ member.total_deposit_uang}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Deposit</td>
+                                    <td>:</td>
+                                    <td>{{ parseInt(hasilTransaksi.transaksi_deposit_reguler.nominal_total) + parseInt(member.total_deposit_uang) }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Kasir : {{getDataPegawai().id_pegawai}}/{{ getDataPegawai().nama_pegawai }} </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
   </template>
 
 

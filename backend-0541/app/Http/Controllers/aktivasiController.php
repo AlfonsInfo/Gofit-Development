@@ -59,7 +59,7 @@ class aktivasiController extends Controller
         }
         return response([
             'message'=> 'success tambah data transaksi aktivasi',
-            'data' => ['transaksi-member' => $transaksi_member, 'transaksi-aktivasi' => $aktivasi],
+            'data' => ['transaksi_member' => $transaksi_member, 'transaksi_aktivasi' => $aktivasi],
         ]);
     
         }

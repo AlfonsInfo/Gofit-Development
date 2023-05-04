@@ -133,6 +133,7 @@ class memberController extends Controller
             return response()->json([
             'success' => true,
             'message' => 'Tanggal Kadaluarsa Member berhasil diupdate',
+            'tgl_kadaluarsa' => $tgl_kadaluarsa,
         ], 200);
     }
     public function updateTotalDeposit($id, Request $request)
