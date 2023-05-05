@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\transaksi_deposit_reguler;
 use App\Models\transaksi_member;
+use App\Models\User\member;
 use App\Models\promo;
 use Exception;
 
@@ -57,6 +58,7 @@ class depositUangController extends Controller
         //* try dlu disini
         // cek nominalDeposit > promo[where id.promo].minimal.deposit
         $id_promo = null;
+        $member_sebelum = member::findOrFail($request->id_member);
         if($request->id_promo != null){
             $promo = promo::findorfail($request->id_promo);
             $minimal_deposit = $promo->minimal_deposit;
@@ -75,7 +77,7 @@ class depositUangController extends Controller
             $total_deposit = $nominal_deposit;
         }
         // dd($total_deposit);              
-
+        
         //* Create Transaksi Member
         $transaksi_member = transaksi_member::create([
             'jenis_transaksi' => 'transaksi-deposit-reguler',
@@ -87,12 +89,12 @@ class depositUangController extends Controller
         
         //* Create Data Transaksi Reguler
         $transaksi_deposit_reguler = transaksi_member::where('jenis_transaksi', '=', 'transaksi-deposit-reguler')
-            ->where('id_pegawai', '=', $request->id_pegawai)
-            ->where('id_member', '=', $request->id_member)
-            ->orderBy('created_at', 'desc')
-            ->first();
-
-
+        ->where('id_pegawai', '=', $request->id_pegawai)
+        ->where('id_member', '=', $request->id_member)
+        ->orderBy('created_at', 'desc')
+        ->first();
+        
+        
             $depositreguler = transaksi_deposit_reguler::create([
             'tanggal_deposit' => date('Y-m-d H:i:s', strtotime('now')),
             'nominal_deposit' => $nominal_deposit,
@@ -100,6 +102,7 @@ class depositUangController extends Controller
             'id_promo' => $id_promo,
             'no_struk' => $transaksi_deposit_reguler['no_struk_transaksi']
         ]);
+        $member_sesudah = member::findOrFail($request->id_member);
         
 
         }catch(Exception $e)
@@ -108,7 +111,7 @@ class depositUangController extends Controller
         }
         return response([
             'message'=> 'Berhasil Melakukan Transaksi',
-            'data' => ['transaksi_member' => $transaksi_member, 'transaksi_deposit_reguler' => $depositreguler],
+            'data' => ['transaksi_member' => $transaksi_member, 'transaksi_deposit_reguler' => $depositreguler, 'member_sebelum' => $member_sebelum , 'member_sesudah' => $member_sesudah],
             'total' => $total_deposit,
         ]);
     

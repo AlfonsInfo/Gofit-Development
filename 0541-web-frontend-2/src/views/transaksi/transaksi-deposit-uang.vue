@@ -26,6 +26,8 @@ export default defineComponent({
       hasilTransaksi : ref({
                 transaksi_deposit_reguler : {no_struk :''},
                 transaksi_member :{},
+                member_sebelum :{},
+                member_sesudah :{},
             }),
       newMember : null,
     }
@@ -69,6 +71,10 @@ export default defineComponent({
             timerProgressBar: true,
             showConfirmButton: false,
           })
+          //renew data
+          this.generateTransactionData()
+          this.requestNewestMember(this.FormTransactionUang.id_member);
+          // window.location.reload()
 
         }catch{
           $toast.warning('Transaksi Gagal, Cek Data Transaksi !!')
@@ -229,7 +235,7 @@ export default defineComponent({
       this.generateTransactionData();
       this.getPromo();
       this.getAllMember();
-      this.requestNewestMember('23.04.010');
+      // this.requestNewestMember('23.04.010');
     }
 })
 
@@ -316,9 +322,9 @@ export default defineComponent({
     </div>
     </main>
     <div class="bg light" >
-        <button @click="generateStrukDepositUang">Cetak Struk</button>
+        <!-- <button @click="generateStrukDepositUang">Cetak Struk</button> -->
         <!-- PDFFF -->
-        <div  width="600px" id="pdfContent2" style=" /* display: none;*/  margin:500px;" class=" text-dark">
+        <div  width="600px" id="pdfContent2" style=" display: none;  margin:500px;" class=" text-dark">
             <div width="600px" class="p-1 ">
                 <table class="border border-dark">
                     <tr>
@@ -353,17 +359,17 @@ export default defineComponent({
                                 <tr>
                                     <td>Bonus Deposit</td>
                                     <td>:</td>
-                                    <td>{{  (hasilTransaksi.transaksi_deposit_reguler.nominal_total)-(hasilTransaksi.transaksi_deposit_reguler.nominal_deposit)}}</td>
+                                    <td>Rp. {{  (hasilTransaksi.transaksi_deposit_reguler.nominal_total)-(hasilTransaksi.transaksi_deposit_reguler.nominal_deposit)}}</td>
                                 </tr>
                                 <tr>
                                     <td>Sisa Deposit</td>
                                     <td>:</td>
-                                    <td>{{ member.total_deposit_uang}}</td>
+                                    <td>Rp. {{ hasilTransaksi.member_sebelum.total_deposit_uang}}</td>
                                 </tr>
                                 <tr>
                                     <td>Total Deposit</td>
                                     <td>:</td>
-                                    <td>{{ parseInt(hasilTransaksi.transaksi_deposit_reguler.nominal_total) + parseInt(member.total_deposit_uang) }}</td>
+                                    <td>{{ parseInt(hasilTransaksi.member_sesudah.total_deposit_uang) }}</td>
                                 </tr>
                             </table>
                         </td>

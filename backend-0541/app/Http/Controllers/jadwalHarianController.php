@@ -55,6 +55,7 @@ class jadwalHarianController extends Controller
     
     public function store()
     {
+        
         if(self::cekAutoGenerate()){
             return response()->json([
                 'success' => false,

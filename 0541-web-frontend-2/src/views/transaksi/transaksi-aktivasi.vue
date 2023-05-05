@@ -83,6 +83,7 @@ export default defineComponent({
                     timerProgressBar: true,
                     showConfirmButton: false,
                 })
+                window.location.reload()
             }catch{
                 $toast.warning('Transaksi Gagal, Cek Data Transaksi !!')
             }
@@ -316,7 +317,7 @@ export default defineComponent({
                                 <tr>
                                     <td >Aktivasi Tahunan</td>
                                     <td>:</td>
-                                    <td>Rp.3.0000.0000,-</td>
+                                    <td>Rp.3.000.0000,-</td>
                                 </tr>
                                 <tr>
                                     <td>Masa Aktif Member</td>

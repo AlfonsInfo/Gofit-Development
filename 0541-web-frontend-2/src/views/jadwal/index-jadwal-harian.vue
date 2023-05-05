@@ -88,7 +88,7 @@ import { HomeNavbar,  ref ,onMounted, $toast, defineComponent, BackButton , inje
           getAllJadwal('Tabel Data Jadwal Berhasil digenerate')
           $toast.success(response.data.message)
           Swal.fire({
-            title: 'Data berhasil dihapus!',
+            title: 'Data berhasil digenerate!',
             icon: 'success',
             timer: 2000,
             timerProgressBar: true,
@@ -225,3 +225,4 @@ import { HomeNavbar,  ref ,onMounted, $toast, defineComponent, BackButton , inje
 }
 
 </style>
+    
