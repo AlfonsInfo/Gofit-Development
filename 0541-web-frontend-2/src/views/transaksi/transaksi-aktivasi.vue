@@ -301,38 +301,38 @@ export default defineComponent({
                         <p>Jl Centralpark No 10 Yogyakarta</p></td>
                         <td>No Struk : {{ hasilTransaksi.transaksi_aktivasi.no_struk }}</td>
                     </tr>
-                    <tr>
-                        <td></td>
-                        <td>Tanggal : {{ hasilTransaksi.transaksi_aktivasi.tanggal_aktivasi }}</td>
-                    </tr>
-                    <tr></tr>
-                    <tr>
-                        <td>
-                            <table>
-                                <tr style="width: 80%;">
-                                    <td><strong>Member</strong></td>
-                                    <td>:</td>
-                                    <td>{{ hasilTransaksi.transaksi_member.id_member }}</td>
-                                </tr>
-                                <tr>
-                                    <td >Aktivasi Tahunan</td>
-                                    <td>:</td>
-                                    <td>Rp.3.000.0000,-</td>
-                                </tr>
-                                <tr>
-                                    <td>Masa Aktif Member</td>
-                                    <td>:</td>
-                                    <td>{{ ` ${Kadeluarsa.getDate()}/${Kadeluarsa.getMonth()+1}/${Kadeluarsa.getFullYear()}` }}</td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td>Kasir : {{pegawaiPIC.id_pegawai}}/{{ pegawaiPIC.nama_pegawai }} </td>
-                    </tr>
-                    
-                </table>
+                        <tr>
+                            <td></td>
+                            <td>Tanggal : {{ hasilTransaksi.transaksi_aktivasi.tanggal_aktivasi }}</td>
+                        </tr>
+                        <tr></tr>
+                        <tr>
+                            <td>
+                                <table>
+                                    <tr style="width: 80%;">
+                                        <td><strong>Member</strong></td>
+                                        <td>:</td>
+                                        <td>{{ hasilTransaksi.transaksi_member.id_member }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td >Aktivasi Tahunan</td>
+                                        <td>:</td>
+                                        <td>Rp.3.000.0000,-</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Masa Aktif Member</td>
+                                        <td>:</td>
+                                        <td>{{ ` ${Kadeluarsa.getDate()}/${Kadeluarsa.getMonth()+1}/${Kadeluarsa.getFullYear()}` }}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Kasir : {{pegawaiPIC.id_pegawai}}/{{ pegawaiPIC.nama_pegawai }} </td>
+                        </tr>
+                        
+                    </table>
             </div>
         </div>
     </div>
