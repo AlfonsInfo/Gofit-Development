@@ -1,11 +1,10 @@
 //*Dependency
 import 'package:flutter/material.dart';
-
 //* Page
 import 'Pages/Auth/login_page.dart';
-
 //* Theme
 import 'Config/theme_config.dart';
+
 
 //* Starter App
 void main(){

@@ -1,29 +1,46 @@
-// import 'package:http/http.dart' as http;
-// import 'dart:convert';
-// class LoginResult
-// {
-//   String message;
+//* Template Response dari API
+class LoginResult
+{
+  String message;
+  String accessToken;
+  String user;
+  String? pegawai;
+  String? member;
+  String? instruktur;
 
-//   //* Constructor
-//   LoginResult({required this.message});
+  //* Constructor
+  LoginResult({required this.message,required this.accessToken, required this.user, this.pegawai, this.member, this.instruktur});
 
-//   //* Factory Method
-//   factory LoginResult.createLoginResult(Map<String, dynamic> object){
-//     return LoginResult(message: object['message'], /*dst*/);
-//   }
+  //* Factory Method 
+  factory LoginResult.createLoginResult(Map<String, dynamic> object){
+    if (object['pegawai'] !=   null) {
+      return LoginResult(
+        message: object['message'], 
+        accessToken: object['access_token'],
+        user: object['user']['id_pengguna'].toString(),
+        pegawai: object ['pegawai']['id_pegawai'].toString(),
+      );
+    } else if (object['member'] !=   null) {
+      return LoginResult(
+        message: object['message'], 
+        accessToken: object['access_token'],
+        user: object['user']['id_pengguna'].toString(),
+        member: object ['member']['id_member'].toString(),
+      );
+    } else if (object['instruktur'] !=   null) {
+      return LoginResult(
+        message: object['message'], 
+        accessToken: object['access_token'],
+        user: object['user']['id_pengguna'].toString(),
+        instruktur: object ['instruktur']['id_instruktur'].toString(),
+      );
+    } else {
+      return LoginResult(
+        message: object['message'], 
+        accessToken: object['access_token'],
+        user : object['user']['id_pengguna'].toString(),
+      );
+    }
+}
 
-//   //* Penghubung ke API
-//   //* login / login-mobile
-//   static Future<LoginResult?>connectToAPI(String username, String password) async {
-//     String apiURL = 'http://127.0.0.1:8000/api/login'; 
-//     try{
-//     var apiResult = await http.post(Uri.parse(apiURL), body:{'username': username, 'password': password });
-//     var jsonObject = jsonDecode(apiResult.body);
-//     return LoginResult.createLoginResult(jsonObject);
-//     } catch(e){
-//       // ignore: avoid_print
-//       print(e.toString());
-//       return null;
-//     }
-//   }
-// }
+}

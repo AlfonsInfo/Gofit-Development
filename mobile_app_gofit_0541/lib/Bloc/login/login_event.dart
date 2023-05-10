@@ -23,4 +23,8 @@ class LoginPasswordChanged extends LoginEvent{
 
 
 //* Login Submitted
-class LoginSubmitted extends LoginEvent{}
+class LoginSubmitted extends LoginEvent{
+  // final String? role;
+  
+  // LoginSubmitted({this.role});
+}

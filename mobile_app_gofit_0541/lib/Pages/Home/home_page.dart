@@ -2,8 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+//* HomePagePegawai
+class HomePagePegawai extends StatelessWidget {
+  const HomePagePegawai({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
+      appBar: AppBar(title: const Text('Welcome To Gofit`s Home Pegawai'),),
+    );
+  }
+}
+
+//* HomePageMember
+class HomePageMember extends StatelessWidget {
+  const HomePageMember({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,3 +25,17 @@ class HomePage extends StatelessWidget {
     );
   }
 }
+
+
+//* HomePageInstruktur
+class HomePageInstruktur extends StatelessWidget {
+  const HomePageInstruktur({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
+      appBar: AppBar(title: const Text('Welcome To Gofit`s Home '),),
+    );
+  }
+}
+

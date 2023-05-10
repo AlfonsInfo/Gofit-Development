@@ -12,7 +12,7 @@ class SubmissionSuccess extends FormSumbissionStatus{}
 
 
 class SubmissionFailed extends FormSumbissionStatus{
-  final Exception exception;
+  final Exception? exception;
   
-  SubmissionFailed(this.exception);
+  SubmissionFailed({this.exception});
 }

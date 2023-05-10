@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/Models/login_user.dart';
 import 'package:mobile_app_gofit_0541/Repository/auth_repository.dart';
-import 'package:mobile_app_gofit_0541/Bloc/Home/form_submission_status.dart';
-import 'package:mobile_app_gofit_0541/Bloc/Home/login_bloc.dart';
+import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
+import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
 import 'package:mobile_app_gofit_0541/Pages/Public/public_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/home_page.dart';
 
@@ -163,35 +163,47 @@ class LoginButton extends StatelessWidget {
   final GlobalKey<FormState> formkey;
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
-      return state.formStatus is FormSubmitting
-          ? const Center(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 20),
-                  child: CircularProgressIndicator(),
-        ),
-      )
-          : Padding(
-              padding: const EdgeInsets.fromLTRB(0, 20, 5, 0),
-              child: SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => {
-                    if(formkey.currentState!.validate()){
-                    context.read<LoginBloc>().add(LoginSubmitted()),
-                    if(state.formStatus is SubmissionSuccess){
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage()))
-                    }
-                    }
-                  },
-                  child: const Text('Login'),
-                  // style: ButtonStyle(
-                  // backgroundColor: MaterialStateProperty.all(Colors.yellow),
-                  // ),
+    return BlocListener<LoginBloc,LoginState>(
+      listener: (context,State){
+        if(State.formStatus is SubmissionSuccess){
+          if(State.role == 'member'){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageMember()));        
+          }
+          if(State.role =='pegawai'){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePagePegawai()));        
+          }
+          if(State.role =='instruktur'){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageInstruktur()));        
+          }
+        }
+      },
+      child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
+        return state.formStatus is FormSubmitting
+            ? const Center(
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                    child: CircularProgressIndicator(),
+          ),
+        )
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(0, 20, 5, 0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () => {
+                      if(formkey.currentState!.validate()){
+                      context.read<LoginBloc>().add(LoginSubmitted()),
+                      }
+                    },
+                    child: const Text('Login'),
+                    // style: ButtonStyle(
+                    // backgroundColor: MaterialStateProperty.all(Colors.yellow),
+                    // ),
+                  ),
                 ),
-              ),
-            );
-    });
+              );
+      }),
+    );
   }
 }
 
