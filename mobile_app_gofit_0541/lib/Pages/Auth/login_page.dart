@@ -161,18 +161,18 @@ class LoginButton extends StatelessWidget {
   const LoginButton({super.key, required this.formkey});
 
   final GlobalKey<FormState> formkey;
-  @override
+  @override 
   Widget build(BuildContext context) {
     return BlocListener<LoginBloc,LoginState>(
-      listener: (context,State){
-        if(State.formStatus is SubmissionSuccess){
-          if(State.role == 'member'){
+      listener: (context,loginState){
+        if(loginState.formStatus is SubmissionSuccess){
+          if(loginState.role == 'member'){
             Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageMember()));        
           }
-          if(State.role =='pegawai'){
+          if(loginState.role =='pegawai'){
             Navigator.push(context, MaterialPageRoute(builder: (context) => HomePagePegawai()));        
           }
-          if(State.role =='instruktur'){
+          if(loginState.role =='instruktur'){
             Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageInstruktur()));        
           }
         }

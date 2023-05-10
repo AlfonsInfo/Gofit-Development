@@ -59,12 +59,12 @@ class loginMobileController extends Controller
 
         //* Role instruktur
         if($user->role == 'instruktur'){
-            $instruktur = instruktur::where('id_pengguna',$user->id_pengguna);
+            $instruktur = instruktur::where('id_pengguna',$user->id_pengguna)->first();
 
         return response([
             'message' => 'Autenthicated',
             'user' => $user,
-            'pegawai' => $instruktur[0],
+            'instruktur' => $instruktur,
             'token_type' => 'Bearer',
             'access_token' => $token
         ]);
@@ -72,12 +72,12 @@ class loginMobileController extends Controller
 
         //* Role Member
         if($user->role == 'member'){
-            $member = member::where('id_pengguna',$user->id_pengguna);
+            $member = member::where('id_pengguna',$user->id_pengguna)->first();
 
             return response([
                 'message' => 'Autenthicated',
                 'user' => $user,
-                'pegawai' => $member[0],
+                'member' => $member,
                 'token_type' => 'Bearer',
                 'access_token' => $token
             ]);
