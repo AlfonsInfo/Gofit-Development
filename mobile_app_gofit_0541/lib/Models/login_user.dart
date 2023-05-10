@@ -1,9 +1,9 @@
 //* Template Response dari API
 class LoginResult
 {
-  String? message;
-  String? accessToken;
-  String? user;
+  String message;
+  String accessToken;
+  String user;
   String? pegawai;
   String? member;
   String? instruktur;
@@ -13,8 +13,6 @@ class LoginResult
 
   //* Factory Method 
   factory LoginResult.createLoginResult(Map<String, dynamic> object){
-    try{
-
     if (object['pegawai'] !=   null) {
       return LoginResult(
         message: object['message'], 
@@ -43,9 +41,6 @@ class LoginResult
         user : object['user']['id_pengguna'].toString(),
       );
     }
-    }catch(e){
-      print(e);
-    }
-    }
 }
 
+}
