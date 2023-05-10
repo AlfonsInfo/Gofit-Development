@@ -1,16 +1,11 @@
 //*Dependency
 import 'package:flutter/material.dart';
-import 'package:mobile_app_gofit_0541/StateBlocTemplate/Home/login_bloc.dart';
 
 //* Page
-import 'Pages/login_page.dart';
+import 'Pages/Auth/login_page.dart';
 
 //* Theme
 import 'Config/theme_config.dart';
-
-//* State Management
-import 'package:flutter_bloc/flutter_bloc.dart';
-
 
 //* Starter App
 void main(){
@@ -35,10 +30,7 @@ class MainApp extends StatelessWidget {
           //* Theme
           theme: themeConfig.themeLight,
           // darkTheme: themeConfig.themeDark,
-          home : BlocProvider(
-            create: (_) => LoginBloc(),
-            child: const LoginPage(),
-          ),
+          home : const LoginPage(),
       );
       },
     );
