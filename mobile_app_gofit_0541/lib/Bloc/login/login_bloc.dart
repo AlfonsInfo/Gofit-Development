@@ -21,6 +21,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
     on<LoginUsernameChanged>(_onEmailChanged);
     on<LoginPasswordChanged>(_onPasswordChanged);
     on<LoginSubmitted>(_onLoginSubmitted);
+    on<Logout>(_onLogoutSubmitted);
   }
 
   _onEmailChanged(LoginUsernameChanged event, Emitter<LoginState> emit) 
@@ -49,6 +50,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
       emit(state.copyWith(formStatus: SubmissionFailed(exception: e as Exception)));
     }
     // print('mantap jiwa boss');
+  }
+
+  _onLogoutSubmitted(Logout  event, Emitter<LoginState> emit){
+    emit(state.copyWith(username: '',password: ''));
   }
 
 

@@ -11,7 +11,7 @@ class HomePageMember extends StatelessWidget {
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: createAppBar('Welcome Buddy'), 
-      drawer: const SideBar(),
+      drawer: const SideBar(alamatRoute: '/changepw'),
     );
   }
 }

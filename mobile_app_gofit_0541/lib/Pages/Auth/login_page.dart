@@ -28,12 +28,7 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: createAppBar('Gofit Mobile Apps'), 
       // AppBar(title: const Text('Gofit Mobile Apps'),),
-      body: MultiBlocProvider(providers: [
-          BlocProvider(create: (context) => LoginBloc(),),
-          // BlocProvider(create: (context) => AppBloc(),),
-      ],
-        child: _loginForm(context),
-      )
+      body: _loginForm(context)
       );
   }
 
@@ -172,11 +167,10 @@ class LoginButton extends StatelessWidget {
   final GlobalKey<FormState> formkey;
   @override 
   Widget build(BuildContext context) {
-    return BlocProvider(create: (context) => AppBloc(),
-    child : BlocListener<LoginBloc,LoginState>(
+    return BlocListener<LoginBloc,LoginState>(
       listener: (context,loginState){
         if(loginState.formStatus is SubmissionSuccess){
-            BlocProvider.of<AppBloc>(context).add(SaveUserInfo(user: loginState.user));
+            context.read<AppBloc>().add(SaveUserInfo(user: loginState.user));
             saveData('idpengguna', loginState.user!.idPengguna);
             inspect(getData('idpengguna'));
             // BlocProvider.value(value: BlocProvider.of<AppBloc>(context).add(SaveUserInfo(user: loginState.user)));
@@ -217,7 +211,7 @@ class LoginButton extends StatelessWidget {
                 ),
               );
       }),
-     ) );
+     );
   }
 }
 

@@ -20,7 +20,7 @@ class HomePageInstruktur extends StatelessWidget {
         menuInstruktur(widthBox, heightBox),
       ]
       ),
-      drawer: const SideBar(),
+      drawer: const SideBar(alamatRoute: '/changepw'),
     );
   }
 
@@ -28,7 +28,7 @@ class HomePageInstruktur extends StatelessWidget {
     return Center(
         child: Container(
           width: widthBox,
-          height: heightBox,
+          height: heightBox,  
           decoration: BoxDecoration(
             border: Border.all(
               color: ColorApp.colorPrimary,

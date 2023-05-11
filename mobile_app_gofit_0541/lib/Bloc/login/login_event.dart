@@ -23,8 +23,11 @@ class LoginPasswordChanged extends LoginEvent{
 
 
 //* Login Submitted
-class LoginSubmitted extends LoginEvent{
-  // final String? role;
-  
-  // LoginSubmitted({this.role});
+class LoginSubmitted extends LoginEvent{}
+
+class Logout extends LoginEvent{
+  final String? username;
+  final String? password;
+
+  Logout({this.username, this.password});
 }

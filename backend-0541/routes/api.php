@@ -52,4 +52,6 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     
     Route::get('/updatememberexpired/{id}',  'memberController@updateExpireDate');
     Route::put('/updatedepositbalanceuang/{id}',  'memberController@updateTotalDeposit');
+
+    Route::post('/resetbyuser', 'penggunaController@ResetPassword');
 });

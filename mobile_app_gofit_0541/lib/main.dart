@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/AppBlocObserver.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
+import 'package:mobile_app_gofit_0541/Pages/Home/Pegawai/profile_pegawai.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/changepw_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/home_page_instruktur.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/home_page_member.dart';
@@ -21,7 +22,8 @@ void main(){
   //* Run App
   Bloc.observer = AppBlocObserver();
   runApp(MainApp(
-    appBloc : AppBloc()
+    // appBloc : AppBloc(),
+    // loginBloc : LoginBloc()
   ));
 }
 
@@ -29,31 +31,37 @@ void main(){
 ThemeConfig themeConfig = ThemeConfig();
 
 class MainApp extends StatelessWidget {
-  final AppBloc appBloc;
-  const MainApp({super.key, required this.appBloc });
+  // final AppBloc appBloc;
+  // final LoginBloc loginBloc;
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints){
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          // theme: themeConfig.themeLight,
-          //* Theme
-          theme: themeConfig.themeLight,
-          // darkTheme: themeConfig.themeDark,
-          home : BlocProvider<AppBloc>(
-            create: (context) => appBloc ,
-            child: const LoginPage()),
-          routes: {
-            '/login' : (context) => const LoginPage(),
-            '/homeMember' : (context) => const HomePageMember(),
-            '/homePegawai' : (context) => const HomePagePegawai(),
-            '/homeInstruktur' : (context) => const HomePageInstruktur(),
-            '/changepw' : (context) => const ChangePasswordPage()
-          },
-      );
-      },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => AppBloc(),),
+        BlocProvider(create: (context) => LoginBloc(),)                
+      ],
+      child: LayoutBuilder(
+        builder: (context, constraints){
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            // theme: themeConfig.themeLight,
+            //* Theme
+            theme: themeConfig.themeLight,
+            // darkTheme: themeConfig.themeDark,
+          home :const LoginPage(),
+            routes: {
+              '/login' : (context) => const LoginPage(),
+              '/homeMember' : (context) => const HomePageMember(),
+              '/homePegawai' : (context) => const HomePagePegawai(),
+              '/homeInstruktur' : (context) => const HomePageInstruktur(),
+              '/changepw' : (context) => const ChangePasswordPage(),
+              '/profilePegawai' : (context) => const ProfilePegawai()
+            },
+        );
+        },
+      ),
     );
   }
 }

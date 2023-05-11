@@ -6,6 +6,7 @@ use App\Models\User\member;
 use App\Models\User\pengguna;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class penggunaController extends Controller
 {
@@ -69,4 +70,20 @@ class penggunaController extends Controller
     // {
 
     // }
+
+    public function ResetPassword(Request $request){
+        $pengguna = pengguna::find($request->id_pengguna);
+        $oldPw = $request->old_pw;
+        
+        if(Hash::check($oldPw, $pengguna->password)){
+            $pengguna->password = bcrypt($request->new_pw);
+            $pengguna->save();
+            return response([
+                'message'=>'success mengganti password'
+            ],200);
+        }else{
+            return response([],400);
+        }
+
+    }
 }
