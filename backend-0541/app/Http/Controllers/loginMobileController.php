@@ -29,7 +29,7 @@ class loginMobileController extends Controller
         //* if without attempt
 
         if(!Auth::guard('api')->attempt($loginDataForm))
-            return response(['message' => 'invalid credentials'],400);
+            return response(['message' => 'invalid credentials yo bang'],400);
 
         $user = Auth::user(); //* tetap user
         $token = $user->createToken('Authentication Token')->accessToken;
@@ -51,7 +51,7 @@ class loginMobileController extends Controller
         return response([
             'message' => 'Autenthicated',
             'user' => $user,
-            'pegawai' => $pegawai       ,
+            'pegawai' => $pegawai,
             'token_type' => 'Bearer',
             'access_token' => $token
         ]);

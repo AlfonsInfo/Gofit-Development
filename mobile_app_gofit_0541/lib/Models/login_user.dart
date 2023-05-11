@@ -1,15 +1,20 @@
 //* Template Response dari API
+import 'dart:developer';
+
+import 'package:mobile_app_gofit_0541/Models/pegawai.dart';
+import 'package:mobile_app_gofit_0541/Models/user.dart';
+
 class LoginResult
 {
   String message;
   String accessToken;
-  String user;
-  String? pegawai;
+  User user;
+  Pegawai? pegawai;
   String? member;
   String? instruktur;
 
   //* Constructor
-  LoginResult({required this.message,required this.accessToken, required this.user, this.pegawai, this.member, this.instruktur});
+  LoginResult({required this.message,required this.accessToken, required this.user, this.pegawai, this.member, this.instruktur,});
 
   //* Factory Method 
   factory LoginResult.createLoginResult(Map<String, dynamic> object){
@@ -17,28 +22,28 @@ class LoginResult
       return LoginResult(
         message: object['message'], 
         accessToken: object['access_token'],
-        user: object['user']['id_pengguna'].toString(),
-        pegawai: object ['pegawai']['id_pegawai'].toString(),
+        user:  User.fromJson(object['user']),
+        pegawai: Pegawai.fromJson(object['pegawai']),
       );
     } else if (object['member'] !=   null) {
       return LoginResult(
         message: object['message'], 
         accessToken: object['access_token'],
-        user: object['user']['id_pengguna'].toString(),
+        user: User.fromJson(object['user']),
         member: object ['member']['id_member'].toString(),
       );
     } else if (object['instruktur'] !=   null) {
       return LoginResult(
         message: object['message'], 
         accessToken: object['access_token'],
-        user: object['user']['id_pengguna'].toString(),
+        user: User.fromJson(object['user']),
         instruktur: object ['instruktur']['id_instruktur'].toString(),
       );
     } else {
       return LoginResult(
         message: object['message'], 
         accessToken: object['access_token'],
-        user : object['user']['id_pengguna'].toString(),
+        user : User.fromJson(object['user']),
       );
     }
 }

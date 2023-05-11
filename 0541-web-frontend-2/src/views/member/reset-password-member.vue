@@ -69,18 +69,18 @@ import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, TableData,reacti
 
         tgl_lahir_member = formatDate(tgl_lahir_member)
         const result = await Swal.fire({
-          title: 'Apakah Anda yakin ingin menghapus data ini?',
+          title: 'Apakah Anda yakin ingin reset password member ini?',
           icon: 'warning',
           showCancelButton: true,
           confirmButtonColor: '#dc3545',
-          confirmButtonText: 'Reset',
+        confirmButtonText: 'Reset',
           cancelButtonText: 'Batal',
         })
         //Jika di confirm
       if (result.isConfirmed) {
           try{
               const url = `/pengguna/${id_pengguna}`
-              const request = await http.put(url,{ tgl_lahir_member : tgl_lahir_member} ); // ; 
+              const request = await http.put(url,{ } ); // ; 
               $toast.success(request.data.message)
           }catch{
               $toast.warning('Gagal Menambahkan Data')

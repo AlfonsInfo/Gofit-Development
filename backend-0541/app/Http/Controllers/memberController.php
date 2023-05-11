@@ -7,10 +7,18 @@ use App\Models\User\member;
 use Illuminate\Validation\Rules\Exists;
 use Exception;
 use App\Helpers\ValidatorHelper;
+use Carbon\Carbon;
 
 
 class memberController extends Controller
 {
+    public function formatDate($date){
+        $formattedDate = Carbon::parse($date)->format('d/m/Y');
+        return $formattedDate;
+    }
+
+
+
     public function index()
     {
         $member = member::with(['pengguna'])->get();
@@ -47,7 +55,8 @@ class memberController extends Controller
  }
 
 //  * Register Akun Pengguna dan simpan id_pengguna pada variable local untuk dihubungkan
- $idPengguna =   penggunaController::register(['username'=>'-'],['password'=>$request->tgl_lahir_member],'member');
+ $password = self::formatDate($request->tgl_lahir_member);
+ $idPengguna =   penggunaController::register(['username'=>'-'],['password'=>$password],'member');
 
  
  try{

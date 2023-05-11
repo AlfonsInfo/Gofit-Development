@@ -1,24 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Models/login_user.dart';
-import 'package:mobile_app_gofit_0541/Repository/auth_repository.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
 import 'package:mobile_app_gofit_0541/Pages/Public/public_page.dart';
-import 'package:mobile_app_gofit_0541/Pages/Home/home_page.dart';
-
-
-// //* Main Login 
-// class MainLogin extends StatelessWidget {
-//   const MainLogin({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return RepositoryProvider(
-//       create: (_) => AuthRepository(),
-//       child : const  LoginPage()); 
-//   }
-// }
+import 'package:mobile_app_gofit_0541/Components/component_1.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -36,7 +25,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) { 
     return Scaffold(
-      appBar: AppBar(title: const Text('Gofit Mobile Apps'),),
+      appBar: createAppBar('Gofit Mobile Apps'), 
+      // AppBar(title: const Text('Gofit Mobile Apps'),),
       body: BlocProvider(
         create: (context) => LoginBloc(),
         child: _loginForm(context),
@@ -49,7 +39,8 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         final formStatus= state.formStatus;
         if(formStatus is SubmissionFailed){
-          _showSnackBar(context, formStatus.exception.toString());
+          // _showSnackBar(context, formStatus.exception.toString());
+          _showSnackBar(context, 'Gagal Login, Periksa kembali username dan password');
         }
       },
       child: BlocBuilder<LoginBloc,LoginState>(
@@ -64,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                   padding: const EdgeInsets.all(20),
                   children: [
                     logoGofit(context),
-                    UsernameField(),
+                    const UsernameField(),
                     const PasswordField(),
                     LoginButton(formkey: _formKey),
                     const PublicFeatures(),
@@ -163,17 +154,20 @@ class LoginButton extends StatelessWidget {
   final GlobalKey<FormState> formkey;
   @override 
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc,LoginState>(
+    return BlocProvider(create: (context) => AppBloc(),
+    child : BlocListener<LoginBloc,LoginState>(
       listener: (context,loginState){
         if(loginState.formStatus is SubmissionSuccess){
-          if(loginState.role == 'member'){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageMember()));        
+            // var dataUser = loginState.user;
+            context.read<AppBloc>().add(SaveUserInfo(user: loginState.user));
+          if(loginState.user?.role == 'member'){
+            Navigator.pushReplacementNamed(context, '/homeMember');
           }
-          if(loginState.role =='pegawai'){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePagePegawai()));        
+          if(loginState.user?.role =='pegawai'){
+            Navigator.pushReplacementNamed(context, '/homePegawai');
           }
-          if(loginState.role =='instruktur'){
-            Navigator.push(context, MaterialPageRoute(builder: (context) => HomePageInstruktur()));        
+          if(loginState.user?.role =='instruktur'){
+            Navigator.pushReplacementNamed(context, '/homeInstruktur');
           }
         }
       },
@@ -181,7 +175,7 @@ class LoginButton extends StatelessWidget {
         return state.formStatus is FormSubmitting
             ? const Center(
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 20),
+                  padding: EdgeInsets.only(top: 20),
                     child: CircularProgressIndicator(),
           ),
         )
@@ -203,7 +197,7 @@ class LoginButton extends StatelessWidget {
                 ),
               );
       }),
-    );
+     ) );
   }
 }
 
@@ -262,17 +256,3 @@ class PublicFeatures extends StatelessWidget {
   }
 }
 
-
-
-//  //* Method Untuk Testing API
-//   ElevatedButton apiTester() {
-//     return ElevatedButton(
-//       onPressed: () {
-//         LoginResult.connectToAPI('yuna', '0541').then((value) {
-//           loginResult = value;
-//           // print(loginResult?.message);
-//         });
-//       },
-//       child: const Text('Test Api'),
-//     );
-//   }

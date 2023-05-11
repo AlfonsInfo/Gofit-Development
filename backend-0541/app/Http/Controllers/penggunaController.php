@@ -2,11 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User\member;
 use App\Models\User\pengguna;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class penggunaController extends Controller
 {
+    public function formatDate($date){
+        $formattedDate = Carbon::parse($date)->format('d/m/Y');
+        return $formattedDate;
+    }
+
     public static function register($username, $password, $role)
     {
         $registrationData  = array_merge($username, ($password), ['role' => $role]);
@@ -29,7 +36,10 @@ class penggunaController extends Controller
     public function update(Request $request, $id)
     {
         $pengguna = pengguna::find($id);
-        // dd($request->tgl_lahir_member);
+        $member = member::where('id_pengguna',$id)->first();
+        $tgl_lahir = $member->tgl_lahir_member;
+        $tgl_lahir = self::formatDate($tgl_lahir);
+        // dd($tgl_lahir);
         $newPassword = bcrypt($request->tgl_lahir_member);
         $pengguna->password = $newPassword; 
         $pengguna->save();

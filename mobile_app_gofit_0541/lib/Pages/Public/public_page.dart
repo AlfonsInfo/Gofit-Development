@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 
 class PublicPage extends StatelessWidget {
   const PublicPage({super.key});
@@ -8,8 +6,8 @@ class PublicPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Informasi Gofit'),),
-      body: Placeholder(),
+      appBar: AppBar(title: const Text('Informasi Gofit'),),
+      body: const Placeholder(),
     );
   }
 }

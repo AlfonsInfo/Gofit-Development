@@ -22,7 +22,7 @@ class ThemeConfig  {
             inputDecorationTheme: const InputDecorationTheme(
               iconColor: ColorApp.colorPrimary,
               fillColor: Colors.white,              
-            )
+            ),
           );
 
 }

@@ -1,8 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
 import 'package:mobile_app_gofit_0541/Repository/auth_repository.dart';
+import 'package:mobile_app_gofit_0541/Models/user.dart';
 
 part 'login_event.dart';
 part 'login_state.dart';
@@ -10,7 +12,7 @@ part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState>{
   AuthRepository authRepo = AuthRepository();
-
+  // AppBloc appBloc = AppBloc();
   // LoginBloc() : super(const LoginState()){
   LoginBloc() : super(LoginState()){
     on<LoginUsernameChanged>(_onEmailChanged);
@@ -33,22 +35,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
     emit(state.copyWith(formStatus: FormSubmitting()));
     try{
       final response = await authRepo.login(username: state.username, password: state.password);
-      inspect(response);
       if(response != null){
-        if(response.pegawai != null){ 
-          emit(state.copyWith(role: 'pegawai'));
-        }
-        if(response.member != null){ 
-          emit(state.copyWith(role: 'member'));
-        }
-        if(response.instruktur !=null){ 
-          emit(state.copyWith(role: 'instruktur'));
-        }
+        inspect(response);  
+        emit(state.copyWith(user: response.user ));
         emit(state.copyWith(formStatus: SubmissionSuccess()));
-        print(state.role);
-        // emit(state.copyWith(role: response. ));
-        // emit(state.copyWith(role: ))
-        //* User yang login disimpan di sharedPreferences atau states ?
       }else{
         return emit(state.copyWith(formStatus: SubmissionFailed()));
       }
@@ -57,8 +47,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
     }
     // print('mantap jiwa boss');
   }
-  // @override
-  // Stream<LoginState> mapEventToState(LoginEvent event) async*{
+
 
 
 }
