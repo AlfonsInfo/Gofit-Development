@@ -8,6 +8,7 @@ import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
 import 'package:mobile_app_gofit_0541/Pages/Public/public_page.dart';
 import 'package:mobile_app_gofit_0541/Components/component_1.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -27,11 +28,13 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: createAppBar('Gofit Mobile Apps'), 
       // AppBar(title: const Text('Gofit Mobile Apps'),),
-      body: BlocProvider(
-        create: (context) => LoginBloc(),
+      body: MultiBlocProvider(providers: [
+          BlocProvider(create: (context) => LoginBloc(),),
+          // BlocProvider(create: (context) => AppBloc(),),
+      ],
         child: _loginForm(context),
-      ),
-    );
+      )
+      );
   }
 
   Widget _loginForm(BuildContext context) {
@@ -147,6 +150,21 @@ class _PasswordFieldState extends State<PasswordField> {
   }
 }
 
+
+// Menyimpan data ke Shared Preferences
+Future<void> saveData(String key, String value) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString(key, value);
+}
+
+
+
+// Mengambil data dari Shared Preferences
+Future<String> getData(String key) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString(key) ?? '';
+}
+
 // * Button Login
 class LoginButton extends StatelessWidget {
   const LoginButton({super.key, required this.formkey});
@@ -158,8 +176,10 @@ class LoginButton extends StatelessWidget {
     child : BlocListener<LoginBloc,LoginState>(
       listener: (context,loginState){
         if(loginState.formStatus is SubmissionSuccess){
-            // var dataUser = loginState.user;
-            context.read<AppBloc>().add(SaveUserInfo(user: loginState.user));
+            BlocProvider.of<AppBloc>(context).add(SaveUserInfo(user: loginState.user));
+            saveData('idpengguna', loginState.user!.idPengguna);
+            inspect(getData('idpengguna'));
+            // BlocProvider.value(value: BlocProvider.of<AppBloc>(context).add(SaveUserInfo(user: loginState.user)));
           if(loginState.user?.role == 'member'){
             Navigator.pushReplacementNamed(context, '/homeMember');
           }
