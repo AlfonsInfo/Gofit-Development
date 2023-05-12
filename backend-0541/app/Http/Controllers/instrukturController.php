@@ -17,7 +17,7 @@ class instrukturController extends Controller
 
     public function index()
     {
-        $instruktur = instruktur::latest()->with(['pengguna'])->get();
+        $instruktur = instruktur::latest()->with(['pengguna','jadwalharian'])->get();
 
         return response([
             'message'=>'Success Tampil Data',

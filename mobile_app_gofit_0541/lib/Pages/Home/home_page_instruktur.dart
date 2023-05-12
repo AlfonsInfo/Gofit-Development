@@ -1,8 +1,12 @@
 
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_app_gofit_0541/Components/component_1.dart';
 import 'package:mobile_app_gofit_0541/Config/theme_config.dart';
+import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 //* HomePageInstruktur
 class HomePageInstruktur extends StatelessWidget {
@@ -17,14 +21,19 @@ class HomePageInstruktur extends StatelessWidget {
         children:
         [
         const HeaderTemplate(message: 'Selamat Datang Instruktur',),
-        menuInstruktur(widthBox, heightBox),
-      ]
+        menuInstruktur(context,widthBox, heightBox),
+        BlocBuilder<AppBloc, AppState>(
+        builder: (context, state) {
+          inspect(state);
+          return Text('Username: ${state.user?.username ?? ""}');
+        })
+        ]
       ),
       drawer: const SideBar(alamatRoute: '/changepw'),
     );
   }
 
-  Center menuInstruktur(double widthBox, double heightBox) {
+  Center menuInstruktur(context,double widthBox, double heightBox) {
     return Center(
         child: Container(
           width: widthBox,
@@ -45,8 +54,11 @@ class HomePageInstruktur extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children:  [
-                      IconButton(onPressed: (){}, icon: const Icon(Icons.mail),tooltip: 'Ijin',),
-                      const Text('Ijin')
+                      IconButton(onPressed: (){
+                        Navigator.pushNamed(context, '/ijin');
+                      }, icon: const Icon(Icons.mail),tooltip: 'Ijin',),
+                      const Text('Ijin'),
+                      
                     ],
                   ),
                 ),

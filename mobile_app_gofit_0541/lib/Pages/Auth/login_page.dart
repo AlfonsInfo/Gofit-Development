@@ -170,11 +170,13 @@ class LoginButton extends StatelessWidget {
     return BlocListener<LoginBloc,LoginState>(
       listener: (context,loginState){
         if(loginState.formStatus is SubmissionSuccess){
-            context.read<AppBloc>().add(SaveUserInfo(user: loginState.user));
+          // inspect(loginState);
+            context.read<AppBloc>().add(SaveUserInfo(user: loginState.user, instruktur: loginState.instruktur));
             saveData('idpengguna', loginState.user!.idPengguna);
-            inspect(getData('idpengguna'));
+            // inspect(getData('idpengguna'));
             // BlocProvider.value(value: BlocProvider.of<AppBloc>(context).add(SaveUserInfo(user: loginState.user)));
           if(loginState.user?.role == 'member'){
+            // context.read<AppBloc>().add(SaveUserInfo(member: loginState.user));
             Navigator.pushReplacementNamed(context, '/homeMember');
           }
           if(loginState.user?.role =='pegawai'){

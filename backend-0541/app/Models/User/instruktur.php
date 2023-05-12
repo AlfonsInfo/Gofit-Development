@@ -2,6 +2,8 @@
 
 namespace App\Models\User;
 
+use App\Models\jadwal_harian;
+use App\Models\jadwal_umum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,6 +24,10 @@ class instruktur extends Model
     public function pengguna()
     {
         return $this->hasOne(pengguna::class,'id_pengguna','id_pengguna');
+    }
+    public function jadwalharian()
+    {
+        return $this->belongsTo(jadwal_umum::class,'id_instruktur','id_instruktur');
     }
 
 }

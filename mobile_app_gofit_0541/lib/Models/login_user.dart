@@ -1,6 +1,7 @@
 //* Template Response dari API
 import 'dart:developer';
 
+import 'package:mobile_app_gofit_0541/Models/instruktur.dart';
 import 'package:mobile_app_gofit_0541/Models/pegawai.dart';
 import 'package:mobile_app_gofit_0541/Models/user.dart';
 
@@ -11,7 +12,7 @@ class LoginResult
   User user;
   Pegawai? pegawai;
   String? member;
-  String? instruktur;
+  Instruktur? instruktur;
 
   //* Constructor
   LoginResult({required this.message,required this.accessToken, required this.user, this.pegawai, this.member, this.instruktur,});
@@ -37,7 +38,7 @@ class LoginResult
         message: object['message'], 
         accessToken: object['access_token'],
         user: User.fromJson(object['user']),
-        instruktur: object ['instruktur']['id_instruktur'].toString(),
+        instruktur: Instruktur.fromJson(object['instruktur'])//object ['instruktur']['id_instruktur'].toString(),
       );
     } else {
       return LoginResult(

@@ -17,7 +17,7 @@ class AppBloc extends Bloc<AppEvent, AppState>{
   }
 
   _saveUserInfo(SaveUserInfo event, Emitter<AppState> emit){
-    emit(state.copyWith(user: event.user));
+    emit(state.copyWith(user: event.user, instruktur: event.instruktur));
     // debugPrint();
   }
 }

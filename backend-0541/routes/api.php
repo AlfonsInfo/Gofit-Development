@@ -54,4 +54,5 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::put('/updatedepositbalanceuang/{id}',  'memberController@updateTotalDeposit');
 
     Route::post('/resetbyuser', 'penggunaController@ResetPassword');
+    Route::post('/jadwalbyinstruktur', 'jadwalController@JadwalByInstruktur');
 });

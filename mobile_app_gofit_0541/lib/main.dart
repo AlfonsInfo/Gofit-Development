@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/AppBlocObserver.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
+import 'package:mobile_app_gofit_0541/Pages/Home/Instruktur/ijin_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/Pegawai/profile_pegawai.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/changepw_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/home_page_instruktur.dart';
@@ -57,7 +58,8 @@ class MainApp extends StatelessWidget {
               '/homePegawai' : (context) => const HomePagePegawai(),
               '/homeInstruktur' : (context) => const HomePageInstruktur(),
               '/changepw' : (context) => const ChangePasswordPage(),
-              '/profilePegawai' : (context) => const ProfilePegawai()
+              '/profilePegawai' : (context) => const ProfilePegawai(),
+              '/ijin' : (context) => const IjinPages()
             },
         );
         },

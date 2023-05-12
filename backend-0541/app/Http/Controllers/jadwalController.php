@@ -140,4 +140,11 @@ class jadwalController extends Controller
             ], 404);
         }   
     }
+
+    public function JadwalByInstruktur(Request $request){
+        // $jadwal = jadwal_umum::get();
+        $jadwal = jadwal_umum::where('id_instruktur', $request->id_instruktur)->get();
+
+        return response(['data' =>  $jadwal]);
+    }
 }

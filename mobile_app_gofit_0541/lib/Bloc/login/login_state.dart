@@ -14,19 +14,25 @@ class LoginState{
 
   User? user;
 
+  Pegawai? pegawai;
+  Member? member;
+  Instruktur? instruktur;
+
   LoginState({
     this.username = '', 
     this.password = '',
     this.formStatus = const InitialFormStatus(),
-    this.user 
+    this.user ,
+    this.instruktur
   });
 
-  LoginState copyWith({String? username, String? password, FormSumbissionStatus? formStatus = const InitialFormStatus(), String? role,User? user}){
+  LoginState copyWith({String? username, String? password, FormSumbissionStatus? formStatus = const InitialFormStatus(), String? role,User? user, Instruktur? instruktur}){
     return LoginState(
       username: username ?? this.username,
       password: password ?? this.password,
       formStatus: formStatus ?? this.formStatus,
-      user: user ?? this.user
+      user: user ?? this.user,
+      instruktur: instruktur ?? this.instruktur
     );
   }
 }
