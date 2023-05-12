@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
-import 'package:mobile_app_gofit_0541/Components/component_1.dart';
+import 'package:mobile_app_gofit_0541/Components/component.dart';
 
 class ProfilePegawai extends StatelessWidget {
   const ProfilePegawai({super.key});

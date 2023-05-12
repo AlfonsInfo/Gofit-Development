@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:mobile_app_gofit_0541/Models/login_user.dart';
-import 'package:mobile_app_gofit_0541/Config/constant.dart';
+import 'package:mobile_app_gofit_0541/Config/global.dart';
 import 'package:mobile_app_gofit_0541/Models/pegawai.dart';
 import 'package:mobile_app_gofit_0541/Models/instruktur.dart';
 import 'package:mobile_app_gofit_0541/Models/jadwal_umum.dart';

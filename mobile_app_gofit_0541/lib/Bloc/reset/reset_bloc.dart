@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 // import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
-import 'package:mobile_app_gofit_0541/Repository/auth_repository.dart';
+import 'package:mobile_app_gofit_0541/Repository/repo_auth.dart';
 import 'package:mobile_app_gofit_0541/Models/user.dart';
-import 'package:mobile_app_gofit_0541/Config/constant.dart';
+import 'package:mobile_app_gofit_0541/Config/global.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 

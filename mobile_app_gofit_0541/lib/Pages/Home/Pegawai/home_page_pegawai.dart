@@ -6,7 +6,7 @@ import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Function/function.dart';
 // import 'package:mobile_app_gofit_0541/Config/theme_config.dart';
-import 'package:mobile_app_gofit_0541/Components/component_1.dart';
+import 'package:mobile_app_gofit_0541/Components/component.dart';
 
 //* HomePagePegawai
 class HomePagePegawai extends StatelessWidget {

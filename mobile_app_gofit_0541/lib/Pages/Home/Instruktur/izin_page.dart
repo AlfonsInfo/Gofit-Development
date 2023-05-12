@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/ijin_instruktur/izin_bloc.dart';
-import 'package:mobile_app_gofit_0541/Components/component_1.dart';
+import 'package:mobile_app_gofit_0541/Components/component.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_gofit_0541/Models/jadwal_umum.dart';
-import 'package:mobile_app_gofit_0541/Repository/instruktur_repository.dart';
+import 'package:mobile_app_gofit_0541/Repository/repo_instruktur.dart';
 import 'package:mobile_app_gofit_0541/Models/instruktur.dart';
 class IjinPages extends StatefulWidget {
   const IjinPages({Key? key}) : super(key: key);

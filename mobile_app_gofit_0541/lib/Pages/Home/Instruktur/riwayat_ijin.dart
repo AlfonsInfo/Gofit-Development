@@ -2,9 +2,9 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_gofit_0541/Components/component_1.dart';
+import 'package:mobile_app_gofit_0541/Components/component.dart';
 import 'package:mobile_app_gofit_0541/Models/ijin_instruktur.dart';
-import 'package:mobile_app_gofit_0541/Repository/ijin_repository.dart';
+import 'package:mobile_app_gofit_0541/Repository/repo_ijin_instruktur.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 class RiwayatIjinPage extends StatefulWidget {
   const RiwayatIjinPage({Key? key}) : super(key: key);

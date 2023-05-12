@@ -6,7 +6,7 @@ import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/reset/reset_bloc.dart';
-import 'package:mobile_app_gofit_0541/Components/component_1.dart';
+import 'package:mobile_app_gofit_0541/Components/component.dart';
 
 class ChangePasswordPage extends StatefulWidget {
   const ChangePasswordPage({super.key});

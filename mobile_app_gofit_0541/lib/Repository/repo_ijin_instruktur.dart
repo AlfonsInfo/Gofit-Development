@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobile_app_gofit_0541/Models/ijin_instruktur.dart';
 import 'dart:convert';
 import 'package:mobile_app_gofit_0541/Models/login_user.dart';
-import 'package:mobile_app_gofit_0541/Config/constant.dart';
+import 'package:mobile_app_gofit_0541/Config/global.dart';
 
 class IjinRepository {
  Future<List<IjinInstruktur>> getIjinInstruktur(String idInstruktur) async {

@@ -7,7 +7,7 @@ import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
 import 'package:mobile_app_gofit_0541/Models/instruktur.dart';
 import 'package:mobile_app_gofit_0541/Models/member.dart';
 import 'package:mobile_app_gofit_0541/Models/pegawai.dart';
-import 'package:mobile_app_gofit_0541/Repository/auth_repository.dart';
+import 'package:mobile_app_gofit_0541/Repository/repo_auth.dart';
 import 'package:mobile_app_gofit_0541/Models/user.dart';
 
 part 'login_event.dart';

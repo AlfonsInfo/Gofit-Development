@@ -1,6 +1,5 @@
-import 'dart:developer';
-
-import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
+//* Digunakan untuk state secara keseluruhan
+// import 'dart:developer';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/Models/instruktur.dart';
 import 'package:mobile_app_gofit_0541/Models/member.dart';

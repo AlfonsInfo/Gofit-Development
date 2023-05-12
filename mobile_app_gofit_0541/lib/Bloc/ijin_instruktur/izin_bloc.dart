@@ -6,9 +6,9 @@ import 'package:intl/intl.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 // import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
-import 'package:mobile_app_gofit_0541/Repository/auth_repository.dart';
+import 'package:mobile_app_gofit_0541/Repository/repo_auth.dart';
 import 'package:mobile_app_gofit_0541/Models/user.dart';
-import 'package:mobile_app_gofit_0541/Config/constant.dart';
+import 'package:mobile_app_gofit_0541/Config/global.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
@@ -35,9 +35,6 @@ class IzinBloc extends Bloc<IzinFormEvent, IzinState>{
     emit(state.copyWith(idInstruktur: event.id_instruktur , idInstrukturPengganti: event.id_instruktur_pengganti));
         String resetUrl = '$url/ijininstruktur';
       try{
-        // inspect(state.idInstruktur);
-        // inspect(state.idInstrukturPengganti);
-        // inspect(state.idJadwalUmum);
         final response = await http.post(Uri.parse(resetUrl), body:{'id_instruktur' : event.id_instruktur, 'id_instruktur_pengganti' : event.id_instruktur_pengganti , 'id_jadwal_umum' : state.idJadwalUmum});
         final responseData = jsonDecode(response.body);
         if (responseData.containsKey('message')) {
