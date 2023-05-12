@@ -66,8 +66,10 @@ class HomePageInstruktur extends StatelessWidget {
                   padding: const EdgeInsets.all(8.0),
                   child: Column(
                     children: [
-                      IconButton(onPressed: (){}, icon: const Icon(Icons.history),tooltip: 'Izin Instruktur',),
-                      const Text('Riwayat Ijin')
+                      IconButton(onPressed: (){
+                        Navigator.pushNamed(context, '/riwayatijin');
+                      }, icon: const Icon(Icons.history),tooltip: 'Izin Instruktur',),
+                      const Text('Riwayat Ijin'),
                     ],
                   ),
                 ),

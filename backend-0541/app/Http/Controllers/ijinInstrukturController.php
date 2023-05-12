@@ -107,4 +107,18 @@ class ijinInstrukturController extends Controller
     {
         //
     }
+
+
+    public function indexByInstruktur(Request $request)
+    {   
+        // $ijin_instruktur = ijin_instruktur::get();
+        
+        // dd($request->id_instruktur);
+        $ijin_instruktur = ijin_instruktur::where('id_instruktur',$request->id_instruktur)->with(['instruktur','instrukturPengganti','jadwalHarian','jadwalHarian.jadwal_umum'])->get();
+
+        return response([
+            'message'=>'Success Tampil Data',
+            'data' => $ijin_instruktur
+        ],200); 
+    }
 }

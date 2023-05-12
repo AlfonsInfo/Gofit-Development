@@ -9,6 +9,7 @@ import 'package:mobile_app_gofit_0541/Pages/Home/changepw_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/home_page_instruktur.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/home_page_member.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/home_page_pegawai.dart';
+import 'package:mobile_app_gofit_0541/Pages/Home/Instruktur/riwayat_ijin.dart';
 //* Page
 import 'Pages/Auth/login_page.dart';
 //* Theme
@@ -59,7 +60,8 @@ class MainApp extends StatelessWidget {
               '/homeInstruktur' : (context) => const HomePageInstruktur(),
               '/changepw' : (context) => const ChangePasswordPage(),
               '/profilePegawai' : (context) => const ProfilePegawai(),
-              '/ijin' : (context) => const IjinPages()
+              '/ijin' : (context) => const IjinPages(),
+              '/riwayatijin' : (context) => const RiwayatIjinPage()
             },
         );
         },

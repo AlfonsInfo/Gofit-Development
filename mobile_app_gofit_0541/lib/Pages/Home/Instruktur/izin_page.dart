@@ -110,7 +110,7 @@ class _ListInstrukturState extends State<ListInstruktur> {
   void initState() {
     super.initState();
     getInstruktur();
-    getAvailableJadwal();
+    // getAvailableJadwal();
   }
 
   void filterLoginInstruktur()  {

@@ -40,6 +40,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/member', 'memberController');
     Route::apiResource('/pengguna', 'penggunaController');
     Route::apiResource('/ijininstruktur', 'ijinInstrukturController');  
+    Route::post('/selectijin', 'ijinInstrukturController@indexByInstruktur');  
     Route::apiResource('/presensigym', 'presensiGymController');  
     Route::apiResource('/presensikelas', 'presensiKelasController');  
     
