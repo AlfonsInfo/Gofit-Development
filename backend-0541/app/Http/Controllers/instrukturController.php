@@ -123,4 +123,21 @@ class instrukturController extends Controller
             ], 404);
         }    
     }
+
+       
+    public function resetTerlambat()
+    {
+        $instrukturs = instruktur::all();
+
+        foreach ($instrukturs as $instruktur) {
+            $instruktur->akumulasi_terlambat = 0;
+            $instruktur->save();
+        }
+            
+
+        return response([
+            'message'=>'Success Reset Deposit Member',
+            'data' => $instrukturs
+        ],200); 
+    }
 }

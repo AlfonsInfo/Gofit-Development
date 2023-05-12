@@ -34,7 +34,9 @@ class JadwalUmumIzin extends IzinFormEvent{
 
 //* Pengajuan
 class IzinSubmitted extends IzinFormEvent{
-  // final String? idPengguna;
+  final String? id_instruktur;
+  final String? id_instruktur_pengganti;
+  final String? id_jadwal_umum;
   
-  // IzinSubmitted({this.idPengguna});
+  IzinSubmitted({this.id_instruktur,this.id_instruktur_pengganti, this.id_jadwal_umum});
 }

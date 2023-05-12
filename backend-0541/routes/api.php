@@ -42,7 +42,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/ijininstruktur', 'ijinInstrukturController');  
     Route::apiResource('/presensigym', 'presensiGymController');  
     Route::apiResource('/presensikelas', 'presensiKelasController');  
-
+    
     Route::post('/hitungtransaksi', 'transaksiController@countTransaction');
     Route::get('/transaksihariini' , 'transaksiController@todayTransaction');
     Route::apiResource('/transaksiaktivasi', 'aktivasiController');  
@@ -52,7 +52,14 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     
     Route::get('/updatememberexpired/{id}',  'memberController@updateExpireDate');
     Route::put('/updatedepositbalanceuang/{id}',  'memberController@updateTotalDeposit');
-
+    
     Route::post('/resetbyuser', 'penggunaController@ResetPassword');
     Route::post('/jadwalbyinstruktur', 'jadwalController@JadwalByInstruktur');
+
+    Route::get('/showmemberdeaktif', 'memberController@memberKadeluarsa');
+    Route::get('/deaktivasimember', 'memberController@memberDeaktivasi');
+    
+    Route::get('/depositkadeluarsa', 'memberController@depositkadeluarsa');
+    Route::get('/resetdeposit', 'memberController@resetDeposit');
+    Route::get('/resetterlambat', 'instrukturController@resetTerlambat');
 });

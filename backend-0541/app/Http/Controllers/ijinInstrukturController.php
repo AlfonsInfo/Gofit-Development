@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ijin_instruktur;
+use App\Models\jadwal_harian;
+use Carbon\Carbon;
 
 class ijinInstrukturController extends Controller
 {
@@ -40,7 +42,25 @@ class ijinInstrukturController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $jadwalharian = jadwal_harian::where('id_jadwal_umum', $request->id_jadwal_umum)->first();
+
+        //* Create Jadwal Umum
+        $ijin = ijin_instruktur::create([
+            // 'hari' => $request->hari,
+            'id_jadwal_harian' => $request->id_jadwal_harian,
+            'status_ijin' => 'belum-dikonfirmasi',
+            'tanggal_pengajuan' => Carbon::now(),
+            'id_instruktur' => $request->id_instruktur,
+            'id_instruktur_pengganti' => $request->id_instruktur_pengganti,
+            'id_jadwal_harian' => $jadwalharian->id_jadwal_harian
+        ]);
+        
+        //*return response
+        return response([
+            'message'=> 'success tambah data ijin',
+            'data' => $ijin,
+        ]);
+
     }
 
     /**

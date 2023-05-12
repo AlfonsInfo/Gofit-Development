@@ -16,7 +16,6 @@ class InstrukturRepository {
       var apiResult = await http.get(Uri.parse(apiURL));
       if(apiResult.statusCode == 200){
         var jsonObject = json.decode(apiResult.body);
-        inspect(jsonObject);
         List<Instruktur> instrukturs = [];
         for (var item in jsonObject['data']) {
           instrukturs.add(Instruktur.fromJson(item));
@@ -31,16 +30,18 @@ class InstrukturRepository {
   }
 
 
-  Future<List<JadwalUmum>> getJadwalByInstruktur(id_instruktur) async{
+  Future<List<JadwalUmum>> getJadwalByInstruktur(idInstruktur) async{
     String apiURL = '$url/jadwalbyinstruktur';
     try{
-      var result = await http.post(Uri.parse(url),body:  {'id_instruktur' :  id_instruktur});
+      var result = await http.post(Uri.parse(apiURL),body:  {'id_instruktur' :  'ins-9'});
       if(result.statusCode == 200){
         var jsonObject = json.decode(result.body);
+        inspect(jsonObject);
         List<JadwalUmum> jadwalUmums = [];
         for (var item in jsonObject['data']) {
           jadwalUmums.add(JadwalUmum.fromJson(item));
         }
+        inspect(jadwalUmums);
         return jadwalUmums;
       }
     }catch(e){

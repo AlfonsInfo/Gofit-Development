@@ -9,8 +9,8 @@ class ijin_instruktur extends Model
 {   
     use HasFactory;
     protected $table = 'ijin_instruktur';
-    
-    
+    protected $guarded = [];
+     
     public function instruktur()
     {
         return $this->hasOne('App\Models\User\instruktur','id_instruktur','id_instruktur');

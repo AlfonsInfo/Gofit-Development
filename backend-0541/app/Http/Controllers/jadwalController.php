@@ -144,7 +144,10 @@ class jadwalController extends Controller
     public function JadwalByInstruktur(Request $request){
         // $jadwal = jadwal_umum::get();
         $jadwal = jadwal_umum::where('id_instruktur', $request->id_instruktur)->get();
-
-        return response(['data' =>  $jadwal]);
+        if($jadwal){
+            return response(['data' =>  $jadwal]);
+        }else{
+            return response([],400);
+        }
     }
 }

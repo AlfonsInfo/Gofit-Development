@@ -123,6 +123,16 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
     }
   }
 
+    const resetTerlambat = async ()=>{
+      const reset=confirm('apakah yakin ingin reset terlambat semua instruktur ?');
+      if(reset){
+        const url = `/resetterlambat`;
+        const request = await http.get(url);
+        console.log(request);
+        alert('Berhasil Reset');
+
+      }
+    }
 
       ActionDelete.functionAction = (member) => {
         deleteData(member)
@@ -135,6 +145,7 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
     ]
 
       return{
+        resetTerlambat,
         actions,
         router,
         members,
@@ -162,8 +173,10 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
   </header>
   <main>
     <div class='content text-white p-5'>
+      <div class="d-flex space-between">
         <h2 class="">Daftar Member</h2>
-      <div class="input-group mt-3 mb-2">
+      </div>
+        <div class="input-group mt-3 mb-2">
         <input type="search" class="form-control rounded me-2 " placeholder="Cari Member" aria-label="Search" aria-describedby="search-addon" v-model="state.searchInput"/>
       </div>
       <table-data 
@@ -174,6 +187,18 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
       :fields="['id_member','nama_member','tgl_lahir_member','no_telp_member','aktivasi']"
       :create="ActionCreateMember"
       ></table-data>
+      <div>
+        <!-- :to="{name: items.route}" -->
+        <router-link :to="{name: 'deaktivasi'}" class="btn btn-primary mt-2" >
+          Reset Deposit Member
+        </router-link>
+        <router-link :to="{name: 'depositkadeluarsa'}" class="btn btn-primary mt-2 ms-5" >
+          Depsoti Kadeluarsa
+        </router-link>
+        <button @click="resetTerlambat" class="btn btn-primary mt-2 ms-5" >
+          Reset Terlambat Instruktur
+        </button>
+      </div>
     </div>
     <div>
       <modal-detail :display="state.modalToggle" :data="state.sendDataDetail"  @close-modal="state.modalToggle = false;" ></modal-detail>

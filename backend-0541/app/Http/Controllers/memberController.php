@@ -158,4 +158,83 @@ class memberController extends Controller
             'message' => 'Deposit Member berhasil diupdate',
         ], 200);
     }
-}
+
+
+
+    public function memberKadeluarsa()
+    {
+        $today = Carbon::today();
+
+        $members = Member::where('tgl_kadeluarsa_aktivasi', '<', $today)
+                          ->with(['pengguna'])
+                          ->get();
+        return response([
+            'message'=>'Success Tampil Data',
+            'data' => $members
+        ],200); 
+
+    }
+
+    public function depositkadeluarsa()
+    {
+        $today = Carbon::today();
+
+        $members = Member::where('tgl_kadeluarsa_paket', '<', $today)
+                          ->get();
+        return response([
+            'message'=>'Success Tampil Data',
+            'data' => $members
+        ],200); 
+
+    }
+
+
+
+    public function memberDeaktivasi()
+    {
+        $today = Carbon::today();
+
+        $members = Member::where('tgl_kadeluarsa_aktivasi', '<', $today)
+                          ->with(['pengguna'])
+                          ->get();
+
+
+        foreach ($members as $member) {
+        $member->fill([
+                'tgl_kadeluarsa_aktivasi' => null,
+                'total_deposit_uang' => 0,
+                'tgl_kadeluarsa_paket' => null,
+                // add more attributes to reset to 0 as necessary
+                
+            ]);
+        $member->save();
+    }
+    return response([
+        'message'=>'Success Deaktivasi Member',
+        'data' => $members
+    ],200); 
+    }
+
+    public function resetDeposit()
+    {
+        $today = Carbon::today();
+
+        $members = Member::where('tgl_kadeluarsa_paket', '<', $today)
+        ->get();
+
+
+        foreach ($members as $member) {
+        $member->fill([
+                'total_deposit_paket' => 0,
+                'tgl_kadeluarsa_paket' => null,
+            ]);
+        $member->save();
+    }
+    return response([
+        'message'=>'Success Reset Deposit Member',
+        'data' => $members
+    ],200); 
+    }
+
+
+    }

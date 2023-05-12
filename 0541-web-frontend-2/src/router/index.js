@@ -68,6 +68,18 @@ const router = createRouter({
       component: () => import('../views/member/generate-member-card.vue')
     },
     {
+      path:'/member/deaktivasi',
+      name : 'deaktivasi',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/member/deaktivasi-member.vue')
+    },
+    {
+      path:'/member/depositkadeluarsa',
+      name : 'depositkadeluarsa',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/member/deposit-kadeluarsa-member.vue')
+    },
+    {
       path:'/instruktur',
       name : 'instruktur',
       beforeEnter : beforeEnter,
