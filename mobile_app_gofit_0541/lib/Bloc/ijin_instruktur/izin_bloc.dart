@@ -7,7 +7,6 @@ import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 // import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
 import 'package:mobile_app_gofit_0541/Repository/repo_auth.dart';
-import 'package:mobile_app_gofit_0541/Models/user.dart';
 import 'package:mobile_app_gofit_0541/Config/global.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -25,17 +24,17 @@ class IzinBloc extends Bloc<IzinFormEvent, IzinState>{
 
   IzinBloc() : super(IzinState()){
     on<ValueNamaInstruktur>(_valueNama);
-    on<ValueTanggalPengajuan>(_ValueTanggal);
+    on<ValueTanggalPengajuan>(_valueTanggal);
     on<ValueInstrukturPengganti>(_valueInstrukturPengganti);
-    on<JadwalUmumIzin>(_ValueJadwalUmumIzin);
+    on<JadwalUmumIzin>(_valueJadwalUmumIzin);
     on<IzinSubmitted>(_onIzinSubmitted);
   }
 
   _onIzinSubmitted(IzinSubmitted event, Emitter<IzinState> emit) async{
-    emit(state.copyWith(idInstruktur: event.id_instruktur , idInstrukturPengganti: event.id_instruktur_pengganti));
+    emit(state.copyWith(idInstruktur: event.idInstruktur , idInstrukturPengganti: event.idInstrukturPengganti));
         String resetUrl = '$url/ijininstruktur';
       try{
-        final response = await http.post(Uri.parse(resetUrl), body:{'id_instruktur' : event.id_instruktur, 'id_instruktur_pengganti' : event.id_instruktur_pengganti , 'id_jadwal_umum' : state.idJadwalUmum});
+        final response = await http.post(Uri.parse(resetUrl), body:{'id_instruktur' : event.idInstruktur, 'id_instruktur_pengganti' : event.idInstrukturPengganti , 'id_jadwal_umum' : state.idJadwalUmum});
         final responseData = jsonDecode(response.body);
         if (responseData.containsKey('message')) {
           inspect(responseData);
@@ -56,7 +55,7 @@ class IzinBloc extends Bloc<IzinFormEvent, IzinState>{
     // emit(state.copyWith(oldPw: event.oldPw));
   }
 
-  _ValueTanggal(ValueTanggalPengajuan event, Emitter<IzinState> emit)
+  _valueTanggal(ValueTanggalPengajuan event, Emitter<IzinState> emit)
   {
     // emit(state.copyWith(newPassword: event.password));
   }
@@ -67,10 +66,10 @@ class IzinBloc extends Bloc<IzinFormEvent, IzinState>{
 
   }
 
-  _ValueJadwalUmumIzin (JadwalUmumIzin event, Emitter<IzinState> emit) async
+  _valueJadwalUmumIzin (JadwalUmumIzin event, Emitter<IzinState> emit) async
   {
-    inspect(event.id_jadwal_umum);
-    emit(state.copyWith(idJadwalUmum: event.id_jadwal_umum));
+    inspect(event.idJadwalUmum);
+    emit(state.copyWith(idJadwalUmum: event.idJadwalUmum));
 
 
   }

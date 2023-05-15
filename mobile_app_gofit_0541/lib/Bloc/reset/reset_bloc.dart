@@ -2,8 +2,6 @@
 import 'dart:developer';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
-// import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
 import 'package:mobile_app_gofit_0541/Repository/repo_auth.dart';
 import 'package:mobile_app_gofit_0541/Models/user.dart';
@@ -18,13 +16,13 @@ part 'reset_state.dart';
 
 class ResetBloc extends Bloc<ResetEvent, ResetState>{
   AuthRepository authRepo = AuthRepository();
-  AppBloc appBloc  = AppBloc();
 
 
 
   ResetBloc() : super(ResetState()){
     on<OldPasswordChanged>(_oldPasswordChanged);
     on<newPasswordChanged>(_newPasswordChanged);
+    on<confirmPasswordChanged>(_confirmPasswordChanged);
     on<ResetSubmitted>(_onResetSubmitted);
   }
 
@@ -36,6 +34,10 @@ class ResetBloc extends Bloc<ResetEvent, ResetState>{
   _newPasswordChanged(newPasswordChanged event, Emitter<ResetState> emit)
   {
     emit(state.copyWith(newPassword: event.password));
+  }
+
+  _confirmPasswordChanged(confirmPasswordChanged event, Emitter<ResetState> emit){
+    emit(state.copyWith(confirmNewPassword: event.password));
   }
 
   _onResetSubmitted (ResetSubmitted event, Emitter<ResetState> emit) async
@@ -51,7 +53,6 @@ class ResetBloc extends Bloc<ResetEvent, ResetState>{
         }else{
           emit(state.copyWith(formStatus: SubmissionFailed()));
         }
-
       }catch(e){
         return null;
       }

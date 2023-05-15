@@ -86,7 +86,7 @@ class memberController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $id) 
     {
         //* Validasi
         $validator = ValidatorHelper::validateMember($request->all());
@@ -162,13 +162,13 @@ class memberController extends Controller
 
 
     public function memberKadeluarsa()
-    {
+                {
         $today = Carbon::today();
 
         $members = Member::where('tgl_kadeluarsa_aktivasi', '<', $today)
                           ->with(['pengguna'])
                           ->get();
-        return response([
+        return response([   
             'message'=>'Success Tampil Data',
             'data' => $members
         ],200); 

@@ -30,7 +30,6 @@ class HomePagePegawai extends StatelessWidget {
           Center(
       child: BlocBuilder<AppBloc, AppState>(
         builder: (context, state) {
-          inspect(state);
           return Text('Username: ${state.user?.username ?? ""}');
   }
       )

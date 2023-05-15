@@ -26,17 +26,17 @@ class ValueInstrukturPengganti extends IzinFormEvent{
 
 //* Jadwal Umum Izin
 class JadwalUmumIzin extends IzinFormEvent{
-  final String? id_jadwal_umum;
+  final String? idJadwalUmum;
 
-  JadwalUmumIzin({this.id_jadwal_umum});
+  JadwalUmumIzin({this.idJadwalUmum});
 }
 
 
 //* Pengajuan
 class IzinSubmitted extends IzinFormEvent{
-  final String? id_instruktur;
-  final String? id_instruktur_pengganti;
-  final String? id_jadwal_umum;
+  final String? idInstruktur;
+  final String? idInstrukturPengganti;
+  final String? idJadwalUmum;
   
-  IzinSubmitted({this.id_instruktur,this.id_instruktur_pengganti, this.id_jadwal_umum});
+  IzinSubmitted({this.idInstruktur,this.idInstrukturPengganti, this.idJadwalUmum});
 }

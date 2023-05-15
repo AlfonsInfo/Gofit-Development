@@ -1,4 +1,4 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,7 +96,7 @@ class _IjinPagesState extends State<IjinPages> {
 class ListInstruktur extends StatefulWidget {
   final Function(Instruktur) onSelect;
 
-  ListInstruktur({ required this.onSelect});
+  const ListInstruktur({super.key,  required this.onSelect});
 
   @override
   _ListInstrukturState createState() => _ListInstrukturState();
@@ -212,7 +212,7 @@ Widget build(BuildContext context) {
                 setState(() {
                   _selectedOption = newValue;
                   // var id_instsruktur = newValue!.id_JadwalUmumr;
-                  context.read<IzinBloc>().add(JadwalUmumIzin(id_jadwal_umum: _selectedOption!.idJadwalUmum));
+                  context.read<IzinBloc>().add(JadwalUmumIzin(idJadwalUmum: _selectedOption!.idJadwalUmum));
                 });
                 setState(() {});
               },
@@ -248,7 +248,7 @@ Widget build(BuildContext context) {
                 // inspect();
                 var idJadwal = izinBloc.state.idJadwalUmum;
                 // inspect(idJadwal);
-                context.read<IzinBloc>().add(IzinSubmitted(id_instruktur: idInstruktur, id_instruktur_pengganti: izinBloc.state.idInstrukturPengganti, id_jadwal_umum:  idJadwal));
+                context.read<IzinBloc>().add(IzinSubmitted(idInstruktur: idInstruktur, idInstrukturPengganti: izinBloc.state.idInstrukturPengganti, idJadwalUmum:  idJadwal));
                 _showSnackBar(context, 'Berhasil Izin');
                 Navigator.of(context).pop();
               },

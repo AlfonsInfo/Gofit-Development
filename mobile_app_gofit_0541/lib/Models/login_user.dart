@@ -13,9 +13,9 @@ class LoginResult
   Pegawai? pegawai;
   String? member;
   Instruktur? instruktur;
-
   //* Constructor
-  LoginResult({required this.message,required this.accessToken, required this.user, this.pegawai, this.member, this.instruktur,});
+  LoginResult({required this.message,required this.accessToken, required this.user, this.pegawai, this.member, this.instruktur, 
+  });
 
   //* Factory Method 
   factory LoginResult.createLoginResult(Map<String, dynamic> object){

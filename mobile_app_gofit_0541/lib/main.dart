@@ -1,5 +1,6 @@
 //*Dependency
 import 'package:flutter/material.dart';
+import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
 import 'package:mobile_app_gofit_0541/Config/global.dart';
 //* Page
 import 'Pages/Auth/login_page.dart';
@@ -28,6 +29,7 @@ class MainApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AppBloc(),),
+        BlocProvider(create: (context) => LoginBloc(),),
       ],
       child: LayoutBuilder(
         builder: (context, constraints){
@@ -37,7 +39,8 @@ class MainApp extends StatelessWidget {
             theme: themeConfig.themeLight,
             // darkTheme: themeConfig.themeDark,
           home :const LoginPage(),
-            routes: routesApp,
+          //* Daftar Routes
+          routes: routesApp,
         );
         },
       ),

@@ -24,8 +24,7 @@ class HomePageInstruktur extends StatelessWidget {
         menuInstruktur(context,widthBox, heightBox),
         BlocBuilder<AppBloc, AppState>(
         builder: (context, state) {
-          inspect(state);
-          return Text('Username: ${state.user?.username ?? ""}');
+            return Text('Username: ${state.user?.username ?? ""}');
         })
         ]
       ),

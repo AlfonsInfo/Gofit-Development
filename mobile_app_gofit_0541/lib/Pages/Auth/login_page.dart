@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+// import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
@@ -8,39 +7,42 @@ import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
 import 'package:mobile_app_gofit_0541/Pages/Public/public_page.dart';
 import 'package:mobile_app_gofit_0541/Components/component.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-//*provider
-  //*block builder
+  //* Halaman Login
+  class LoginPage extends StatefulWidget {
+    const LoginPage({super.key});
 
-class _LoginPageState extends State<LoginPage> {
-  LoginResult? loginResult;
-  final _formKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) { 
-    return Scaffold(
-      appBar: createAppBar('Gofit Mobile Apps'), 
-      // AppBar(title: const Text('Gofit Mobile Apps'),),
-      body: _loginForm(context)
-      );
+    @override
+    State<LoginPage> createState() => _LoginPageState();
   }
 
+  //* State halaman login
+  class _LoginPageState extends State<LoginPage> {
+    LoginResult? loginResult;
+    final _formKey = GlobalKey<FormState>();
+
+    @override
+    Widget build(BuildContext context) { 
+      return Scaffold(
+        appBar: createAppBar('Gofit Mobile Apps'), 
+        body: _loginForm(context)
+      );
+    }
+
+  //* Form Login
   Widget _loginForm(BuildContext context) {
+    //* BlocListener 
     return BlocListener<LoginBloc,LoginState>(
       listener: (context, state) {
         final formStatus= state.formStatus;
         if(formStatus is SubmissionFailed){
+          //* Gagal Login show snackbar
           // _showSnackBar(context, formStatus.exception.toString());
           _showSnackBar(context, 'Gagal Login, Periksa kembali username dan password');
         }
       },
+      //*BlocBuilder
       child: BlocBuilder<LoginBloc,LoginState>(
         builder: (context,state){
         return SafeArea(
@@ -52,12 +54,13 @@ class _LoginPageState extends State<LoginPage> {
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(20),
                   children: [
+                    //*core page
                     logoGofit(context),
                     const UsernameField(),
                     const PasswordField(),
                     LoginButton(formkey: _formKey),
                     const PublicFeatures(),
-                    // apiTester()
+                    //*end core page
                   ],
                 ),
               ),
@@ -66,8 +69,9 @@ class _LoginPageState extends State<LoginPage> {
         }
       ),
     );
-
   }
+  //* Akhir dari state halaman login
+
 
   //* Methods
   void _showSnackBar(BuildContext context, String message) {
@@ -78,11 +82,10 @@ class _LoginPageState extends State<LoginPage> {
   //* Widget Logo Gofit
   SizedBox logoGofit(BuildContext context) {
     return SizedBox(
-        height: MediaQuery.of(context).size.height * 1 / 3,
-        child: Image.asset('assets/images/logo-mobile-apps.png'));
+      height: MediaQuery.of(context).size.height * 1 / 3,
+      child: Image.asset('assets/images/logo-mobile-apps.png'));
   }
-
-}
+}//* Akhir dari class
 
 //* Input Username
 class UsernameField extends StatelessWidget {
@@ -93,13 +96,17 @@ class UsernameField extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return TextFormField(
+        //* enable jika tidak lagi proses submitting
         enabled: state.formStatus is !FormSubmitting ?,
+        //* Styling
         decoration: const InputDecoration(
           icon: Icon(Icons.person),
           hintText: 'Username /ID Member',
           labelText: 'Name',
-        ),
+        ), //*akhir dari styling
+        //* validator (cek state)
         validator: (value) => state.isValidUsername ? null : 'invalid username',
+        //* setiap perubahan add event
         onChanged: (value) => context.read<LoginBloc>().add(LoginUsernameChanged(username: value)),
       );
     },
@@ -121,44 +128,39 @@ class _PasswordFieldState extends State<PasswordField> {
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
       return TextFormField(
+        //* enable jika tidak sedang proses submitting
         enabled: state.formStatus is !FormSubmitting ?,
+        //* show / hidden password via eyes
         obscureText: statusShow,
+        //*stylign
         decoration:  InputDecoration(
-          suffixIcon: IconButton(
-            onPressed: () {
-              setState(() {
-                statusShow = !statusShow;
-              });
-            },
-            icon :  Icon((statusShow) ? Icons.visibility: Icons.visibility_off)),
+          suffixIcon: eyeIcon(),
           icon: const Icon(Icons.password),
           hintText: 'Password',
           labelText: 'Password',
         ),
-        validator: (value) =>
-            state.isValidPassword ? null : 'Password is invalid',
-        onChanged: (value) => context
-            .read<LoginBloc>()
-            .add(LoginPasswordChanged(password: value)),
+        //* akhir dari styling
+        //*validasi
+        validator: (value) => state.isValidPassword ? null : 'Password is invalid',
+        //* mencatat perubahan ke dalam state
+        onChanged: (value) => context.read<LoginBloc>().add(LoginPasswordChanged(password: value)),
       );
     });
+  }
+
+  IconButton eyeIcon() {
+    return IconButton(
+          onPressed: () {
+            setState(() {
+              statusShow = !statusShow;
+            });
+          },
+          icon :  Icon((statusShow) ? Icons.visibility: Icons.visibility_off));
   }
 }
 
 
-// Menyimpan data ke Shared Preferences
-Future<void> saveData(String key, String value) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setString(key, value);
-}
 
-
-
-// Mengambil data dari Shared Preferences
-Future<String> getData(String key) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  return prefs.getString(key) ?? '';
-}
   
 // * Button Login
 class LoginButton extends StatelessWidget {
@@ -170,21 +172,11 @@ class LoginButton extends StatelessWidget {
     return BlocListener<LoginBloc,LoginState>(
       listener: (context,loginState){
         if(loginState.formStatus is SubmissionSuccess){
-          // inspect(loginState);
-            context.read<AppBloc>().add(SaveUserInfo(user: loginState.user, instruktur: loginState.instruktur));
-            saveData('idpengguna', loginState.user!.idPengguna);
-            // inspect(getData('idpengguna'));
-            // BlocProvider.value(value: BlocProvider.of<AppBloc>(context).add(SaveUserInfo(user: loginState.user)));
-          if(loginState.user?.role == 'member'){
-            // context.read<AppBloc>().add(SaveUserInfo(member: loginState.user));
-            Navigator.pushReplacementNamed(context, '/homeMember');
-          }
-          if(loginState.user?.role =='pegawai'){
-            Navigator.pushReplacementNamed(context, '/homePegawai');
-          }
-          if(loginState.user?.role =='instruktur'){
-            Navigator.pushReplacementNamed(context, '/homeInstruktur');
-          }
+            //* jika navigasi sukes navigasi sesuai role (Next)
+          context.read<AppBloc>().add(SaveUserInfo(user: loginState.user, instruktur: loginState.instruktur));
+          (loginState.user?.role == 'member') ? Navigator.pushReplacementNamed(context, '/homeMember') : ' ';
+          (loginState.user?.role =='pegawai') ? Navigator.pushReplacementNamed(context, '/homePegawai') : ' ';
+          (loginState.user?.role =='instruktur') ? Navigator.pushReplacementNamed(context, '/homeInstruktur') : ' ';
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(builder: (context, state) {
@@ -206,9 +198,6 @@ class LoginButton extends StatelessWidget {
                       }
                     },
                     child: const Text('Login'),
-                    // style: ButtonStyle(
-                    // backgroundColor: MaterialStateProperty.all(Colors.yellow),
-                    // ),
                   ),
                 ),
               );
