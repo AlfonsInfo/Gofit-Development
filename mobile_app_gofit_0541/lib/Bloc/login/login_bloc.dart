@@ -45,11 +45,11 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
       //*request login
       final response = await authRepo.login(username: state.username, password: state.password);
       if(response != null){
-        // inspect(response);  
         emit(state.copyWith(user: response.user ));
-        if(response.instruktur != null){
-          emit(state.copyWith(instruktur: response.instruktur));
-        }
+        (response.instruktur != null) ? emit(state.copyWith(instruktur: response.instruktur)) : '';
+        (response.member != null) ? emit(state.copyWith(member: response.member)) : '';
+        (response.pegawai != null) ? emit(state.copyWith(member: response.member)) : '';
+        
         emit(state.copyWith(user: response.user ));
         emit(state.copyWith(formStatus: SubmissionSuccess()));
       }else{

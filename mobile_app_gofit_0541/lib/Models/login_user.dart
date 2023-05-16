@@ -2,6 +2,7 @@
 import 'dart:developer';
 
 import 'package:mobile_app_gofit_0541/Models/instruktur.dart';
+import 'package:mobile_app_gofit_0541/Models/member.dart';
 import 'package:mobile_app_gofit_0541/Models/pegawai.dart';
 import 'package:mobile_app_gofit_0541/Models/user.dart';
 
@@ -11,7 +12,7 @@ class LoginResult
   String accessToken;
   User user;
   Pegawai? pegawai;
-  String? member;
+  Member? member;
   Instruktur? instruktur;
   //* Constructor
   LoginResult({required this.message,required this.accessToken, required this.user, this.pegawai, this.member, this.instruktur, 
@@ -31,7 +32,7 @@ class LoginResult
         message: object['message'], 
         accessToken: object['access_token'],
         user: User.fromJson(object['user']),
-        member: object ['member']['id_member'].toString(),
+        member: Member.fromJson(object['member'])
       );
     } else if (object['instruktur'] !=   null) {
       return LoginResult(

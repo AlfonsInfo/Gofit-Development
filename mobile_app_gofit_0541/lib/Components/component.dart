@@ -103,3 +103,79 @@ class HeaderTemplate extends StatelessWidget {
 
 
 
+
+
+
+
+Container boxContent() {
+  return Container(
+    width: 100,
+    height: 100,
+    decoration: BoxDecoration(
+      color: ColorApp.colorButtonPrimary,
+      borderRadius: BorderRadius.all(Radius.circular(10)),
+    ),
+    child: ListView(
+      children: [
+        Container(
+          width: 100,
+          height: 100,
+          child: Text('Deposit Kelas 5'),),
+        Container(
+          width: 100,
+          height: 100,
+          child: Text('Deposit Paket 5'),),
+        // Daftar item di dalam ListView
+      ],
+    ),
+  );
+}
+
+
+
+
+class AnimatedListView extends StatefulWidget {
+  @override
+  _AnimatedListViewState createState() => _AnimatedListViewState();
+}
+
+class _AnimatedListViewState extends State<AnimatedListView> {
+  bool isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          isExpanded = !isExpanded;
+        });
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+        width: 100,
+        height: isExpanded ? 200 : 100,
+        decoration: BoxDecoration(
+          color: ColorApp.colorButtonPrimary,
+          borderRadius: BorderRadius.all(Radius.circular(10)),
+        ),
+        child: ListView(
+          children: [
+            Container(
+              width: 100,
+              height: 100,
+              child: Text('Deposit Kelas 5'),
+            ),
+            if (isExpanded)
+              Container(
+                width: 100,
+                height: 100,
+                child: Text('Deposit Paket 5'),
+              ),
+            // Daftar item di dalam ListView
+          ],
+        ),
+      ),
+    );
+  }
+}

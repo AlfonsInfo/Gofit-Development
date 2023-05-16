@@ -23,6 +23,9 @@ class ThemeConfig  {
               iconColor: ColorApp.colorPrimary,
               fillColor: Colors.white,              
             ),
-          );
+            timePickerTheme: TimePickerThemeData(
+              backgroundColor: ColorApp.colorPrimary
+            )
+      );
 
 }

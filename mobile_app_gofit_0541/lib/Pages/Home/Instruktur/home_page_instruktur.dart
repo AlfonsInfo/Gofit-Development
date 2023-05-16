@@ -17,6 +17,7 @@ class HomePageInstruktur extends StatelessWidget {
   final heightBox = MediaQuery.of(context).size.height * 0.3;
     return  Scaffold(
       appBar: createAppBar('Welcome Instructure'), 
+      //* UTAMA
       body: ListView(
         children:
         [
@@ -28,6 +29,7 @@ class HomePageInstruktur extends StatelessWidget {
         })
         ]
       ),
+      //*Akhir dari UtamaSW
       drawer: const SideBar(alamatRoute: '/changepw'),
     );
   }

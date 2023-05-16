@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:http/http.dart' as http;
-import 'package:mobile_app_gofit_0541/Models/ijin_instruktur.dart';
+import 'package:mobile_app_gofit_0541/Models/izin_instruktur.dart';
 import 'dart:convert';
 import 'package:mobile_app_gofit_0541/Models/login_user.dart';
 import 'package:mobile_app_gofit_0541/Config/global.dart';

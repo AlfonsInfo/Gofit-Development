@@ -24,7 +24,22 @@ class Member{
     this.totalDepositPaket,
     this.tglKadeluarsaPaket
   });
-
+  
+  factory Member.fromJson(Map<String,dynamic> json){
+    return Member(
+      idMember: json['id_member']?.toString() ?? '',
+      idPengguna: json['id_pengguna']?.toString() ?? '',
+      namaMember: json['nama_member']?.toString() ?? '',
+      tglLahirMember: json['tgl_lahir_member']?.toString() ?? '',
+      noTelpMember: json['no_telp_member']?.toString() ?? '',
+      alamatMember: json['alamat_member']?.toString() ?? '',
+      tglKadeluarsaAktivasi: json['tgl_kadeluarsa_aktivasi']?.toString() ?? '',
+      totalDepositUang: json['total_deposit_uang']?.toString() ?? '',
+      tglGabung: json['tgl_gabung_member']?.toString() ?? '',
+      totalDepositPaket: json['total_deposit_paket']?.toString() ?? '',
+      tglKadeluarsaPaket: json['tgl_kadeluarsa_paket']?.toString() ?? '',
+    );
+  }
 }
 
 

@@ -173,7 +173,7 @@ class LoginButton extends StatelessWidget {
       listener: (context,loginState){
         if(loginState.formStatus is SubmissionSuccess){
             //* jika navigasi sukes navigasi sesuai role (Next)
-          context.read<AppBloc>().add(SaveUserInfo(user: loginState.user, instruktur: loginState.instruktur));
+          context.read<AppBloc>().add(SaveUserInfo(user: loginState.user, instruktur: loginState.instruktur, member: loginState.member));
           (loginState.user?.role == 'member') ? Navigator.pushReplacementNamed(context, '/homeMember') : ' ';
           (loginState.user?.role =='pegawai') ? Navigator.pushReplacementNamed(context, '/homePegawai') : ' ';
           (loginState.user?.role =='instruktur') ? Navigator.pushReplacementNamed(context, '/homeInstruktur') : ' ';

@@ -10,6 +10,8 @@ class SaveUserInfo extends AppEvent{
   final Pegawai? pegawai;
   final Member? member;
   final Instruktur? instruktur;
+
+  
   SaveUserInfo({this.user, this.pegawai, this.member , this.instruktur});
 }
 
