@@ -1,15 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'package:mobile_app_gofit_0541/Config/theme_config.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile_app_gofit_0541/Bloc/booking_gym/booking_gym_bloc.dart';
+import 'package:mobile_app_gofit_0541/Models/sesi_gym.dart';
 
 
 class BookingGym extends StatefulWidget {
   const BookingGym({
     super.key,
   });
-
+  
   @override
   State<BookingGym> createState() => _BookingGymState();
 }
@@ -24,19 +28,29 @@ class _BookingGymState extends State<BookingGym> {
         padding: const EdgeInsets.all(40.0),
           child: Form(child: 
           Column(
-            children: const [
+            children:  [
               //* ID Member
-              MemberIDField(),
+              const MemberIDField(),
               //* Date Picker Tanggalnya
-              PickerTanggalBooking(),
+              const PickerTanggalBooking(),
               //* Drop Down Sesinya
-              ComboBoxSesi(),
+              const ComboBoxSesi(),
               //* Button Booking
+              buttonBooking()
             ],
           ),),
           // color: ColorApp.colorPrimary,
         ),
       );
+  }
+
+  Widget buttonBooking() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ElevatedButton(onPressed: (){
+      //* Aksi
+      }, child: const Text('Booking Bro !!')),
+    );
   }
 }
 
@@ -126,37 +140,78 @@ class ComboBoxSesi extends StatefulWidget {
 }
 
 class _ComboBoxSesiState extends State<ComboBoxSesi> {
-  Sesi? selectedSesi;
-  List<Sesi>? daftarSesi = [
-    Sesi(idSesi:'1',waktuMulai: '13:00', waktuSelesai:'14:00'),
-    Sesi(idSesi:'2',waktuMulai: '15:00', waktuSelesai:'16:00'),
-    Sesi(idSesi:'3',waktuMulai: '16:00', waktuSelesai:'16:00'),
-  ];
-
+  
+  //* Konversi List Sesi menjadi List DropDownMenuItem
   List<DropdownMenuItem> generateItems(List<Sesi> daftarSesi){
     List<DropdownMenuItem> items = [];
     for(var item in daftarSesi){
-        items.add(DropdownMenuItem(child: Text(item.waktuMulai ?? ''),value: item,));
+        items.add(DropdownMenuItem(
+          value: item,
+          child: Text('${item.waktuMulai} - ${item.waktuSelesai}'),
+          ),);
     }
     return items;
   }
+
+  @override
   @override
   Widget build(BuildContext context) {
-    return DropdownButton(items: generateItems(daftarSesi ?? []),
-    value: selectedSesi,
-    onChanged: (item) => 
-    setState(() {
-    selectedSesi = item;
-    })
+      
+  Sesi? selectedSesi;
+  final BookingGymBloc bookingGymBLoc = BlocProvider.of<BookingGymBloc>(context);
+  List<Sesi>? daftarSesi = bookingGymBLoc.state.defaultSesi;
+    return BlocBuilder<BookingGymBloc,BookingGymState>(
+      builder: (context,bookingState) {
+        return Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  const Padding(
+                    padding:  EdgeInsets.only(right: 12),
+                    child: Icon(Icons.watch_later_outlined),
+                  ),
+                  Expanded(
+                    child: DropdownButton(items: generateItems(daftarSesi ?? []),
+                    value: selectedSesi,
+                    onChanged: (item) {
+                    setState(() {
+                    selectedSesi = item;
+                    
+                    });
+                    },
+                    hint: const Text('Jam Berapa ?'),
+                    isExpanded: true,
+                    ),
+                  ),
+                ],
+              ),
+              ElevatedButton(onPressed: (){
+                inspect(daftarSesi);
+              }, child: Text('pencet'))
+            ],
+          ),
+          //   Future<Object?> testMethod(BookingGymBloc bookingGymBLoc) async => inspect(await bookingGymBLoc.state.defaultSesi);
+
+        );
+      }
     );
   }
 }
 
 
-class Sesi{
-  String? idSesi;
-  String? waktuMulai;
-  String? waktuSelesai;
+// class Sesi{
+//   String? idSesi;
+//   String? waktuMulai;
+//   String? waktuSelesai;
   
-  Sesi({this.idSesi, this.waktuMulai, this.waktuSelesai});
-}
+//   Sesi({this.idSesi, this.waktuMulai, this.waktuSelesai});
+// }
+
+
+//  bookingState.defaultSesi?.map<DropdownMenuItem<Sesi>>((Sesi? value) {
+//                   return DropdownMenuItem<Sesi>(
+//                     value: value,
+//                     child: Text(value?.waktuMulai ?? 'Pilih Instruktur'),
+//                   );

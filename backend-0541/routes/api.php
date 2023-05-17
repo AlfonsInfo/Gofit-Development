@@ -25,7 +25,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     // ->middleware('cors');
     // Route::post('login', loginWebController::class)->middleware('cors');
     Route::post('login', 'loginWebController');
-    Route::post('/sesiGym', 'sesiGymController@index');
+    Route::apiResource('/sesiGym', 'sesiGymController');
     Route::post('login-mobile', 'loginMobileController');
     // Route::post('/kelas', 'kelasController@index');
     route::apiResource('/kelas', 'kelasController');
