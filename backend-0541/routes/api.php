@@ -64,4 +64,6 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::get('/depositkadeluarsa', 'memberController@depositkadeluarsa');
     Route::get('/resetdeposit', 'memberController@resetDeposit');
     Route::get('/resetterlambat', 'instrukturController@resetTerlambat');
+
+    Route::post('/tampilbookinggym', 'bookingGymController@showData');
 });

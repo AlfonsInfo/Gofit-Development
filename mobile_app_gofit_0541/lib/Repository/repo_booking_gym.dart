@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:convert';
 import 'package:mobile_app_gofit_0541/Config/global.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile_app_gofit_0541/Models/booking_gym.dart';
 
 class BookingGymRepository{
 
@@ -30,5 +31,23 @@ class BookingGymRepository{
         inspect(e);
         return ['Gagal Booking',false];
       }
+    }
+
+    Future<List<BookingGym>> show(String idMember) async {
+      String apiUrl = '$url/tampilbookinggym';
+      List<BookingGym> data =  [];
+      try{
+        var apiResult = await http.post(Uri.parse(apiUrl), body: {'id_member' : idMember});
+        var jsonObject = json.decode(apiResult.body);
+
+          for(var item in jsonObject['data']){
+            data.add(BookingGym.fromJson(item));
+          }
+          inspect(data);
+        return data;
+    }catch(e){
+        inspect(e);
+        return data;
+    }
     }  
 }

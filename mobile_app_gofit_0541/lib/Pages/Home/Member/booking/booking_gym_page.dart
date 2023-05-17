@@ -181,61 +181,65 @@ class _ComboBoxSesiState extends State<ComboBoxSesi> {
   @override
   initState(){
     super.initState();
-    getSesi();
+    getSesi(context);
   }
 
-  getSesi() async {
+  getSesi(BuildContext context) async {
     SesiRepository sesiRepository = SesiRepository();
     daftarSesi = await sesiRepository.getSesi();
     setState(() {});
-    //     final BookingGymBloc bookingGymBLoc = BlocProvider.of<BookingGymBloc>(context);
     // daftarSesi = bookingGymBLoc.state.defaultSesi ?? [];
-
   }
+
+  filterDate(){}
 
 
   @override
   Widget build(BuildContext context) {
       
-    return BlocBuilder<BookingGymBloc,BookingGymState>(
-      builder: (context,bookingState) {
-        return Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Column(
-            children: [
-              Row(
+    return BlocListener<BookingGymBloc,BookingGymState>(
+      listener: (context,state) { 
+        //* Ngecek Kalau Hari ini Batasin Jamnya 
+      },
+      child: BlocBuilder<BookingGymBloc,BookingGymState>(
+          builder: (context,bookingState) {
+            return Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Column(
                 children: [
-                  const Padding(
-                    padding:  EdgeInsets.only(right: 12),
-                    child: Icon(Icons.watch_later_outlined),
+                  Row(
+                    children: [
+                      const Padding(
+                        padding:  EdgeInsets.only(right: 12),
+                        child: Icon(Icons.watch_later_outlined),
+                      ),
+                      Expanded(
+                        child: DropdownButton(items: generateItems(daftarSesi),
+                        value: selectedSesi,
+                        onChanged: (item) {
+                        setState(() {
+                        selectedSesi = item;
+                        context.read<BookingGymBloc>().add(SesiChanged(sesi: selectedSesi?.idSesi));
+                        });
+                        },
+                        hint: const Text('Jam Berapa ?'),
+                        isExpanded: true,
+                        ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: DropdownButton(items: generateItems(daftarSesi),
-                    value: selectedSesi,
-                    onChanged: (item) {
-                    setState(() {
-                    selectedSesi = item;
-                    context.read<BookingGymBloc>().add(SesiChanged(sesi: selectedSesi?.idSesi));
-                    });
-                    },
-                    hint: const Text('Jam Berapa ?'),
-                    isExpanded: true,
-                    ),
-                  ),
+                  // ElevatedButton(onPressed: (){
+                  //   inspect(daftarSesi);
+                  // }, child: Text('pencet'))
                 ],
               ),
-              // ElevatedButton(onPressed: (){
-              //   inspect(daftarSesi);
-              // }, child: Text('pencet'))
-            ],
-          ),
-          //   Future<Object?> testMethod(BookingGymBloc bookingGymBLoc) async => inspect(await bookingGymBLoc.state.defaultSesi);
+              //   Future<Object?> testMethod(BookingGymBloc bookingGymBLoc) async => inspect(await bookingGymBLoc.state.defaultSesi);
 
-        );
+            );
+          }
+        ),);
       }
-    );
   }
-}
 
 
 

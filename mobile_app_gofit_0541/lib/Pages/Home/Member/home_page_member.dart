@@ -5,28 +5,50 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Components/component.dart';
 import 'package:mobile_app_gofit_0541/Config/theme_config.dart';
+import 'package:mobile_app_gofit_0541/Repository/repo_booking_gym.dart';
 import 'package:scroll_loop_auto_scroll/scroll_loop_auto_scroll.dart';
+import 'package:mobile_app_gofit_0541/Models/booking_gym.dart';
 
 //* HomePageMember
-class HomePageMember extends StatelessWidget {
+class HomePageMember extends StatefulWidget {
   const HomePageMember({super.key});
 
+  @override
+  State<HomePageMember> createState() => _HomePageMemberState();
+}
+
+class _HomePageMemberState extends State<HomePageMember> {
+  BookingGymRepository bookingGymRepository = BookingGymRepository();
+  List<BookingGym> bookingGym = [];
+
+  @override
+  initState(){
+    super.initState();
+    getBookingGym();
+  }
+
+  getBookingGym () async{
+    var appBloc = context.read<AppBloc>();
+    var idMember = appBloc.state.member?.idMember;
+    bookingGym =  await bookingGymRepository.show(idMember ?? '');
+    inspect(bookingGym);
+    setState(() {});
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
         children: [
           headerHomeMember(),
-          Center(child: HeaderTemplate(message: '-Upcoming Reservation-')),
+          Center(child: HeaderTemplate(message: '-Upcoming Booking-')),
           Expanded(
-            child: ListView(
-              children: [
-                classCard('Yoo'),
-                classCard('Mantap Banget'),
-                classCard('Ga si'),
-                classCard('Yoo'),
-                classCard('Mantep'),
-              ],
+            child: ListView.builder(
+              itemCount: bookingGym.length,
+              itemBuilder:  (context, index){
+              var item = bookingGym[index];
+              return classCard(item);
+              }
             ),
           )
           // HeaderTemplate(message: '-Upcoming Reservation-'),
@@ -37,22 +59,27 @@ class HomePageMember extends StatelessWidget {
     );
   }
 
-    Widget classCard(String title) {
+    Widget classCard(BookingGym item) {
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Card(
           child: ListTile(
-            leading: const FlutterLogo(size: 72.0),
-            title: Text(title),
+            title: Text('BOOKING GYM', style: TextStyle(fontWeight: FontWeight.bold),),
             subtitle:
-                const Text('A sufficiently long subtitle warrants three lines.'),
-                trailing:  const Icon(Icons.more_vert),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Booking Details - No Booking : ${item.noBooking} - Member : ${item.idMember} - Date ${item.tanggalBooking}'),
+                    Text('Booked For ${item.tanggalSesiGym} - Session  : ${item.sesi!.waktuMulai} - ${item.sesi!.waktuSelesai}'),
+                    Text('Minimum cancellation is made 1 day before the gym activity'),
+                  ],
+                ),
             isThreeLine: true,
+            trailing: ElevatedButton(onPressed: (){}, child: Text('Cancel Booking')),
           ),
         ),
     );
     }
-
 }
 
 class headerHomeMember extends StatelessWidget {

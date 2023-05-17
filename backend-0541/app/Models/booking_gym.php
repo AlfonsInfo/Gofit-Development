@@ -11,4 +11,9 @@ class booking_gym extends Model
     protected $table = 'booking_gym';
     protected $primaryKey = 'no_booking';
     protected $guarded = [];
+
+    public function sesi()
+    {
+        return $this->hasOne(sesi_gym::class,'id_sesi','id_sesi');
+    }
 }

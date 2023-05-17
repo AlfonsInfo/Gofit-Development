@@ -142,4 +142,11 @@ class bookingGymController extends Controller
     {
         //
     }
+
+
+    public function showData(Request $request){
+        $bookingGym = booking_gym::where('id_member', $request->id_member)->where('is_canceled', 0)->with(['sesi'])->get();
+
+        return(response(['data' => $bookingGym]));
+    }
 }
