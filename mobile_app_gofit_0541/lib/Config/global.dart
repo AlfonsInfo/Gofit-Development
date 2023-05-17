@@ -25,7 +25,7 @@ var routesApp = {
   };
 
 //* Setingan URL
-String url = 'http://192.168.43.34:5000/api';
+String url = 'http://192.168.1.26:5000/api';
 // [
 // http://192.168.77.21:5000
 // color: ColorApp.colorPrimary,

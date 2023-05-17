@@ -7,12 +7,13 @@ import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_app_gofit_0541/Bloc/booking_gym/booking_gym_bloc.dart';
 import 'package:mobile_app_gofit_0541/Models/sesi_gym.dart';
+import 'package:mobile_app_gofit_0541/Repository/repo_sesi.dart';
 
 
 class BookingGym extends StatefulWidget {
   const BookingGym({
     super.key,
-  });
+  }); 
   
   @override
   State<BookingGym> createState() => _BookingGymState();
@@ -152,14 +153,29 @@ class _ComboBoxSesiState extends State<ComboBoxSesi> {
     }
     return items;
   }
+  Sesi? selectedSesi;
+  // final BookingGymBloc bookingGymBLoc = BlocProvider.of<BookingGymBloc>(context);
+  late List<Sesi> daftarSesi = [];
 
   @override
+  initState(){
+    super.initState();
+    getSesi();
+  }
+
+  getSesi() async {
+    SesiRepository sesiRepository = SesiRepository();
+    daftarSesi = await sesiRepository.getSesi();
+    setState(() {});
+    //     final BookingGymBloc bookingGymBLoc = BlocProvider.of<BookingGymBloc>(context);
+    // daftarSesi = bookingGymBLoc.state.defaultSesi ?? [];
+
+  }
+
+
   @override
   Widget build(BuildContext context) {
       
-  Sesi? selectedSesi;
-  final BookingGymBloc bookingGymBLoc = BlocProvider.of<BookingGymBloc>(context);
-  List<Sesi>? daftarSesi = bookingGymBLoc.state.defaultSesi;
     return BlocBuilder<BookingGymBloc,BookingGymState>(
       builder: (context,bookingState) {
         return Padding(
@@ -173,7 +189,7 @@ class _ComboBoxSesiState extends State<ComboBoxSesi> {
                     child: Icon(Icons.watch_later_outlined),
                   ),
                   Expanded(
-                    child: DropdownButton(items: generateItems(daftarSesi ?? []),
+                    child: DropdownButton(items: generateItems(daftarSesi),
                     value: selectedSesi,
                     onChanged: (item) {
                     setState(() {
@@ -187,9 +203,9 @@ class _ComboBoxSesiState extends State<ComboBoxSesi> {
                   ),
                 ],
               ),
-              ElevatedButton(onPressed: (){
-                inspect(daftarSesi);
-              }, child: Text('pencet'))
+              // ElevatedButton(onPressed: (){
+              //   inspect(daftarSesi);
+              // }, child: Text('pencet'))
             ],
           ),
           //   Future<Object?> testMethod(BookingGymBloc bookingGymBLoc) async => inspect(await bookingGymBLoc.state.defaultSesi);

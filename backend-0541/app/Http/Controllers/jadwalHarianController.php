@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class jadwalHarianController extends Controller
 {
 
-        //cek apakah sudah generate jadwal harian
+    //cek apakah sudah generate jadwal harian
     public function cekAutoGenerate(){
         $jadwalHarian = jadwal_harian::where('tanggal_jadwal_harian', '>', Carbon::now()->startOfWeek(Carbon::SUNDAY)->format('Y-m-d'))
             ->first();

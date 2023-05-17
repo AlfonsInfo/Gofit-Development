@@ -4,6 +4,8 @@ part of 'booking_gym_bloc.dart';
 class BookingGymState{
   // List<Sesi>? daftarSesi; 
   final daftarSesi =  SesiRepository();
+
+
   List<Sesi>? _defaultSesi;
 
   Future<List<Sesi>?> fetchDefaultSesi() async {
@@ -18,6 +20,8 @@ class BookingGymState{
     }
     return _defaultSesi;
   }
+  
+  
   final FormSumbissionStatus formStatus;
 
   // final String role;

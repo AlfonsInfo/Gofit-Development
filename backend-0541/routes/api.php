@@ -43,6 +43,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::post('/selectijin', 'ijinInstrukturController@indexByInstruktur');  
     Route::apiResource('/presensigym', 'presensiGymController');  
     Route::apiResource('/presensikelas', 'presensiKelasController');  
+    Route::apiResource('/bookinggym', 'bookingGymController');  
     
     Route::post('/hitungtransaksi', 'transaksiController@countTransaction');
     Route::get('/transaksihariini' , 'transaksiController@todayTransaction');

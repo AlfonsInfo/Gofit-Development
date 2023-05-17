@@ -10,4 +10,5 @@ class booking_gym extends Model
     use HasFactory;
     protected $table = 'booking_gym';
     protected $primaryKey = 'no_booking';
+    protected $guarded = [];
 }
