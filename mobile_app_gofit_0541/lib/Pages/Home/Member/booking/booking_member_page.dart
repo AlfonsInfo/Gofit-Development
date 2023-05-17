@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/booking_gym/booking_gym_bloc.dart';
 //* Component Anakan
-import 'booking_kelas.dart';
-import 'booking_gym.dart';
+import 'booking_kelas_page.dart';
+import 'booking_gym_page.dart';
 
 
 class BookingPage extends StatefulWidget {

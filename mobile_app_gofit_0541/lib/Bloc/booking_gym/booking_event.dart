@@ -14,10 +14,12 @@ class DateChanged extends BookingGymEvent{
 //* Representasi Event perubahan password
 class SesiChanged extends BookingGymEvent{
   final String? sesi;
-
   SesiChanged({this.sesi});
 }
 
 
 //* Booking Submitted
-class BookingSubmited extends BookingGymEvent{}
+class BookingSubmitted extends BookingGymEvent{
+  final String? idMember;
+  BookingSubmitted({this.idMember});
+}

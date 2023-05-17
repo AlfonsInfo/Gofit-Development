@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_app_gofit_0541/Components/component.dart';
 import 'package:mobile_app_gofit_0541/Config/theme_config.dart';
 import 'home_page_member.dart';
-import 'booking/booking_page_member.dart';
+import 'booking/booking_member_page.dart';
 
 class MemberPage extends StatefulWidget {
   const MemberPage({super.key});
