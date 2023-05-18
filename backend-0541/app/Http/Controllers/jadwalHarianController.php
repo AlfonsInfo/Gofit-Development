@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\jadwal_umum;
 use App\Helpers\ValidatorHelper;
 use App\Models\jadwal_harian;
+use App\Models\kelas;
 use Carbon\Carbon;
 use Database\Seeders\jadwal;
 use Illuminate\Support\Facades\DB;
@@ -174,19 +175,62 @@ class jadwalHarianController extends Controller
         $jadwal_harian->save();
         return response()->json(['message' => 'Jadwal Harian berhasil diliburkan'], 200);
     }
-
-
+    
+    
     public function todayClasses(){
         
-
+        
         $todayClass = jadwal_harian::whereDate('tanggal_jadwal_harian',Carbon::today())->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get();
-
+        
         return response([
-        //* return response
+            //* return response
             'message'=>'Success Tampil Data',
             'data' => $todayClass
         ],200); 
+        
+    }
 
+    public function updateJamMulai($id){
+        $selectedClass = jadwal_harian::find($id);
+        $selectedClass->jam_mulai = Carbon::now();
+        $selectedClass->save();
+        //* presensi instruktur piye ?
+
+        //* update akumulasi terlambat
+
+        return response()->json(['message' => 'Jam Mulai Berhasil diupdate'], 200);
+    }
+
+    public function updateJamSelesai($id)
+    {
+        $selectedClass = jadwal_harian::find($id);
+        $selectedClass->jam_selesai = Carbon::now();
+        $selectedClass->save();
+        return response()->json(['message' => 'Jam Selesai Berhasil diupdate'], 200);
+    }
+
+    //* get dari body ga bisa? dr header bisanya 
+    public function getTodayClassesBaseOnInstructure($idIns)
+    {
+        //* cek instruktur request ada ngga dijadwal atau sebagai isntruktur pengganti;
+        $data = [];
+        $kelasToday = jadwal_harian::where('tanggal_jadwal_harian', Carbon::today())->with(['jadwal_umum','ijin_instruktur'])->get();
+        $idInstruktur = $idIns;
+        // dd($idInstruktur);
+        foreach($kelasToday as $kelas){
+            var_dump($kelas->ijin_instruktur);
+            //* izin instruktur yang ditautan yang udah di konfirmasi bang piye ?
+            // if($kelas->jadwal_umum['id_instruktur'] == $idInstruktur || ($kelas->ijin_instruktur['id_instruktur_pengganti'] != null &&  $kelas->ijin_instruktur['id_instruktur_pengganti'] == $idInstruktur)){
+            //     $data[]= $kelas;
+            // }
+        }
+        dd($data);
+        // dd($kelasToday);
+        // $kelasToday = $kelasToday->where('jadwal_umum.id_instruktur',$request->id_instruktur)->get();
+        // dd($kelasToday);
+
+        // return response(['data' => $kelasToday]);
+        // $jadwalUmum = 
     }
 }
 

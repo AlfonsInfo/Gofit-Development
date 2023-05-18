@@ -68,4 +68,8 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::post('/tampilbookinggym', 'bookingGymController@showData');
     Route::put('/cancelbookinggym/{noBook}', 'bookingGymController@cancelBookingGym');
     Route::get('/todayclasses', 'jadwalHarianController@todayClasses');
+    Route::put('/updatemulai/{id}', 'jadwalHarianController@updateJamMulai');
+    Route::put('/updateselesai/{id}', 'jadwalHarianController@updateJamSelesai');
+    Route::get('/todayclassesinstructure/{idIns}', 'jadwalHarianController@getTodayClassesBaseOnInstructure');
+
 });
