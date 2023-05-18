@@ -257,7 +257,7 @@ class PublicFeatures extends StatelessWidget {
         icon: Icon(
           icon,
         ),
-        tooltip: 'Jadwal');
+        tooltip: tooltipMessage);
   }
 }
 

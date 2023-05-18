@@ -27,6 +27,7 @@ class HomePagePegawai extends StatelessWidget {
           classCard('Building Up'),        
           classCard('Building Up'),        
           classCard('Building Up'),
+          ElevatedButton(onPressed: (){}, child: Text('diteskan bang')),
           Center(
       child: BlocBuilder<AppBloc, AppState>(
         builder: (context, state) {

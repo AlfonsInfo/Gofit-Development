@@ -38,17 +38,37 @@ class _HomePageMemberState extends State<HomePageMember> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Column( 
         children: [
           headerHomeMember(),
           Center(child: HeaderTemplate(message: '-Upcoming Booking-')),
-          Expanded(
-            child: ListView.builder(
-              itemCount: bookingGym.length,
-              itemBuilder:  (context, index){
-              var item = bookingGym[index];
-              return classCard(item);
-              }
+          Visibility(
+            visible: bookingGym.isNotEmpty,
+            child: Expanded(
+              child: ListView.builder(
+                itemCount: bookingGym.length,
+                itemBuilder: (context, index) {
+                  var item = bookingGym[index];
+                  return classCard(item);
+                },
+              ),
+            ),
+          ),
+          Visibility(
+            visible: bookingGym.isEmpty,
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  const Text('~There have been no booking transactions in the last 1 week~', textAlign: TextAlign.center,),
+                  TextButton(
+                    onPressed: (){},
+                    child: const Text('Booking Now', textAlign: TextAlign.center,)),
+                  // Icon(Icons.state)
+                ],
+              ),
+              ),
             ),
           )
           // HeaderTemplate(message: '-Upcoming Reservation-'),
@@ -59,10 +79,18 @@ class _HomePageMemberState extends State<HomePageMember> {
     );
   }
 
-    Widget classCard(BookingGym item) {
+    Widget classCard(BookingGym item ) {
+      void cancelBooking() async {
+        BookingGymRepository bookingGymRepository = BookingGymRepository();
+        var Result = await bookingGymRepository.cancelBooking(item.noBooking ?? '');
+        showSnackBarMessage(context, Result[0]);
+        Navigator.pop(context);
+        getBookingGym();
+      }
+
     return Padding(
       padding: const EdgeInsets.all(4.0),
-      child: Card(
+      child: Card(  
           child: ListTile(
             title: Text('BOOKING GYM', style: TextStyle(fontWeight: FontWeight.bold),),
             subtitle:
@@ -71,11 +99,14 @@ class _HomePageMemberState extends State<HomePageMember> {
                   children: [
                     Text('Booking Details - No Booking : ${item.noBooking} - Member : ${item.idMember} - Date ${item.tanggalBooking}'),
                     Text('Booked For ${item.tanggalSesiGym} - Session  : ${item.sesi!.waktuMulai} - ${item.sesi!.waktuSelesai}'),
-                    Text('Minimum cancellation is made 1 day before the gym activity'),
+                    const Text('Maximum cancellation is made 1 day before the gym activity'),
                   ],
                 ),
             isThreeLine: true,
-            trailing: ElevatedButton(onPressed: (){}, child: Text('Cancel Booking')),
+            trailing: ElevatedButton(onPressed: (){
+
+              showAlertDialog(context,cancelBooking );
+            }, child: Text('Cancel Booking')),
           ),
         ),
     );
@@ -223,7 +254,33 @@ Container boxContent2() {
   ),);
 }
 
-
+showAlertDialog(BuildContext context, VoidCallback continueAction) {
+  // set up the buttons
+  Widget cancelButton = TextButton(
+    child: const Text("Cancel"),
+    onPressed:  () => Navigator.pop(context),
+  );
+  Widget continueButton = TextButton(
+    child: const Text("Continue"),
+    onPressed:  continueAction
+  );
+  // set up the AlertDialog
+  AlertDialog alert = AlertDialog(
+    title: const Text("Cancel Booking"),
+    content: const Text("Are you sure to cancel booking ?"),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+  // show the dialog
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
 
 
 

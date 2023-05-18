@@ -179,3 +179,9 @@ class _AnimatedListViewState extends State<AnimatedListView> {
     );
   }
 }
+
+  //* Methods
+  void showSnackBarMessage(BuildContext context, String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }

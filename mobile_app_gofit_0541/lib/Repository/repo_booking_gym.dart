@@ -50,4 +50,24 @@ class BookingGymRepository{
         return data;
     }
     }  
+    Future<List> cancelBooking(String noBooking) async {
+      String apiUrl = '$url/cancelbookinggym/$noBooking';
+      try{
+        var apiResult = await http.put(Uri.parse(apiUrl), );
+        inspect(apiResult);
+        var jsonObject = json.decode(apiResult.body);
+        final responseData = jsonDecode(apiResult.body);
+        final responseMessage = responseData['message'];
+        if(apiResult.statusCode == 200){
+          return [responseMessage,true];
+        }else if(apiResult.statusCode == 400){
+          return [responseMessage,false];
+        }else{
+          return ['Gagal Membatalkan Booking',false];
+        }
+    }catch(e){
+        inspect(e);
+        return ['Gagal'];
+    }
+    }  
 }

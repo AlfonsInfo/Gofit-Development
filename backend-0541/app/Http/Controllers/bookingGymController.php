@@ -149,4 +149,29 @@ class bookingGymController extends Controller
 
         return(response(['data' => $bookingGym]));
     }
+
+
+
+    public function cancelBookingGym($noBook){
+        //* Cari Data yang sesuai dengan nomor Booking
+        $bookingGym = booking_gym::find($noBook);
+        //* Cek minimal cancel h-1 Tanggal_Sesi_Gym - 1 
+        $today = Carbon::today();
+        $batasCancel = Carbon::parse($bookingGym->tanggal_sesi_gym)->subDay();
+        if($batasCancel->greaterThanOrEqualTo($today)){
+            // dd($today->toDateString(), $batasCancel->toDateString());
+            // dd($today->gte());
+            //* Ubah is_canceled -> true
+            $bookingGym->is_canceled =  1;
+            $bookingGym->update();
+            //* Response
+            return response(
+                [
+                    'message' => 'Berhasil Membatalkan',
+                    'data' => $bookingGym
+                ]);
+        }else{
+            return response(['message' => 'Tidak bisa membatalkan, maksimal pembatalan H-1'],400);
+        }
+    }
 }

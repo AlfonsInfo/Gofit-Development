@@ -7,6 +7,7 @@ use App\Models\jadwal_umum;
 use App\Helpers\ValidatorHelper;
 use App\Models\jadwal_harian;
 use Carbon\Carbon;
+use Database\Seeders\jadwal;
 use Illuminate\Support\Facades\DB;
 
 class jadwalHarianController extends Controller
@@ -172,6 +173,20 @@ class jadwalHarianController extends Controller
         $jadwal_harian->status = 'diliburkan';
         $jadwal_harian->save();
         return response()->json(['message' => 'Jadwal Harian berhasil diliburkan'], 200);
+    }
+
+
+    public function todayClasses(){
+        
+
+        $todayClass = jadwal_harian::whereDate('tanggal_jadwal_harian',Carbon::today())->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get();
+
+        return response([
+        //* return response
+            'message'=>'Success Tampil Data',
+            'data' => $todayClass
+        ],200); 
+
     }
 }
 

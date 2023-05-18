@@ -66,4 +66,6 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::get('/resetterlambat', 'instrukturController@resetTerlambat');
 
     Route::post('/tampilbookinggym', 'bookingGymController@showData');
+    Route::put('/cancelbookinggym/{noBook}', 'bookingGymController@cancelBookingGym');
+    Route::get('/todayclasses', 'jadwalHarianController@todayClasses');
 });
