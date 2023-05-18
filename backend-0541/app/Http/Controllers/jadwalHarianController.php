@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\jadwal_umum;
 use App\Helpers\ValidatorHelper;
+use App\Models\ijin_instruktur;
 use App\Models\jadwal_harian;
 use App\Models\kelas;
 use Carbon\Carbon;
@@ -209,28 +210,38 @@ class jadwalHarianController extends Controller
         return response()->json(['message' => 'Jam Selesai Berhasil diupdate'], 200);
     }
 
+    //* fungsi cek ada instruktur izin atau engga
+    public function cekInstrukturIjin($kelas,$id_instruktur){
+        if($kelas->ijin_instruktur == null){
+            return false;
+        }
+        if($kelas->ijin_instruktur['id_instruktur_pengganti'] == $id_instruktur && $kelas->ijin_instruktur['status_ijin'] == 'dikonfirmasi'){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+    
+
     //* get dari body ga bisa? dr header bisanya 
     public function getTodayClassesBaseOnInstructure($idIns)
     {
         //* cek instruktur request ada ngga dijadwal atau sebagai isntruktur pengganti;
         $data = [];
-        $kelasToday = jadwal_harian::where('tanggal_jadwal_harian', Carbon::today())->with(['jadwal_umum','ijin_instruktur'])->get();
+        $kelasToday = jadwal_harian::where('tanggal_jadwal_harian', Carbon::today())->with(['jadwal_umum','ijin_instruktur','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur.instrukturPengganti'])->get();
         $idInstruktur = $idIns;
-        // dd($idInstruktur);
         foreach($kelasToday as $kelas){
-            var_dump($kelas->ijin_instruktur);
-            //* izin instruktur yang ditautan yang udah di konfirmasi bang piye ?
-            // if($kelas->jadwal_umum['id_instruktur'] == $idInstruktur || ($kelas->ijin_instruktur['id_instruktur_pengganti'] != null &&  $kelas->ijin_instruktur['id_instruktur_pengganti'] == $idInstruktur)){
-            //     $data[]= $kelas;
-            // }
+            //* Cek Kelas Berdasarkan instruktur , kelas instruktur pengganti ?
+            if($kelas->jadwal_umum['id_instruktur'] == $idInstruktur || self::cekInstrukturIjin($kelas,$idInstruktur)){
+                //*cek jam mulai != null baru ditampilin
+                if($kelas->jam_mulai != null){
+                    $data[]= $kelas;
+                }
+            }
         }
-        dd($data);
-        // dd($kelasToday);
-        // $kelasToday = $kelasToday->where('jadwal_umum.id_instruktur',$request->id_instruktur)->get();
-        // dd($kelasToday);
 
-        // return response(['data' => $kelasToday]);
-        // $jadwalUmum = 
+        return response(['data' => $data]);
     }
 }
 

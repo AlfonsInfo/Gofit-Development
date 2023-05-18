@@ -30,7 +30,7 @@ class _BookingPageState extends State<BookingPage> {
               ],
             ),
             //* Akhir dari Button
-            (setStateBooking) ?  const BookingKelas() : const BookingGym(),
+            (setStateBooking) ?  const BookingKelasPage() : const BookingGym(),
         ],
       ),
     );
@@ -43,7 +43,7 @@ class _BookingPageState extends State<BookingPage> {
           setState(() {
             setStateBooking = false;
         });
-      }, child: Text('Booking Gym'),),
+      }, child: const Text('Booking Gym'),),
     );
   }
 

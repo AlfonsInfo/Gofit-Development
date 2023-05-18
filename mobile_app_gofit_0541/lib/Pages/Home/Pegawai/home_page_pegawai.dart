@@ -68,9 +68,9 @@ class _HomePagePegawaiState extends State<HomePagePegawai> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children : [
-                (jd.jadwalUmum!.ijinInstruktur == null) ? 
+                (jd.ijinInstruktur == null) ? 
                   Text('Instruktur : ${jd.jadwalUmum!.instruktur!.nama} - Sesi : ${jd.jadwalUmum!.jamMulai} - ${jd.jadwalUmum!.jamSelesai }') : 
-                  Text('Instruktur : ${jd.jadwalUmum!.ijinInstruktur!.instrukturPengganti} - Sesi : ${jd.jadwalUmum!.jamMulai} - ${jd.jadwalUmum!.jamSelesai }'),
+                  Text('Instruktur : ${jd.ijinInstruktur!.instrukturPengganti} - Sesi : ${jd.jadwalUmum!.jamMulai} - ${jd.jadwalUmum!.jamSelesai }'),
                   wrapButtonActions(jd),
                 if (jd.jamMulai != null && jd.jamSelesai != null) completed() else if(jd.jamMulai != null) onGoing() else  SizedBox.shrink()
               ],

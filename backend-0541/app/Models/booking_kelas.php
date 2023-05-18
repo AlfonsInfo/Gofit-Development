@@ -15,4 +15,8 @@ protected $primaryKey = 'no_booking';
 public function jadwal_harian(){
     return $this->hasOne(jadwal_harian::class,'id_jadwal_harian','id_jadwal_harian');
 }
+
+public function member(){
+    return $this->hasOne(User\member::class,'id_member','id_member');
+}
 }

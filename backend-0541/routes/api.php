@@ -71,5 +71,8 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::put('/updatemulai/{id}', 'jadwalHarianController@updateJamMulai');
     Route::put('/updateselesai/{id}', 'jadwalHarianController@updateJamSelesai');
     Route::get('/todayclassesinstructure/{idIns}', 'jadwalHarianController@getTodayClassesBaseOnInstructure');
-
+    
+    Route::get('/memberkelasbyjadwal/{jadwal}', 'bookingKelasController@getMemberKelasByJadwal');
+    Route::put('/kehadirankelas/{noBook}', 'bookingKelasController@presensiKelas');
+    Route::put('/absenkelas/{noBook}', 'bookingKelasController@absenKelas');
 });

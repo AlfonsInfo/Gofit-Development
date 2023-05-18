@@ -15,3 +15,9 @@ class SaveUserInfo extends AppEvent{
   SaveUserInfo({this.user, this.pegawai, this.member , this.instruktur});
 }
 
+
+class SaveSelectedKelas extends AppEvent{
+  final JadwalHarian? jadwalHarian;
+
+  SaveSelectedKelas({this.jadwalHarian});
+}

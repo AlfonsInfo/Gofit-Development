@@ -8,26 +8,29 @@ class AppState{
   final Pegawai? pegawai;
   final Member? member;
   final Instruktur? instruktur;
-
+  final JadwalHarian? jadwalHarian;
   AppState({
     this.user ,
     this.pegawai,
     this.instruktur,
-    this.member
+    this.member,
+    this.jadwalHarian
   });
 
 
- AppState copyWith({
+AppState copyWith({
   User? user,
   Pegawai? pegawai,
   Member? member,
   Instruktur? instruktur,
+  JadwalHarian? jadwalHarian
 }) {
   return AppState(
     user: user ?? this.user,
     pegawai: pegawai ?? this.pegawai,
     member: member ?? this.member,
     instruktur: instruktur ?? this.instruktur,
+    jadwalHarian: jadwalHarian ?? this.jadwalHarian
   );
 }
 

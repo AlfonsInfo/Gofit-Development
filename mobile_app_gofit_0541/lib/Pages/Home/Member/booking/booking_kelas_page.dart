@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class BookingKelas extends StatelessWidget {
-  const BookingKelas({
+class BookingKelasPage extends StatelessWidget {
+  const BookingKelasPage({
     super.key,
   });
 
