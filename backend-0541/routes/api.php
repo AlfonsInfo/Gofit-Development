@@ -77,4 +77,9 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::get('/memberkelasbyjadwal/{jadwal}', 'bookingKelasController@getMemberKelasByJadwal');
     Route::put('/kehadirankelas/{noBook}', 'bookingKelasController@presensiKelas');
     Route::put('/absenkelas/{noBook}', 'bookingKelasController@absenKelas');
+
+
+    //* Jadwal umum mobile;
+    Route::get('/jadwalumummobile', 'jadwalController@getJadwalMobile');
+
 });

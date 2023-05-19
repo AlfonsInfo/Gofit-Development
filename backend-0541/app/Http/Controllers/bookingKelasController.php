@@ -23,6 +23,7 @@ class bookingKelasController extends Controller
         $kelas = $bookingKelas->jadwal_harian->jadwal_umum->kelas;
         $member = member::find($bookingKelas->id_member);
         if($member->total_deposit_paket != null && $member->total_deposit_paket > 0){
+            // if($kelas->id_kelas )
             $member->total_deposit_paket -= 1;
         //* tidak perlu cek uang dia lebih dari 200 ?
         }else {

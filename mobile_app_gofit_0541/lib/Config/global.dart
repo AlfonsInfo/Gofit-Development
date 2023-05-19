@@ -10,6 +10,7 @@ import 'package:mobile_app_gofit_0541/Pages/Home/Instruktur/riwayat_ijin.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/Instruktur/absen_kelas_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Public/public_jadwal_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Public/public_pricelist_page.dart';
+import 'package:mobile_app_gofit_0541/Pages/Public/public_menjelajah.page.dart';
 
 
 
@@ -25,12 +26,13 @@ var routesApp = {
   '/ijin' : (context) => const IjinPages(),
   '/riwayatijin' : (context) => const RiwayatIjinPage(),
   '/absenKelas' : (context) => const AbsenKelasPage(),
-  '/jadwalharian' : (context) => const PricelistPage(),
-  '/pricelist' : (context) => const  JadwalPage(),
+  '/jadwalharian' : (context) => const JadwalPage(),
+  '/pricelist' : (context) => const  PricelistPage(),
+  '/menjelajah' : (context) => const  MenjelajahPage(),
   };
 
 //* Setingan URL
-String url = 'http://192.168.1.26:5000/api';
+String url = 'http://192.168.43.34:5000/api';
 // [
 // http://192.168.77.21:5000
 // color: ColorApp.colorPrimary,

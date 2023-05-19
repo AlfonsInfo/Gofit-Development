@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\jadwal_umum;
 use App\Helpers\ValidatorHelper;
+use Illuminate\Support\Facades\DB;
 class jadwalController extends Controller
 {
 
@@ -149,5 +150,15 @@ class jadwalController extends Controller
         }else{
             return response([],400);
         }
+    }
+
+    public function getJadwalMobile(){
+        $jadwal = jadwal_umum::orderByRaw("FIELD(hari, 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu')")->with(['instruktur','kelas'])->get();
+        // $sortedData = DB::table('jadwal_umum')
+            // ->orderByRaw("FIELD(hari, 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu')")
+            // ->get();
+
+        return response(['data'=>$jadwal]);
+
     }
 }

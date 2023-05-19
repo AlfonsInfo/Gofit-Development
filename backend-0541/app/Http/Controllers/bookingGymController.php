@@ -20,6 +20,14 @@ class bookingGymController extends Controller
         return true;
     }
 
+    // public function cekMemberActive($id){
+    //     $member = member::find($id);
+    //     if($member->tgl_kadeluarsa_aktivasi == null || $member->tgl_kadeluarsa_aktivasi < Carbon::now() ){
+    //         return false;
+    //     }
+    //     return true;
+    // }
+
     public function cekAlreadyBookingToday($tanggalBooking, $member){
         // dd($tanggalBooking);
         $daftarBooking = booking_gym::where('tanggal_booking', $tanggalBooking )->where('id_member',$member)->count();
@@ -32,7 +40,7 @@ class bookingGymController extends Controller
     public function cekKuotaIsFull($tanggalSesi , $idSesi){
         $daftarBooking = booking_gym::where('tanggal_sesi_gym', $tanggalSesi )->where('id_sesi',$idSesi)->count();
         // $request->tanggal_sesi_gym
-        if($daftarBooking <= 10 ){
+        if($daftarBooking < 10 ){
             return true;
         }
         return false;

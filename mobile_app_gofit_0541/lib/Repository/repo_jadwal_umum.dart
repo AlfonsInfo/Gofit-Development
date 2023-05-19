@@ -26,6 +26,28 @@ class JadwalUmumRepository{
     }
     return [];
   }
+
+
+   Future<List<JadwalUmum>> getJadwalPublic() async{
+    String apiURL = '$url/jadwalumummobile';
+    try{
+      var result = await http.get(Uri.parse(apiURL));
+      if(result.statusCode == 200){
+        var jsonObject = json.decode(result.body);
+        List<JadwalUmum> jadwalUmums = [];
+        for (var item in jsonObject['data']) {
+          jadwalUmums.add(JadwalUmum.fromJson(item));
+        }
+        inspect(jadwalUmums);
+        return jadwalUmums;
+      }
+    }catch(e){
+      return [];
+    }
+    return [];
   }
- 
+
+
+}
+
  

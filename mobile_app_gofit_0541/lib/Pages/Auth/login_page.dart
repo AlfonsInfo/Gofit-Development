@@ -241,7 +241,8 @@ class PublicFeatures extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             iconNav(Icons.calendar_month, 'Jadwal', context, '/jadwalharian'),
-            iconNav(Icons.info, 'Informasi',context, '/pricelist'),
+            iconNav(Icons.attach_money_outlined , 'Informasi',context, '/pricelist'),
+            iconNav(Icons.info , 'Informasi',context, '/menjelajah'),
           ],
         ),
       ],
