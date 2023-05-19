@@ -42,6 +42,8 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/ijininstruktur', 'ijinInstrukturController');  
     Route::post('/selectijin', 'ijinInstrukturController@indexByInstruktur');  
     Route::apiResource('/presensigym', 'presensiGymController');  
+    Route::post('/cetakstrukgym/{noBooking}', 'presensiGymController@generateStrukTansaksi');  
+    Route::post('/cetakstrukkelas/{noBooking}', 'presensiKelasController@generateStrukTansaksi');  
     Route::apiResource('/presensikelas', 'presensiKelasController');  
     Route::apiResource('/bookinggym', 'bookingGymController');  
     

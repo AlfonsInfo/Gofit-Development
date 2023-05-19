@@ -5,7 +5,7 @@ import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Models/login_user.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/form_submission_status.dart';
 import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
-import 'package:mobile_app_gofit_0541/Pages/Public/public_page.dart';
+import 'package:mobile_app_gofit_0541/Pages/Public/public_pricelist_page.dart';
 import 'package:mobile_app_gofit_0541/Components/component.dart';
 
 
@@ -240,19 +240,19 @@ class PublicFeatures extends StatelessWidget {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            iconNav(Icons.calendar_month, 'Jadwal', context),
-            iconNav(Icons.info, 'Informasi',context),
+            iconNav(Icons.calendar_month, 'Jadwal', context, '/jadwalharian'),
+            iconNav(Icons.info, 'Informasi',context, '/pricelist'),
           ],
         ),
       ],
     );
   }
 
-  IconButton iconNav(IconData icon, String tooltipMessage,BuildContext context) {
+  IconButton iconNav(IconData icon, String tooltipMessage,BuildContext context , String routeLink) {
     return IconButton(
         iconSize: 40,
         onPressed: () => {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const PublicPage() ))
+          Navigator.pushNamed(context, routeLink )
         },
         icon: Icon(
           icon,

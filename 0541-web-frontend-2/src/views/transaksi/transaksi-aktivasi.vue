@@ -24,6 +24,7 @@ export default defineComponent({
                 transaksi_aktivasi : {no_struk :''},
                 transaksi_member :{},
             }),
+            currentDate : ''
         }
     },
     //Akhir dari Data
@@ -172,7 +173,10 @@ export default defineComponent({
         {
           let pegawai = localStorage.getItem('pegawaiData');
           return JSON.parse(pegawai)
-        },  
+        },
+        
+        
+        
 },
 
 
@@ -282,7 +286,6 @@ export default defineComponent({
                 </div>
                 </div>
             </div>
-            
         </div>
   </div>
   <div>

@@ -8,6 +8,8 @@ import 'package:mobile_app_gofit_0541/Pages/Home/Member/member_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/Pegawai/home_page_pegawai.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/Instruktur/riwayat_ijin.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/Instruktur/absen_kelas_page.dart';
+import 'package:mobile_app_gofit_0541/Pages/Public/public_jadwal_page.dart';
+import 'package:mobile_app_gofit_0541/Pages/Public/public_pricelist_page.dart';
 
 
 
@@ -22,7 +24,9 @@ var routesApp = {
   '/profilePegawai' : (context) => const ProfilePegawai(),
   '/ijin' : (context) => const IjinPages(),
   '/riwayatijin' : (context) => const RiwayatIjinPage(),
-  '/absenKelas' : (context) => const AbsenKelasPage()
+  '/absenKelas' : (context) => const AbsenKelasPage(),
+  '/jadwalharian' : (context) => const PricelistPage(),
+  '/pricelist' : (context) => const  JadwalPage(),
   };
 
 //* Setingan URL

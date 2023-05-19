@@ -4,14 +4,14 @@ import 'package:mobile_app_gofit_0541/Models/kelas.dart';
 import 'package:mobile_app_gofit_0541/Repository/repo_kelas.dart';
 import 'dart:developer';
 
-class PublicPage extends StatefulWidget {
-  const PublicPage({super.key});
+class PricelistPage extends StatefulWidget {
+  const PricelistPage({super.key});
 
   @override
-  State<PublicPage> createState() => _PublicPageState();
+  State<PricelistPage> createState() => _PricelistPageState();
 }
 
-class _PublicPageState extends State<PublicPage> {
+class _PricelistPageState extends State<PricelistPage> {
   
   @override
   Widget build(BuildContext context) {

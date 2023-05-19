@@ -16,4 +16,8 @@ class booking_gym extends Model
     {
         return $this->hasOne(sesi_gym::class,'id_sesi','id_sesi');
     }
+    public function member()
+    {
+        return $this->hasOne(user\member::class,'id_member','id_member');
+    }
 }

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\booking_gym;
-
+use App\Models\transaksi_member;
+use App\Models\User\member;
 
 class presensiGymController extends Controller
 {
@@ -97,5 +98,30 @@ class presensiGymController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    public function generateStrukTansaksi($noBooking, Request $request){
+        //* Cari Data Booking yang telah ada
+        $dataBooking = booking_gym::with(['sesi','member'])->find($noBooking);
+        // dd($dataBooking);
+        // dd($dataLatest->no_struk_transaksi);
+
+
+        //* Buat transaksi booking utk tabel transaksi-member
+        $transaksi_member = transaksi_member::create([
+            'jenis_transaksi' => 'transaksi-presensi-gym',
+            'id_pegawai' =>  $request->id_pegawai,
+            'id_member' => $dataBooking->id_member
+        ]);
+        $member = member::find($dataBooking->id_member);
+
+        $dataLatest = transaksi_member::latest()->first();
+        $no_struk_transaksi = $dataLatest->no_struk_transaksi; 
+        $dataBooking->no_struk =  $no_struk_transaksi;
+        $dataBooking->update();
+
+        return response(['message' => 'Sukses mencetak struk',
+                        'data' => $dataBooking,]);
     }
 }

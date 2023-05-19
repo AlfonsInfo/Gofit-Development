@@ -1,5 +1,5 @@
 <script>
-import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, BackButton } from '@/plugins/global.js'
+import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, BackButton, Swal, jsPDF } from '@/plugins/global.js'
 
 
   export default defineComponent({
@@ -15,11 +15,30 @@ import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, BackButton } fro
             Presensikelas : ref([]),
             countInit : 0,
             viewMode : true,
+            selectedPresensi : '',
+            pegawaiPIC : '',
+            hasilTransaksi : ref({
+                data : {no_struk :'', 
+
+            },
+            jadwal_harian : { jadwal_umum : {
+                kelas : {},
+                instruktur  : {}
+            }}, 
+            member : {
+                nama_member : '',
+            }
+            }),
+            transaksiData : ref({
+                jenis_transaksi : ''
+            }),
+            currentDate : '',
         }
     },
 
     methods :{
 
+        //* Data table jquery
         DataTablesFeatures()
         {
             $(document).ready(function () {
@@ -85,14 +104,16 @@ import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, BackButton } fro
             });
         },
 
+        //* Konfirmasi Presensi
         async confirmPresence(id){
             const url = `/presensikelas/${id}`
-            const request = await this.http.put(url,{status_kehadiran : 1});
+            const request = await this.$http.put(url,{status_kehadiran : 1});
             $toast.success('Berhasil Konfirmasi Presensi')
             this.getAllPresence()
             console.log(request)
         },
-    
+        
+        //* Show Data Presensi
         async getAllPresence(message){
             const url = "/presensikelas";
             const request = await this.$http.get(url)
@@ -104,14 +125,115 @@ import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, BackButton } fro
                 this.countInit++;
                 $toast.success(message)
             }
-            },
+        },
+        //View mode Card View
         TableView(){
             this.viewMode = !this.viewMode;
             this.getAllPresence
-        }
+        },
+        
+
+        //* Dijalankan saat tombol cetak struk dipencet
+        async getNoStruk(row){
+            this.selectedPresensi = row;
+            const result = await Swal.fire({
+            title: 'Apakah Anda yakin melakukan Cetak Struk ? ',
+                showCancelButton: true,
+                confirmButtonColor: '#28a745',
+                confirmButtonText: 'Lanjutkan',
+                cancelButtonText: 'Batal',
+            })
+            if(result.isConfirmed){
+
+            const url = `/cetakstrukkelas/${row.no_booking}`
+            const request = await this.$http.post(url,{id_pegawai : this.pegawaiPIC.id_pegawai});
+            this.hasilTransaksi = request.data.data
+            this.transaksiData = request.data.transaksi
+            // console.log('sama ga', this.jenis_transaksi.jenis_transaksi == 'transaksi-presensi-kelas-paket');
+            // console.log('hasil', this.hasilTransaksi);
+            // console.log(this.hasilTransaksi.jadwal_harian.jadwal_umum.kelas.jenis_kelas);
+            this.generateStrukAktivasi();
+            this.getAllPresence()
+            this.currentDate = this.getCurrentDateTime()
+            console.log(request)
+
+            Swal.fire({
+                    title: 'Presensi Berhasil!',
+                    icon: 'success',
+                    timer: 2000,
+                    timerProgressBar: true,
+                    showConfirmButton: false,
+                })
+            }
+        },
+
+
+        generateStrukAktivasi() {
+            window.jspPDF = window.jspdf.jsPDF;
+            var elementHTML = document.querySelector('#pdfContent');
+            elementHTML.style.display = "block";
+            elementHTML.style.fontSize = '5px';
+            //Spasi
+            elementHTML.style.lineHeight = '1.2'; 
+            elementHTML.style.margin = '0';
+            elementHTML.style.padding = '0';
+
+            let doc = new jsPDF({
+                orientation: 'l', // orientasi landscape
+                unit: 'mm', // satuan millimeter
+                format: ['500','200'], // ukuran kertas A4
+            });
+
+            doc.html(elementHTML, {
+            callback: function (doc) {
+                doc.save('file.pdf');
+                elementHTML.style.display = "none";
+            },
+            x: 10,
+            y: 10
+            });
+        },
+
+        
+
+        getCurrentDateTime() {
+            var now = new Date();
+            var date = now.getDate();
+            var month = now.getMonth() + 1; // Perhatikan penambahan 1 karena indeks bulan dimulai dari 0
+            var year = now.getFullYear();
+            var hours = now.getHours();
+            var minutes = now.getMinutes();
+
+            // Format tanggal
+            var formattedDate = this.addLeadingZero(date) + "/" + this.addLeadingZero(month) + "/" + year;
+            
+            // Format waktu
+            var formattedTime = this.addLeadingZero(hours) + ":" + this.addLeadingZero(minutes);
+            
+            // Gabungkan tanggal dan waktu
+            var dateTime = formattedDate + " " + formattedTime;
+            
+            return dateTime;
+            },
+
+        // Fungsi untuk menambahkan angka 0 di depan angka satu digit (0-9)
+        addLeadingZero(number) {
+        return (number < 10 ? "0" : "") + number;
+        },
+
+
+        getDataPegawai()
+        {
+          let pegawai = localStorage.getItem('pegawaiData');
+          return JSON.parse(pegawai)
+        },
+
+
+
 },
     mounted(){
         this.getAllPresence('Berhasil Mengambil Data Presensi');
+        this.pegawaiPIC = this.getDataPegawai();
     },
 
 })
@@ -154,7 +276,7 @@ import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, BackButton } fro
                             <div v-if="row.no_struk">{{ row.no_struk }}</div>
                             <div v-else>
                                 <div v-if="row.status_kehadiran == 0">Belum Cetak Struk</div>
-                                <div v-else @click.prevent="" class="btn btn-warning">Cetak Struk</div>
+                                <div v-else @click.prevent="getNoStruk(row)" class="btn btn-warning">Cetak Struk</div>
                             </div>
                         </td>
                         <td>
@@ -173,6 +295,108 @@ import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, BackButton } fro
         Ambil tabel jadwal harian dari sesudah hari ini
     </div>
   </main>
+
+  
+<!-- Ini Awal Struk -->
+<div class="bg light" >
+        <!-- <button @click="generateStrukAktivasi">Cetak Struk</button> -->
+        <div  width="600px" id="pdfContent" style=" display: none; margin:500px;" class=" text-dark">
+            <div width="600px" class="p-1 ">
+                <table class="border border-dark">
+                    <tr>
+                        <td style="width: 70%;"><strong>Gofit</strong>
+                        <p>Jl Centralpark No 10 Yogyakarta</p></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr style="width: 80%;">
+                                    <td v-if="transaksiData.jenis_transaksi == 'transaksi-presensi-kelas'"><strong>STRUK PRESENSI KELAS</strong></td>
+                                    <td v-if="transaksiData.jenis_transaksi == 'transaksi-presensi-kelas-paket'"><strong>STRUK PRESENSI KELAS PAKET</strong></td>
+                                    </tr>
+                                <tr>
+                                    <td >No Struk</td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.no_struk }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Tanggal</td>
+                                    <td>:</td>
+                                    <td>{{currentDate}}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>                    
+                    <tr>
+                        <td>
+                            <table v-if="transaksiData.jenis_transaksi == 'transaksi-presensi-kelas-paket'">
+                                <tr style="width: 80%;">
+                                    <td><strong>Member</strong></td>
+                                    <td>:</td>
+                                    <td>{{ selectedPresensi.id_member }} / {{ hasilTransaksi.member.nama_member }}</td> 
+                                    <!-- //{{ hasilTransaksi.member.nama_member }} -->
+                                </tr>
+                                <tr>
+                                    <td >Kelas</td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.jadwal_harian.jadwal_umum.kelas.jenis_kelas }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Instruktur</td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.jadwal_harian.jadwal_umum.instruktur.nama_instruktur }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Sisa Deposit</td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.member.total_deposit_paket }} </td>
+                                </tr>
+                                <tr>
+                                    <td >Berlaku sampai dengan</td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.member.tgl_kadeluarsa_paket }} </td>
+                                </tr>
+                            </table>
+                            <table v-else>
+                                <tr style="width: 80%;">
+                                    <td><strong>Member</strong></td>
+                                    <td>:</td>
+                                    <td>{{ selectedPresensi.id_member }} / {{ hasilTransaksi.member.nama_member }}</td> 
+                                    <!-- //{{ hasilTransaksi.member.nama_member }} -->
+                                </tr>
+                                <tr>
+                                    <td >Kelas</td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.jadwal_harian.jadwal_umum.kelas.jenis_kelas }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Instruktur</td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.jadwal_harian.jadwal_umum.instruktur.nama_instruktur }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Tarif</td>
+                                    <td>:</td>
+                                    <td>{{ hasilTransaksi.jadwal_harian.jadwal_umum.kelas.harga_kelas }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Sisa deposit</td>
+                                    <td>:</td>
+                                    <td>{{ parseInt(hasilTransaksi.member.total_deposit_uang)  - parseInt(  hasilTransaksi.jadwal_harian.jadwal_umum.kelas.harga_kelas) }} </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                            <td></td>
+                            <!-- <td>Kasir : {{pegawaiPIC.id_pegawai}}/{{ pegawaiPIC.nama_pegawai }} </td> -->
+                        </tr>
+                        
+                    </table>
+            </div>
+        </div>
+    </div>
+<!-- Ini Akhir Struk -->
 </template>
 
 
@@ -183,12 +407,12 @@ import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, BackButton } fro
     }
 
 
-    .title.active {
-  background-color: #e6e6e6;
+.title.active {
+    background-color: #e6e6e6;
 }
-  
+
 .title:hover {
-  background-color: #f2f2f2;
+    background-color: #f2f2f2;
 }
 
 </style>
