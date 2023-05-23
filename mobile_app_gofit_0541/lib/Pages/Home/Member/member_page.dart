@@ -58,7 +58,7 @@ class _MemberPageState extends State<MemberPage> {
         selectedItemColor: ColorApp.colorButtonPrimary,
         onTap: _onItemTapped,
       ),
-    drawer: const SideBar(alamatRoute: '/changepw'),
+    drawer: const SideBar(alamatRoute: '/profilemember'),
     );
   }
 }

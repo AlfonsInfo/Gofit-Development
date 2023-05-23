@@ -1,6 +1,8 @@
 import 'package:mobile_app_gofit_0541/Pages/Auth/login_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/Instruktur/izin/izin_page.dart';
+import 'package:mobile_app_gofit_0541/Pages/Home/Member/profile_member.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/Pegawai/profile_pegawai.dart';
+import 'package:mobile_app_gofit_0541/Pages/Home/Instruktur/profile_instruktur_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/changepw_page.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/Instruktur/home_page_instruktur.dart';
 import 'package:mobile_app_gofit_0541/Pages/Home/Member/home_page_member.dart';
@@ -16,13 +18,19 @@ import 'package:mobile_app_gofit_0541/Pages/Public/public_menjelajah.page.dart';
 
 //* Setingan Routes
 var routesApp = {
+  //* Login Page
   '/login' : (context) => const LoginPage(),
   // '/homeMember' : (context) => const HomePageMember(),
+  //* Home
   '/homeMember' : (context) => const MemberPage(),
   '/homePegawai' : (context) => const HomePagePegawai(),
   '/homeInstruktur' : (context) => const HomePageInstruktur(),
   '/changepw' : (context) => const ChangePasswordPage(),
+  
+  //* Profile
   '/profilePegawai' : (context) => const ProfilePegawai(),
+  '/profilemember' : (context) => const ProfileMemberPage(),
+  '/profileinstruktur' : (context) => const ProfileInstrukturPage(),
   '/ijin' : (context) => const IjinPages(),
   '/riwayatijin' : (context) => const RiwayatIjinPage(),
   '/absenKelas' : (context) => const AbsenKelasPage(),
@@ -32,9 +40,8 @@ var routesApp = {
   };
 
 //* Setingan URL
-String url = 'http://192.168.43.34:5000/api';
-// [
-// http://192.168.77.21:5000
-// color: ColorApp.colorPrimary,
-// 10.113.0.255
+// String url = 'http://192.168.1.18:5000/api';
+String url = 'http://10.5.4.142:5000/api';
+
+
 

@@ -42,7 +42,7 @@ class bookingKelasController extends Controller
         return response(['message' => 'Berhasil Presensi','data'=>$bookingKelas]);
     }
 
-    public function absenKelas($noBook, Request $request){
+    public function absenKelas($noBook){
         $bookingKelas = booking_kelas::find($noBook);
         $bookingKelas->status_kehadiran = 0;
         $bookingKelas->update();

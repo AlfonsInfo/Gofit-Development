@@ -61,7 +61,7 @@ class _HomePageInstrukturState extends State<HomePageInstruktur> {
         ]
       ),
       //*Akhir dari UtamaSW
-      drawer: const SideBar(alamatRoute: '/changepw'),
+      drawer: const SideBar(alamatRoute: '/profileinstruktur'),
     );
   }
 

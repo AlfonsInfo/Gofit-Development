@@ -224,7 +224,6 @@ class jadwalHarianController extends Controller
     }
     
 
-    //* get dari body ga bisa? dr header bisanya 
     public function getTodayClassesBaseOnInstructure($idIns)
     {
         //* cek instruktur request ada ngga dijadwal atau sebagai isntruktur pengganti;

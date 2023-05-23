@@ -59,6 +59,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState>{
       emit(state.copyWith(formStatus: SubmissionFailed(exception: e as Exception)));
     }
   }
+  
   //* Akhir dari fungsi tombol submit 
 
   //* saat logout , hapus data username dan password dari state

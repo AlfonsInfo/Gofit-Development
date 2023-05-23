@@ -1,16 +1,19 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Components/component.dart';
 import 'package:mobile_app_gofit_0541/Function/function.dart';
 
-class ProfileMemberPage extends StatelessWidget {
-  const ProfileMemberPage({super.key});
+class ProfileInstrukturPage extends StatelessWidget {
+  const ProfileInstrukturPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<AppBloc,AppState>(
       builder: (context,state) {
+        inspect(state);
         return Scaffold(
           appBar: createAppBar('Profile'),
           body: Column(
@@ -22,15 +25,15 @@ class ProfileMemberPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    semiHeader(state.member!.idMember ?? ''),
+                    semiHeader(state.instruktur!.idInstruktur ?? ''),
                     semiHeader('|'),
-                    semiHeader(state.member!.namaMember ?? ''),
+                    semiHeader(state.instruktur!.nama ?? ''),
                   ],
                 ),
               ),
               partTwo(state),
               partTree(state),
-              partFour(state),
+              partFour(state)
             ],
           ),
         );
@@ -46,9 +49,9 @@ class ProfileMemberPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    subDescription('Address',state.member!.alamatMember ?? '',Icons.home),
-                    subDescription('Born',DateFormatterForView.formatDayMonthYear( state.member!.tglLahirMember ?? '') ,Icons.date_range_sharp),
-                    subDescription('Phone Number',state.member!.noTelpMember ?? '' ,Icons.phone_android),
+                    subDescription('Address',state.instruktur!.alamat ?? '',Icons.home),
+                    subDescription('Born',DateFormatterForView.formatDayMonthYear(state.instruktur!.tglLahir ?? '') ,Icons.date_range_sharp),
+                    // subDescription('Phone Number', state.instruktur!.noTelp ?? '' ,Icons.numbers),
                   ],
                 ),
               ),),
@@ -63,19 +66,13 @@ class ProfileMemberPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    subDescription('Active Period',DateFormatterForView.formatDayMonthYear(state.member!.tglKadeluarsaAktivasi ?? '') ,Icons.star_border_outlined),
-                    // subDescription('Deposit Money',state.member!.totalDepositUang ?? '' ,Icons.money),
-                    // subDescription('Deposit Class',state.member!.totalDepositUang ?? '' ,Icons.money),
-                    // subDescription('No Telp',state.member!.noTelpMember ?? '' ,Icons.numbers),
+                    subDescription('Phone Number',state.instruktur!.noTelp ?? '',Icons.phone_android),
                   ],
                 ),
               ),),
-    );
+            );
   }
-
   Padding partFour(AppState state) {
-    String totalDepositUang = CurrencyFormatter.rupiahFormatter(state.member!.totalDepositUang ?? '');
-    // String maasaBerlaku = state.member.
     return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Card(child: Padding(
@@ -83,14 +80,11 @@ class ProfileMemberPage extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    // subDescription('Active Period',DateFormatterForView.formatDayMonthYear(state.member!.tglKadeluarsaAktivasi ?? '') ,Icons.star_border_outlined),
-                    subDescription('Deposit Money','${totalDepositUang}'  ,Icons.money),
-                    subDescription('Deposit Class',state.member!.totalDepositPaket ?? '' ,Icons.sports_gymnastics),
-                    // subDescription('No Telp',state.member!.noTelpMember ?? '' ,Icons.numbers),
+                    subDescription('Accumulated Delayed Class Time',state.instruktur!.telat ?? '',Icons.timelapse_rounded),
                   ],
                 ),
               ),),
-    );
+            );
   }
 
   Widget subDescription(String textTitle, textDescription, IconData ic) {

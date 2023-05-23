@@ -42,10 +42,12 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/ijininstruktur', 'ijinInstrukturController');  
     Route::post('/selectijin', 'ijinInstrukturController@indexByInstruktur');  
     Route::apiResource('/presensigym', 'presensiGymController');  
-    Route::post('/cetakstrukgym/{noBooking}', 'presensiGymController@generateStrukTansaksi');  
-    Route::post('/cetakstrukkelas/{noBooking}', 'presensiKelasController@generateStrukTansaksi');  
     Route::apiResource('/presensikelas', 'presensiKelasController');  
     Route::apiResource('/bookinggym', 'bookingGymController');  
+    
+    //*History Aktivitas
+    Route::apiResource('/riwayatmember', 'riwayatMemberController');  
+    Route::apiResource('/riwayatinstruktur', 'riwayatInstrukturController');  
     
     Route::post('/hitungtransaksi', 'transaksiController@countTransaction');
     Route::get('/transaksihariini' , 'transaksiController@todayTransaction');
@@ -59,7 +61,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     
     Route::post('/resetbyuser', 'penggunaController@ResetPassword');
     Route::post('/jadwalbyinstruktur', 'jadwalController@JadwalByInstruktur');
-
+    
     Route::get('/showmemberdeaktif', 'memberController@memberKadeluarsa');
     Route::get('/deaktivasimember', 'memberController@memberDeaktivasi');
     
@@ -67,6 +69,8 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::get('/resetdeposit', 'memberController@resetDeposit');
     Route::get('/resetterlambat', 'instrukturController@resetTerlambat');
 
+
+    //* Coding 4
     Route::post('/tampilbookinggym', 'bookingGymController@showData');
     Route::put('/cancelbookinggym/{noBook}', 'bookingGymController@cancelBookingGym');
     Route::get('/todayclasses', 'jadwalHarianController@todayClasses');
@@ -77,9 +81,15 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::get('/memberkelasbyjadwal/{jadwal}', 'bookingKelasController@getMemberKelasByJadwal');
     Route::put('/kehadirankelas/{noBook}', 'bookingKelasController@presensiKelas');
     Route::put('/absenkelas/{noBook}', 'bookingKelasController@absenKelas');
-
-
+    
+    Route::post('/cetakstrukgym/{noBooking}', 'presensiGymController@generateStrukTansaksi');  
+    Route::post('/cetakstrukkelas/{noBooking}', 'presensiKelasController@generateStrukTansaksi');  
+    
     //* Jadwal umum mobile;
     Route::get('/jadwalumummobile', 'jadwalController@getJadwalMobile');
 
+    
+    //* Laporan Ges
+    Route::get('laporanaktivitasgym','laporanController@aktivitasGymBulanan');
+    Route::get('laporanaktivitaskelas','laporanController@aktivitasKelasBulanan');
 });

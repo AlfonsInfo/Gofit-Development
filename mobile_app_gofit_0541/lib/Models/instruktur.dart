@@ -1,6 +1,8 @@
 
 
 
+import 'dart:developer';
+
 class Instruktur{
   String? idPengguna;
   String? idInstruktur;
@@ -8,8 +10,9 @@ class Instruktur{
   String? tglLahir;
   String? alamat;
   String? noTelp;
+  String? telat;
 
-  Instruktur({required this.idPengguna, required this.idInstruktur , required this.nama ,required  this.tglLahir ,required  this.alamat,required  this.noTelp});
+  Instruktur({required this.idPengguna, required this.idInstruktur , required this.nama ,required  this.tglLahir ,required  this.alamat,required  this.noTelp, this.telat});
 
   factory Instruktur.fromJson(Map<String, dynamic> json){
     return Instruktur(
@@ -18,7 +21,8 @@ class Instruktur{
       nama: json['nama_instruktur'].toString(), 
       tglLahir: json['tanggal_lahir_instruktur'].toString(), 
       alamat: json['alamat_instruktur'].toString(), 
-      noTelp: json['no_telp'].toString()
+      noTelp: json['no_telp_instruktur'].toString(),
+      telat: json['akumulasi_terlambat'].toString()
       );
   }
 }
