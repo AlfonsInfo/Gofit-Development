@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\transaksi_member;
 
+
+//*Transaksi in general 
 class transaksiController extends Controller
 {
 

@@ -8,6 +8,7 @@ use App\Helpers\ValidatorHelper;
 use App\Models\ijin_instruktur;
 use App\Models\jadwal_harian;
 use App\Models\kelas;
+use App\Models\presensi_instruktur;
 use Carbon\Carbon;
 use Database\Seeders\jadwal;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 class jadwalHarianController extends Controller
 {
 
-    //cek apakah sudah generate jadwal harian
+    //* Cek Auto Generate Seminggu 1x
     public function cekAutoGenerate(){
         $jadwalHarian = jadwal_harian::where('tanggal_jadwal_harian', '>', Carbon::now()->startOfWeek(Carbon::SUNDAY)->format('Y-m-d'))
             ->first();
@@ -26,6 +27,7 @@ class jadwalHarianController extends Controller
         }
     }
 
+    //* Untuk Nampilin Data Jadwal harian untuk Website
     public function index()
     {
 
@@ -49,16 +51,9 @@ class jadwalHarianController extends Controller
 
     }
 
-    public function findData(Request $request)
-    {
-        $start_date = Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDay();
-        $end_date =  Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDays(7);
-    }
-    
-    
+    //* Generate JadwalHarian 1 minggu
     public function store()
     {
-        
         if(self::cekAutoGenerate()){
             return response()->json([
                 'success' => false,
@@ -99,19 +94,13 @@ class jadwalHarianController extends Controller
             }
             
         }
-    }
-        // dd($jadwalHarian);
-        //* Create Jadwal Umum
-        // $jadwal_harian = jadwal_harian::create([            'id_instruktur' => $request->id_instruktur,
-        // ]);
-        
+    }        
         //*return response
         return response([
         ]);
-        
-
     }
 
+    //*! */ Update // (KOK MASIH JADWAL UMUM WKWKWK)
     public function update(Request $request, $id)
     {
         //* Validasi
@@ -169,7 +158,7 @@ class jadwalHarianController extends Controller
         }   
     }
 
-
+    //* UPDATE LIBUR
     public function updateLibur($id){
         $jadwal_harian = jadwal_harian::find($id);
         $jadwal_harian->status = 'diliburkan';
@@ -177,12 +166,9 @@ class jadwalHarianController extends Controller
         return response()->json(['message' => 'Jadwal Harian berhasil diliburkan'], 200);
     }
     
-    
+    //* UNTUK MOBILE APPS (TAMPILIN TODAY CLASSES DI LOGIN SEBAGAI MO)    
     public function todayClasses(){
-        
-        
         $todayClass = jadwal_harian::whereDate('tanggal_jadwal_harian',Carbon::today())->with(['jadwal_umum','jadwal_umum.instruktur','jadwal_umum.kelas','ijin_instruktur','ijin_instruktur.instruktur','ijin_instruktur.instrukturPengganti'])->get();
-        
         return response([
             //* return response
             'message'=>'Success Tampil Data',
@@ -191,6 +177,7 @@ class jadwalHarianController extends Controller
         
     }
 
+    //* Update Jam Mulai ( Pada jadwal harian dan presensi instruktur)
     public function updateJamMulai($id){
         $selectedClass = jadwal_harian::find($id);
         $selectedClass->jam_mulai = Carbon::now();
@@ -202,15 +189,27 @@ class jadwalHarianController extends Controller
         return response()->json(['message' => 'Jam Mulai Berhasil diupdate'], 200);
     }
 
-    public function updateJamSelesai($id)
-    {
-        $selectedClass = jadwal_harian::find($id);
-        $selectedClass->jam_selesai = Carbon::now();
-        $selectedClass->save();
-        return response()->json(['message' => 'Jam Selesai Berhasil diupdate'], 200);
-    }
+    //* Update Jam Selesai (Pada Jadwal harian dan presensi isntruktur)
+        public function updateJamSelesai($id, Request $request)
+        {
+            $waktu_sekarang = Carbon::now();
+            //* Table Jadwal Harian
+            $selectedClass = jadwal_harian::find($id);
+            $selectedClass->jam_selesai = $waktu_sekarang;
+            $selectedClass->save();
+            
+            //* Simpan ke tabel presensi instruktur
+            $storepresensiInstruktur = presensi_instruktur::create([
+                'waktu_presensi' => $waktu_sekarang,
+                'status_presensi' => 'hadir',
+                'id_instruktur' => $request->id_instruktur,
+                'id_jadwal_harian' => $request->id_jadwal_harian
+            ]);
 
-    //* fungsi cek ada instruktur izin atau engga
+            return response()->json(['message' => 'Jam Selesai Berhasil diupdate'], 200);
+        }
+
+    //* Cek Adakah Data di Ijin instruktur
     public function cekInstrukturIjin($kelas,$id_instruktur){
         if($kelas->ijin_instruktur == null){
             return false;
@@ -223,7 +222,7 @@ class jadwalHarianController extends Controller
 
     }
     
-
+    //* Untuk Nampilin Data Login Sebagai Instruktur
     public function getTodayClassesBaseOnInstructure($idIns)
     {
         //* cek instruktur request ada ngga dijadwal atau sebagai isntruktur pengganti;
@@ -242,6 +241,8 @@ class jadwalHarianController extends Controller
 
         return response(['data' => $data]);
     }
+
+
 }
 
                 

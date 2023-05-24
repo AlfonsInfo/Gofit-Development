@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\promo;
-use Illuminate\Support\Facades\Validator;
 
 class promoController extends Controller {
     

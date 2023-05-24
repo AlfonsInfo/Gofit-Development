@@ -24,7 +24,7 @@ class member extends Model
     ];
     
 
-    public function pengguna()
+    public function pengguna()  
     {
         return $this->hasOne('App\Models\User\Pengguna','id_pengguna','id_pengguna');
     }

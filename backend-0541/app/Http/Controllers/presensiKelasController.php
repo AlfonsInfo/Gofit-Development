@@ -102,7 +102,7 @@ class presensiKelasController extends Controller
 
 
     
-    public function generateStrukTansaksi($noBooking, Request $request){
+    public function generateStrukTransaksi($noBooking, Request $request){
         //* Cari Data Booking yang telah ada
         $dataBooking = booking_kelas::with(['jadwal_harian','member','jadwal_harian.jadwal_umum.kelas','jadwal_harian.jadwal_umum.instruktur'])->find($noBooking);
         $member = $dataBooking->member;

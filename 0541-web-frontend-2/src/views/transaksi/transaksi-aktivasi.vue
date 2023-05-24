@@ -43,7 +43,7 @@ export default defineComponent({
                 <p>Detail Transaksi :</p>
                 <ul>
                 <p>ID Member: ${row.id_member}</p>
-                <p>Jumlah Transaksi: Rp 3.000.0000</p>
+                <p>Jumlah Transaksi: Rp 3.000.000</p>
                 <p>Tanggal Kadaluarsa: ${this.Kadeluarsa.getDate()} - ${this.Kadeluarsa.getMonth()+1} - ${this.Kadeluarsa.getFullYear()} </p>
                 </ul>`,
                 showCancelButton: true,
@@ -84,7 +84,6 @@ export default defineComponent({
                     timerProgressBar: true,
                     showConfirmButton: false,
                 })
-                window.location.reload()
             }catch{
                 $toast.warning('Transaksi Gagal, Cek Data Transaksi !!')
             }

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\jadwal_umum;
 use App\Helpers\ValidatorHelper;
 use Illuminate\Support\Facades\DB;
-class jadwalController extends Controller
+class jadwalUmumController extends Controller
 {
 
     public function index()

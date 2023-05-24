@@ -8,17 +8,12 @@ use Illuminate\Validation\Rules\Exists;
 use Exception;
 use App\Helpers\ValidatorHelper;
 use Carbon\Carbon;
-
+use App\Http\Controllers\riwayatMemberController;
+use App\Models\riwayat_aktivitas_member;
 
 class memberController extends Controller
 {
-    public function formatDate($date){
-        $formattedDate = Carbon::parse($date)->format('d/m/Y');
-        return $formattedDate;
-    }
-
-
-
+    //* Tampil Data Member
     public function index()
     {
         $member = member::with(['pengguna'])->get();
@@ -27,9 +22,9 @@ class memberController extends Controller
             'message'=>'Success Tampil Data',
             'data' => $member
         ],200); 
-
     }
 
+    //* Show ID tertentu
     public function show($id)
     {
         $member = member::Where('id_member',$id)->with(['pengguna'])->get();
@@ -45,22 +40,22 @@ class memberController extends Controller
             ],404);
         }
     }
+
+
     public function store(Request $request)
     {
- //*validasi
- $validator = ValidatorHelper::validateMember($request->all());
+    //*validasi
+    $validator = ValidatorHelper::validateMember($request->all());
 
- if ($validator->fails()) {
-     return response()->json($validator->errors(), 422);
- }
+    if ($validator->fails()) {
+        return response()->json($validator->errors(), 422);
+    }
 
-//  * Register Akun Pengguna dan simpan id_pengguna pada variable local untuk dihubungkan
- $password = self::formatDate($request->tgl_lahir_member);
- $idPengguna =   penggunaController::register(['username'=>'-'],['password'=>$password],'member');
-
- 
- try{
-     //* Create Instruktur
+    //* Register Akun Pengguna dan simpan id_pengguna pada variable local untuk dihubungkan (Nilai Default dlu)
+    $password = self::formatDate($request->tgl_lahir_member);
+    $idPengguna =   penggunaController::register(['username'=>'-'],['password'=>$password],'member');
+    try{
+        //* Create Instruktur
         $member = member::create([
             'id_pengguna' => $idPengguna,
             'nama_member' => $request->nama_member,
@@ -68,24 +63,32 @@ class memberController extends Controller
             'no_telp_member' => $request->no_telp_member,            
             'alamat_member' => $request->alamat_member,            
         ]);
-
+        
+        //* Update data di pengguna
         $find = member::where('id_pengguna',$idPengguna)->first();
         penggunaController::updateUsername($idPengguna,$find->id_member);
-    }catch(Exception $e)
-    {
-        // * Jika instruktur gagal dibuat, data pengguna juga ikut dihapus
-        // penggunaController::destroyPenggunaOnly($idPengguna);
-        dd($e);
-    }
-        
-    return response([
-        'message'=> 'success tambah data member',
-        'data' => $member,
- ]);
+
+
+        if(!riwayatMemberController::storeHistory($find->id_member,'Registrasi Akun')){
+            return response(['gagal mencatat riwayat']);
+        }
+
+        }catch(Exception $e)
+        {
+            // * Jika instruktur gagal dibuat, data pengguna juga ikut dihapus
+            // penggunaController::destroyPenggunaOnly($idPengguna);
+            dd($e);
+        }
+            
+        return response([
+            'message'=> 'success tambah data member',
+            'data' => $member,
+    ]);
 
     }
 
 
+    //* Update Data Member in general   
     public function update(Request $request, $id) 
     {
         //* Validasi
@@ -105,6 +108,7 @@ class memberController extends Controller
         return response()->json(['message' => 'Data member berhasil diupdate.'], 200);
     }
 
+    //*Hapus Data Member
     public function destroy($id)
     {
         $member = member::Where('id_member' ,'=', $id)->first();
@@ -127,6 +131,7 @@ class memberController extends Controller
         } 
     }
 
+    //*Update Tanggal Kadeluarsa
     public function updateExpireDate($id)
     {
         $member = member::where('id_member', $id)->first();
@@ -145,6 +150,9 @@ class memberController extends Controller
             'tgl_kadaluarsa' => $tgl_kadaluarsa,
         ], 200);
     }
+
+
+    //*Update Total Deposit
     public function updateTotalDeposit($id, Request $request)
     {   
         $member = member::where('id_member', $id)->first();
@@ -160,14 +168,14 @@ class memberController extends Controller
     }
 
 
-
+    //*Update Member Kadeluarsa
     public function memberKadeluarsa()
                 {
         $today = Carbon::today();
 
         $members = Member::where('tgl_kadeluarsa_aktivasi', '<', $today)
-                          ->with(['pengguna'])
-                          ->get();
+                        ->with(['pengguna'])
+                        ->get();
         return response([   
             'message'=>'Success Tampil Data',
             'data' => $members
@@ -175,12 +183,14 @@ class memberController extends Controller
 
     }
 
+    //* Fungsionalitas Sistem
+    //* Nampilin Data kadeluarsa / hari
     public function depositkadeluarsa()
     {
         $today = Carbon::today();
 
         $members = Member::where('tgl_kadeluarsa_paket', '<', $today)
-                          ->get();
+                        ->get();
         return response([
             'message'=>'Success Tampil Data',
             'data' => $members
@@ -189,14 +199,14 @@ class memberController extends Controller
     }
 
 
-
+    //* Melakukan deaktivasi
     public function memberDeaktivasi()
     {
         $today = Carbon::today();
 
         $members = Member::where('tgl_kadeluarsa_aktivasi', '<', $today)
-                          ->with(['pengguna'])
-                          ->get();
+                        ->with(['pengguna'])
+                        ->get();
 
 
         foreach ($members as $member) {
@@ -206,7 +216,7 @@ class memberController extends Controller
                 'tgl_kadeluarsa_paket' => null,
                 // add more attributes to reset to 0 as necessary
                 
-            ]);
+        ]);
         $member->save();
     }
     return response([
@@ -215,6 +225,7 @@ class memberController extends Controller
     ],200); 
     }
 
+    //* Melakukan Reset Deposit Kadeluarsa
     public function resetDeposit()
     {
         $today = Carbon::today();
@@ -237,4 +248,10 @@ class memberController extends Controller
     }
 
 
+    //! Fungsionalitas Pendukung Utama
+    //* Simpan password dengna Format dd/mm/yyyy
+    public function formatDate($date){
+        $formattedDate = Carbon::parse($date)->format('d/m/Y');
+        return $formattedDate;
+    }
     }

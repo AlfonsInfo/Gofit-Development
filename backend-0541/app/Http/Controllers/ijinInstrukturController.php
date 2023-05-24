@@ -9,11 +9,7 @@ use Carbon\Carbon;
 
 class ijinInstrukturController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    //* Tampil / Show / Get Data Izin Instruktur
     public function index()
     {
         $ijin_instruktur = ijin_instruktur::with(['instruktur','instrukturPengganti','jadwalHarian','jadwalHarian.jadwal_umum'])->get();
@@ -24,22 +20,7 @@ class ijinInstrukturController extends Controller
         ],200); 
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    //* Store Data Ijin
     public function store(Request $request)
     {
         $jadwalharian = jadwal_harian::where('id_jadwal_umum', $request->id_jadwal_umum)->first();
@@ -55,6 +36,7 @@ class ijinInstrukturController extends Controller
             'id_jadwal_harian' => $jadwalharian->id_jadwal_harian
         ]);
         
+        //! Store Riwayat Ijin
         //*return response
         return response([
             'message'=> 'success tambah data ijin',
@@ -63,57 +45,10 @@ class ijinInstrukturController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
-
+    //* Tampilin Data Ijin 
     public function indexByInstruktur(Request $request)
     {   
-        // $ijin_instruktur = ijin_instruktur::get();
-        
-        // dd($request->id_instruktur);
         $ijin_instruktur = ijin_instruktur::where('id_instruktur',$request->id_instruktur)->with(['instruktur','instrukturPengganti','jadwalHarian','jadwalHarian.jadwal_umum'])->get();
 
         return response([

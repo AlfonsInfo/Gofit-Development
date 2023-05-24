@@ -32,7 +32,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     // Route::post('/instruktur', 'instrukturController@index');
     // Route::post('/instruktur/{id}', 'instrukturController@show');
     Route::apiResource('/instruktur', 'instrukturController')->middleware('cors');
-    Route::apiResource('/jadwalumum', 'jadwalController');
+    Route::apiResource('/jadwalumum', 'jadwalUmumController');
     Route::apiResource('/jadwalharian', 'jadwalHarianController');
     Route::post('/jadwalharianfind', 'jadwalHarianController@findData');
     Route::get('/jadwalharianlibur/{id}', 'jadwalHarianController@updateLibur');
@@ -60,7 +60,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::put('/updatedepositbalanceuang/{id}',  'memberController@updateTotalDeposit');
     
     Route::post('/resetbyuser', 'penggunaController@ResetPassword');
-    Route::post('/jadwalbyinstruktur', 'jadwalController@JadwalByInstruktur');
+    Route::post('/jadwalbyinstruktur', 'jadwalUmumController@JadwalByInstruktur');
     
     Route::get('/showmemberdeaktif', 'memberController@memberKadeluarsa');
     Route::get('/deaktivasimember', 'memberController@memberDeaktivasi');
@@ -82,14 +82,21 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::put('/kehadirankelas/{noBook}', 'bookingKelasController@presensiKelas');
     Route::put('/absenkelas/{noBook}', 'bookingKelasController@absenKelas');
     
-    Route::post('/cetakstrukgym/{noBooking}', 'presensiGymController@generateStrukTansaksi');  
-    Route::post('/cetakstrukkelas/{noBooking}', 'presensiKelasController@generateStrukTansaksi');  
+    Route::post('/cetakstrukgym/{noBooking}', 'presensiGymController@generateStrukTransaksi');  
+    Route::post('/cetakstrukkelas/{noBooking}', 'presensiKelasController@generateStrukTransaksi');  
     
     //* Jadwal umum mobile;
-    Route::get('/jadwalumummobile', 'jadwalController@getJadwalMobile');
+    Route::get('/jadwalumummobile', 'jadwalUmumController@getJadwalMobile');
+
+    //* History
+    Route::get('/riwayataktivitasmember', 'riwayatMemberController@showRiwayatByMember');
+    Route::get('/riwayataktivitasinstruktur', 'riwayatInstrukturController@showRiwayatByInstruktur');
+    //* History by merge presensi dan ijin
+    Route::get('/riwayataktivitasinstruktur', 'riwayatInstrukturController@mergeIjinPresensi');
 
     
     //* Laporan Ges
     Route::get('laporanaktivitasgym','laporanController@aktivitasGymBulanan');
     Route::get('laporanaktivitaskelas','laporanController@aktivitasKelasBulanan');
+
 });

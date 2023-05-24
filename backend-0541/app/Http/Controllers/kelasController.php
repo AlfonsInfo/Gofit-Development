@@ -8,8 +8,8 @@ use App\Models\kelas;
 use Illuminate\Support\Facades\Validator;
 
 class kelasController extends Controller
-{
- 
+{   
+    //* Get Data Kelas (Untuk DropDown / Combo Box)
     public function index()
     {
         $kelas = kelas::latest()->get();
@@ -39,13 +39,6 @@ class kelasController extends Controller
         // return new 
     }
 
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show($id)
     {
         $kelas = kelas::find($id);
@@ -58,19 +51,4 @@ class kelasController extends Controller
 
     }
 
-
-    public function edit($id)
-    {
-        //
-    }
-
-    public function update(Request $request, $id)
-    {
-
-    }
-
-    public function destroy($id)
-    {
-
-    }
 }

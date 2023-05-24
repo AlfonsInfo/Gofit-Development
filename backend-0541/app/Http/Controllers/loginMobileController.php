@@ -18,43 +18,29 @@ class loginMobileController extends Controller
     {
         //* Get Data
         $loginDataForm = $request->only(['username','password']);
-        //* Validasi
-        // $validate = Validator::make($loginDataForm,[]);
-        
-        //* vaildate fails
-        // dd(Auth::guard('api')->attempt($loginDataForm));
-        // if($validate->fails())
-            // return response()->json($validate->errors(),422);
-
-        //* if without attempt
-
         if(!Auth::guard('api')->attempt($loginDataForm))
             return response(['message' => 'invalid credentials yo bang'],400);
 
         $user = Auth::user(); //* tetap user
         $token = $user->createToken('Authentication Token')->accessToken;
-        
-        // // dd($user->role);
-        // if($user->role != 'pegawai'){
-        //     return response(['message' => 'invalid credentials'],400);
-        // }
+
 
         //* Role Pegawai (Only MO)
         if($user->role == 'pegawai'){
             $pegawai = pegawai::where('id_pengguna',$user->id_pengguna)->first();
-        // dd($pegawai);
-        //* Admin dan kasir tidak boleh masuk
-        if($pegawai->jabatan_pegawai == 'Admin' || $pegawai->jabatan_pegawai == 'kasir'){
-            return response(['message' => 'invalid credentials'],400);
-        }
+        
+            //* Admin dan kasir tidak boleh masuk
+            if($pegawai->jabatan_pegawai == 'Admin' || $pegawai->jabatan_pegawai == 'kasir'){
+                return response(['message' => 'invalid credentials'],400);
+            }
 
-        return response([
-            'message' => 'Autenthicated',
-            'user' => $user,
-            'pegawai' => $pegawai,
-            'token_type' => 'Bearer',
-            'access_token' => $token
-        ]);
+            return response([
+                'message' => 'Autenthicated',
+                'user' => $user,
+                'pegawai' => $pegawai,
+                'token_type' => 'Bearer',
+                'access_token' => $token
+            ]);
         }
 
         //* Role instruktur

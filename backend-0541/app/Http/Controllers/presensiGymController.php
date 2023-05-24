@@ -101,7 +101,7 @@ class presensiGymController extends Controller
     }
 
 
-    public function generateStrukTansaksi($noBooking, Request $request){
+    public function generateStrukTransaksi($noBooking, Request $request){
         //* Cari Data Booking yang telah ada
         $dataBooking = booking_gym::with(['sesi','member'])->find($noBooking);
         // dd($dataBooking);

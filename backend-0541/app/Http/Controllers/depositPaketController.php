@@ -10,15 +10,14 @@ use App\Models\transaksi_deposit_paket;
 use App\Models\User\member;
 use Exception;
 use Carbon\Carbon;
-use Dflydev\DotAccessData\Data;
+use App\Http\Controllers\riwayatMemberController;
 
 class depositPaketController extends Controller
 {
     public function store(Request $request)
     {
+    //* Validasi Ulang Apakah Member Layak mendapatkan promo / tidak
     try{
-        //* try dlu disini
-        //cek nominalDeposit > promo[where id.promo].minimal.deposit
         $id_promo = null;
         $masa_berlaku = null;   
         $member = member::findOrFail($request->id_member);
@@ -50,7 +49,7 @@ class depositPaketController extends Controller
             $total_deposit = $nominal_deposit;
             $masa_berlaku = 1;
         }
-        // dd($total_deposit);              
+
 
         //* Create Transaksi Member
         $transaksi_member = transaksi_member::create([
@@ -59,8 +58,7 @@ class depositPaketController extends Controller
             'id_member' => $request->id_member,
         ]);
         
-        //* Ngambil Dapat Transaksi dari tabel transaksi_member yang baru dilakukan
-        
+        //* Ngambil Dapat Transaksi dari tabel transaksi_member yang baru dilakukan      
         $transaksi_deposit_paket = transaksi_member::where('jenis_transaksi', '=', 'transaksi-deposit-paket')
         ->where('id_pegawai', '=', $request->id_pegawai)
         ->where('id_member', '=', $request->id_member)
@@ -80,10 +78,13 @@ class depositPaketController extends Controller
             'tanggal_kadeluarsa' => Carbon::now()->addMonth($masa_berlaku)
         ]);
 
-        // $member = member::where('id_member', $request->id_member)->first();
         $member->total_deposit_paket = $nominal_deposit;
         $member->tgl_kadeluarsa_paket = Carbon::now()->addMonth($masa_berlaku);
         $member->save();
+
+        //! Catat Riwayat / Log
+        riwayatMemberController::storeHistory($request->id_member,'Transaksi Deposit Paket',$transaksi_deposit_paket['no_struk_transaksi']);
+        
         }catch(Exception $e)
         {
             dd($e);

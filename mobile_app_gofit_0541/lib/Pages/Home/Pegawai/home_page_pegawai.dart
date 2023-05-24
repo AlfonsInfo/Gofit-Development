@@ -1,9 +1,6 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mobile_app_gofit_0541/Bloc/login/login_bloc.dart';
-import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
 import 'package:mobile_app_gofit_0541/Function/function.dart';
 // import 'package:mobile_app_gofit_0541/Config/theme_config.dart';
 import 'package:mobile_app_gofit_0541/Components/component.dart';
@@ -11,7 +8,6 @@ import 'package:mobile_app_gofit_0541/Models/jadwal_harian.dart';
 import 'package:mobile_app_gofit_0541/Repository/repo_jadwal_harian.dart';
 
 
-enum Actions { mulaiKelas, selesaiKelas}
 
 //* HomePagePegawai
 class HomePagePegawai extends StatefulWidget {
@@ -38,7 +34,6 @@ class _HomePagePegawaiState extends State<HomePagePegawai> {
   
   @override
   Widget build(BuildContext context) {
-    final idPegawai = getData('id_pegawai');
     return  Scaffold(
       appBar: createAppBar('Welcome MO'), 
       body:Column(
@@ -58,7 +53,7 @@ class _HomePagePegawaiState extends State<HomePagePegawai> {
   }
 
   Widget classCard(JadwalHarian jd) {
-    var boldStyle = TextStyle(fontWeight: FontWeight.bold);
+    var boldStyle = const TextStyle(fontWeight: FontWeight.bold);
     return Padding(
       padding: const EdgeInsets.all(4.0),
       child: Card(
@@ -72,30 +67,30 @@ class _HomePagePegawaiState extends State<HomePagePegawai> {
                   Text('Instruktur : ${jd.jadwalUmum!.instruktur!.nama} - Sesi : ${jd.jadwalUmum!.jamMulai} - ${jd.jadwalUmum!.jamSelesai }') : 
                   Text('Instruktur : ${jd.ijinInstruktur!.instrukturPengganti} - Sesi : ${jd.jadwalUmum!.jamMulai} - ${jd.jadwalUmum!.jamSelesai }'),
                   wrapButtonActions(jd),
-                if (jd.jamMulai != null && jd.jamSelesai != null) completed() else if(jd.jamMulai != null) onGoing() else  SizedBox.shrink()
+                if (jd.jamMulai != null && jd.jamSelesai != null) completed() else if(jd.jamMulai != null) onGoing() else  const SizedBox.shrink()
               ],
             ),
           // trailing: PopUpActions(),
           isThreeLine: true,
-          leading: Icon(Icons.sports_gymnastics_outlined),
+          leading: const Icon(Icons.sports_gymnastics_outlined),
           ),
         ),
     );
   }
 
   Card onGoing() {
-    return Card(
+    return const Card(
                 color: Colors.green,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:  EdgeInsets.all(8.0),
                   child: Text('On going',style: TextStyle(color: Colors.white)),
                 ), );
   }
   Card completed() {
-    return Card(
+    return const Card(
         color: Colors.green,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding:  EdgeInsets.all(8.0),
                 child: Text('Completed',style: TextStyle(color: Colors.white)),
       ), );
   }
@@ -140,7 +135,10 @@ class _HomePagePegawaiState extends State<HomePagePegawai> {
 }
 
 
+
+
 //* Tidak dipake keknya 
+// enum Actions { mulaiKelas, selesaiKelas}
 class PopUpActions extends StatefulWidget {
   const PopUpActions({super.key});
 
@@ -164,11 +162,11 @@ class _PopUpActionsState extends State<PopUpActions> {
         },
         itemBuilder: (BuildContext context) => <PopupMenuEntry<Actions>>[
           const PopupMenuItem<Actions>(
-            value: Actions.mulaiKelas,
+            // value: Actions.mulaiKelas,
             child: Text('Mulai Kelas'),
           ),
           const PopupMenuItem<Actions>(
-            value: Actions.selesaiKelas,
+            // value: Actions.selesaiKelas,
             child: Text('Selesai Kelas'),
           ),
         ],

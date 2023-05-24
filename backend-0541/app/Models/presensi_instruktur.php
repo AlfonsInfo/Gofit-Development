@@ -9,4 +9,8 @@ class presensi_instruktur extends Model
 {
     use HasFactory;
     protected $table = 'presensi_instruktur'; 
+    protected $primaryKey= 'id_presensi';
+    protected $guarded= [];
+
+
 }

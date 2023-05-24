@@ -9,12 +9,11 @@ use Exception;
 use App\Helpers\ValidatorHelper;
 use App\Models\User\pengguna;
 
-
+//* Dominan Untuk Fungsionoalitas di menu kasir
 class instrukturController extends Controller
 {
 
-
-
+    //* Get Data Instruktur
     public function index()
     {
         $instruktur = instruktur::latest()->with(['pengguna','jadwalharian'])->get();
@@ -25,7 +24,7 @@ class instrukturController extends Controller
         ],200); 
     }
 
-
+    //* Store Data Instruktur
     public function store(Request $request)
     {
         //*validasi
@@ -36,7 +35,6 @@ class instrukturController extends Controller
         }
         //* Register Akun Pengguna dan simpan id_pengguna pada variable local untuk dihubungkan
         $idPengguna =   penggunaController::register($request->all('username'),$request->all('password'),'instruktur');
-
         
         try{
             //* Create Instruktur
@@ -76,18 +74,8 @@ class instrukturController extends Controller
      //* Update the specified resource in storage.
     public function update(Request $request, $id)
     {
-        //* Validasi
-        // $validator = ValidatorHelper::validateInstruktur($request->all());
-        // if ($validator->fails()) {
-        //     return response()->json($validator->errors(), 422);
-        // }
-
         //*Data yang ingin di update
         $instruktur = Instruktur::findOrFail($id);
-        // dd($instruktur,'test');
-        // dd($instruktur);
-
-            // Update data pada objek Instruktur
             $instruktur->nama_instruktur = $request->nama_instruktur;
             $instruktur->tanggal_lahir_instruktur = $request->tanggal_lahir_instruktur;
             $instruktur->alamat_instruktur = $request->alamat_instruktur;
@@ -125,6 +113,7 @@ class instrukturController extends Controller
     }
 
        
+    //* Sistem Reset Keterlambatna jadi null
     public function resetTerlambat()
     {
         $instrukturs = instruktur::all();
