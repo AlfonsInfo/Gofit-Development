@@ -16,7 +16,6 @@ class JadwalHarian{
   JadwalHarian({required this.idJadwalHarian, required this.tanggal , required this.status ,required  this.jadwalUmum , required this.jamMulai , required this.jamSelesai , required this.ijinInstruktur});
 
   factory JadwalHarian.fromJson(Map<String, dynamic> json){
-    inspect(json);
     return JadwalHarian(
       idJadwalHarian: json['id_jadwal_harian'].toString(),
       tanggal: json['tanggal_jadwal_harian'].toString(), 

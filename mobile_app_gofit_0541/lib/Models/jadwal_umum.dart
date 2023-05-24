@@ -24,7 +24,7 @@ class JadwalUmum{
       jamMulai: json['jam_mulai'].toString(), 
       jamSelesai: json['jam_selesai'].toString(), 
       kelas: Kelas.fromJson(json['kelas']),
-      instruktur : Instruktur.fromJson(json['instruktur']),
+      instruktur : (json['instruktur'] != null) ? Instruktur.fromJson(json['instruktur'])  : null,
       // noTelp: json['no_telp'].toString()
       );
   }

@@ -11,8 +11,8 @@ use App\Models\kelas;
 use App\Models\presensi_instruktur;
 use Carbon\Carbon;
 use Database\Seeders\jadwal;
+use Exception;
 use Illuminate\Support\Facades\DB;
-
 class jadwalHarianController extends Controller
 {
 
@@ -178,35 +178,49 @@ class jadwalHarianController extends Controller
     }
 
     //* Update Jam Mulai ( Pada jadwal harian dan presensi instruktur)
-    public function updateJamMulai($id){
+    public function updateJamMulai($id, Request $request){
+        $waktu_sekarang = Carbon::now();
+
+        // return response([$request->id_instruktur]);
+        // dd($request->id_instruktur);
+
         $selectedClass = jadwal_harian::find($id);
-        $selectedClass->jam_mulai = Carbon::now();
+        $selectedClass->jam_mulai = $waktu_sekarang;
         $selectedClass->save();
         //* presensi instruktur piye ?
 
+        //* Simpan ke tabel presensi instruktur
+        $storepresensiInstruktur = presensi_instruktur::create([
+            'waktu_presensi' => $waktu_sekarang,
+            'status_presensi' => 'hadir',
+            'id_instruktur' => $request->id_instruktur,
+            'id_jadwal_harian' => $id
+        ]);
         //* update akumulasi terlambat
 
-        return response()->json(['message' => 'Jam Mulai Berhasil diupdate'], 200);
+        return response()->json([
+            'message' => 'Jam Mulai Berhasil diupdate',
+            'data_presensi' => $storepresensiInstruktur],200);
     }
 
     //* Update Jam Selesai (Pada Jadwal harian dan presensi isntruktur)
         public function updateJamSelesai($id, Request $request)
         {
-            $waktu_sekarang = Carbon::now();
-            //* Table Jadwal Harian
-            $selectedClass = jadwal_harian::find($id);
-            $selectedClass->jam_selesai = $waktu_sekarang;
-            $selectedClass->save();
-            
-            //* Simpan ke tabel presensi instruktur
-            $storepresensiInstruktur = presensi_instruktur::create([
-                'waktu_presensi' => $waktu_sekarang,
-                'status_presensi' => 'hadir',
-                'id_instruktur' => $request->id_instruktur,
-                'id_jadwal_harian' => $request->id_jadwal_harian
-            ]);
+            try{
+                $waktu_sekarang = Carbon::now();
+                //* Table Jadwal Harian
+                $selectedClass = jadwal_harian::find($id);
+                $selectedClass->jam_selesai = $waktu_sekarang;
+                $selectedClass->save();
+                
 
-            return response()->json(['message' => 'Jam Selesai Berhasil diupdate'], 200);
+                
+                return response()->json(['message' => 'Jam Selesai Berhasil diupdate'], 200);
+            }catch(Exception $e){
+                return response([
+                    'data' => 'Gagal',
+                    'exception' => $e]);
+            }
         }
 
     //* Cek Adakah Data di Ijin instruktur

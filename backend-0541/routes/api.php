@@ -92,7 +92,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::get('/riwayataktivitasmember', 'riwayatMemberController@showRiwayatByMember');
     Route::get('/riwayataktivitasinstruktur', 'riwayatInstrukturController@showRiwayatByInstruktur');
     //* History by merge presensi dan ijin
-    Route::get('/riwayataktivitasinstruktur', 'riwayatInstrukturController@mergeIjinPresensi');
+    Route::get('/riwayataktivitasinstrukturmerge', 'riwayatInstrukturController@mergeIjinPresensi');
 
     
     //* Laporan Ges

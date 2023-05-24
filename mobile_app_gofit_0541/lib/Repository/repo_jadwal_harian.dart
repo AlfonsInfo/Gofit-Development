@@ -43,11 +43,21 @@ class JadwalHarianRepository{
     return [];
   }
 
-    Future<List> mulaiKelas(String id) async {
+    Future<List> mulaiKelas(String id,String idInstruktur, String idJadwalHarian) async {
+      //* url ke API
       String apiUrl = '$url/updatemulai/$id';
+      //* data yang dikirim melalui body
+      var dataBody = {
+        'id_instruktur' : idInstruktur,
+        'id_jadwal_harian' : idJadwalHarian
+      };
+
+      var dataEncode = json.encode(dataBody);
+      inspect(dataEncode);
       try{
-        var apiResult = await http.put(Uri.parse(apiUrl), );
+        var apiResult = await http.put(Uri.parse(apiUrl),headers: {'Content-Type': 'application/json'}, body: dataEncode, );
         inspect(apiResult);
+
         var jsonObject = json.decode(apiResult.body);
         final responseData = jsonDecode(apiResult.body);
         final responseMessage = responseData['message'];

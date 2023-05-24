@@ -48,7 +48,7 @@ class _HomePagePegawaiState extends State<HomePagePegawai> {
 
         ]
       ),      
-      drawer: const SideBar(alamatRoute: '/profilePegawai'),
+      drawer: const SideBar(alamatRoute: '/profilePegawai', alamatListRiwayat: ''),
       );  
   }
 
@@ -96,8 +96,14 @@ class _HomePagePegawaiState extends State<HomePagePegawai> {
   }
 
   Row wrapButtonActions(JadwalHarian jd) {
+    var idInstruktur;
+    if(jd.ijinInstruktur != null){
+      // idInstruktur = jd.ijinInstruktur?.instrukturPengganti.
+    }else{
+      idInstruktur = jd.jadwalUmum?.instruktur?.idInstruktur;
+    }
     void startClassFunction() async {
-      var hasil = await jadwalHarianRepository.mulaiKelas(jd.idJadwalHarian ?? '');
+      var hasil = await jadwalHarianRepository.mulaiKelas(jd.idJadwalHarian ?? '', idInstruktur,jd.idJadwalHarian ?? '' );
       Navigator.pop(context);
       showSnackBarMessage(context, hasil[0]);
       // inspect(hasil);

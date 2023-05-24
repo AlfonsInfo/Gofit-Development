@@ -12,5 +12,11 @@ class presensi_instruktur extends Model
     protected $primaryKey= 'id_presensi';
     protected $guarded= [];
 
+    public function jadwalHarian()
+    {
+        return $this->hasOne('App\Models\jadwal_harian','id_jadwal_harian' , 'id_jadwal_harian');
+    }
+
+
 
 }

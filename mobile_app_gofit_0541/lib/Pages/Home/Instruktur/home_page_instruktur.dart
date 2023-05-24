@@ -29,7 +29,7 @@ class _HomePageInstrukturState extends State<HomePageInstruktur> {
   }
 
   getTodayClasses() async{
-      var appBloc = context.read<AppBloc>();
+    var appBloc = context.read<AppBloc>();
     var idInstruktur= appBloc.state.instruktur?.idInstruktur;
     todayClasses = await jadwalHarianRepository.getTodayClassesInstructure(idInstruktur ?? '');
     setState(() {});
@@ -61,7 +61,7 @@ class _HomePageInstrukturState extends State<HomePageInstruktur> {
         ]
       ),
       //*Akhir dari UtamaSW
-      drawer: const SideBar(alamatRoute: '/profileinstruktur'),
+      drawer: const SideBar(alamatRoute: '/profileinstruktur', alamatListRiwayat: '/riwayatinstruktur'),
     );
   }
 

@@ -18,9 +18,11 @@ title: Text(appBar),
 class SideBar extends StatelessWidget {
   const SideBar({
     super.key,
-    required this.alamatRoute
+    required this.alamatRoute,
+    required this.alamatListRiwayat
   });
 
+  final String alamatListRiwayat;
   final String alamatRoute;
 
   @override
@@ -58,7 +60,7 @@ class SideBar extends StatelessWidget {
                 leading: const Icon(Icons.history_rounded),
                 title: const Text('Activities History'),
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, alamatListRiwayat);
                 },
               ),
             ],

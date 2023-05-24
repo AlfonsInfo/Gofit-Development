@@ -30,8 +30,9 @@ class riwayatMemberController extends Controller
         $riwayatMember = riwayat_aktivitas_member::where('id_member', $request->id_member)
         ->whereBetween('created_at', [Carbon::now()->subWeek(), Carbon::now()])
         ->orderBy('created_at', 'desc')
-        ->get();
+    ->get();
 
+        
         return response([
             'data' => $riwayatMember
         ]);
