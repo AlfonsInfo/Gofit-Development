@@ -26,75 +26,107 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
     },
 
     methods :{
+        DataTableFeatures() {
+  $(document).ready(() => {
+    var selectedMonth = this.getMonthName(this.selectedMonth);
+    var currentDate=  this.currentDate;
+    const container = this.$refs.chartContainer;
+    console.log(container);
 
-        DataTablesFeatures() {
-        var selectedMonth = this.getMonthName(this.selectedMonth);
-        var currentDate = this.currentDate;
-        // eslint-disable-next-line no-undef
-        $(document).ready(function() {
-            // eslint-disable-next-line no-undef
-            $('#example').DataTable({
-            dom: 'Bfrtip',
-            buttons: [{
-                extend: 'print',
-                text: 'Print',
-                title: '',
-                message: `<strong>Gofit</strong>
-                        </br>
-                        <p>Jl CentralPark No. 10 Yogyakarta</p>
-                        </br>
-                        <strong><u>Laporan Aktivitas Gym Bulanan</u></strong>
-                        </br>
-                        <p><u>Bulan : ${selectedMonth} Tahun: 2023</u></p>
-                        <p>Tanggal Cetak : ${currentDate} </p>
-                        `,
-            }],
-            paging: false, // Turn off pagination
-            });
-
-                // Create the chart with initial data
-                var container = $('<div/>').insertBefore(table.table().container());
-            
-            var chart = Highcharts.chart(container[0], {
-                chart: {
-                    type: 'pie',
-                },
-                title: {
-                    text: 'Staff Count Per Position',
-                },
-                series: [
-                    {
-                        data: chartData(table),
-                    },
-                ],
-            });
-        });
+    const table = $('#example').DataTable({
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          extend: 'print',
+          text: 'Print',
+          title: '',
+          message: 
+          `<strong>Gofit</strong>
+            </br>
+            <p>Jl CentralPark No. 10 Yogyakarta</p>
+            </br>
+            <strong><u>Laporan Aktivitas Kelas Bulanan</u></strong>
+            </br>
+            <p><u>Bulan : ${selectedMonth} Tahun: 2023</u></p>
+            <p>Tanggal Cetak : ${currentDate} </p>
+            <div id="container">${container.innerHTML}</div>`,
         },
-
-
-        chartData(table) {
-        var counts = {};
-    
-        // Count the number of entries for each position
-        table
-            .column(1, { search: 'applied' })
-            .data()
-            .each(function (val) {
-                if (counts[val]) {
-                    counts[val] += 1;
-                } else {
-                    counts[val] = 1;
-                }
-            });
-    
-            // And map it to the format highcharts uses
-            return $.map(counts, function (val, key) {
-                return {
-                    name: key,
-                    y: val,
-                };
-            });
+      ],
+    });
+    // Create the chart with initial data
+    const chart = Highcharts.chart(container, {
+      chart: {
+        type: 'column',
+      },
+      title: {
+        text: 'Grafik Pendapatan Perbulan',
+      },
+      xAxis: {
+        categories: this.chartCategories(table),
+        labels: {
+          rotation: 0, // Mengatur rotasi label menjadi 0 derajat (horizontal)
         },
+      },
+      yAxis: {
+        title: {
+          text: 'Pendapatan(M = Million)',
+        },
+      },
+      plotOptions: {
+        bar: {
+          dataLabels: {
+            enabled: true,
+            inside: true,
+            align: 'center',
+            verticalAlign: 'bottom',
+            style: {
+              fontSize: '10px',
+            },
+          },
+        },
+      },
+      series: [
+        {
+          data: this.chartData(table),
+        },
+      ],
+    });
+
+    // On each draw, update the data in the chart
+    table.on('draw', () => {
+      chart.xAxis[0].setCategories(this.chartCategories(table));
+      chart.series[0].setData(this.chartData(table));
+    });
+
+    // Select elemen dalam grafik Highcharts
+    var chartTitle = $('#container .highcharts-title');
+    var chartSubtitle = $('#container .highcharts-subtitle');
+
+    // Melakukan operasi pada elemen yang dipilih
+    chartTitle.css('color', 'red');
+    chartSubtitle.hide();
+  });
+},
+
+chartCategories(table) {
+  const categories = [];
+
+  table.column(0).data().each((val) => {
+    categories.push(val);
+  });
+
+  return categories;
+},
+
+chartData(table) {
+  const data = [];
+
+  table.column(3).data().each((val) => {
+    data.push(parseFloat(val));
+  });
+
+  return data;
+},
 
 
     
@@ -107,7 +139,7 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
             console.log('tanggal' , this.currentDate)
             if(this.countInit == 0)
             {
-                this.DataTablesFeatures()
+                this.DataTableFeatures()
                 this.countInit++;
                 $toast.success(message)
             }
@@ -150,7 +182,65 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
                 "Juli", "Agustus", "September", "Oktober", "November", "Desember"
             ];
             return monthNames[month - 1];
+            },
+
+            printData() {
+    // Mendapatkan konten tabel yang akan dicetak
+    const tableContent = $('#example').html();
+
+    // Menggabungkan konten tabel dengan konten grafik Highcharts
+    const contentToPrint = `
+      <strong>Gofit</strong>
+      </br>
+      <p>Jl CentralPark No. 10 Yogyakarta</p>
+      </br>
+      <strong><u>Laporan Aktivitas Kelas Bulanan</u></strong>
+      </br>
+      <p><u>Bulan : ${this.getMonthName(this.selectedMonth)} Tahun: 2023</u></p>
+      <p>Tanggal Cetak : ${this.currentDate} </p>
+      <div id="container">${$('#container').html()}</div>
+      <table>${tableContent}</table>
+    `;
+
+    // Membuka jendela baru untuk mencetak konten
+    const printWindow = window.open('', '', 'width=800,height=600');
+    printWindow.document.open();
+    printWindow.document.write(`
+      <html>
+      <head>
+        <title>Cetak Laporan</title>
+        <style>
+          /* Gaya khusus untuk mencetak */
+          @media print {
+            /* Gaya untuk menyembunyikan elemen yang tidak perlu dicetak */
+            body * {
+              visibility: hidden;
             }
+            #container, #example {
+              visibility: visible;
+            }
+            /* Gaya khusus lainnya sesuai kebutuhan Anda */
+          }
+        </style>
+      </head>
+      <body>
+        ${contentToPrint}
+      </body>
+      </html>
+    `);
+    printWindow.document.close();
+
+    // Tunggu beberapa saat sebelum mencetak untuk memastikan konten dimuat
+    setTimeout(() => {
+      printWindow.print();
+    //   printWindow.close();
+    }, 3000);
+  },
+
+
+
+
+
 
     },
     async mounted(){
@@ -184,8 +274,10 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
         <!-- <bu class="btn btn-primary">Presensi Gym</bu   tton> -->
       </div>
       <div class="content bg-white text-dark table-custom m-5 mt-2">
-        <div  class="container-fluid  p-4">
-            <h3 >Tabel Laporan Tahunan</h3>
+          <div  class="container-fluid  p-4">
+              <h3 >Tabel Laporan Tahunan</h3>
+              <button id="printButton" class="btn btn-primary m-2" @click="printData">Print</button>
+              <div id="container" ref="chartContainer"></div>
             <!-- <button class="btn btn-primary m-3" @click="cetakData">Cetak Laporan</button> -->
             <table id="example" class="#example table table-striped filters" style="width:100%;">
                 <thead>
@@ -211,7 +303,7 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
                     </tr>
                 </tbody>
             </table>
-            <div id="chart-container"></div>
+            <div id="chart"></div>
             <div class="row">
                 <back-button class="col-md-3" className="btn btn-dark"></back-button>
                 <!-- <button class="btn btn-success  col col-md-3">Cetak Struk</button> -->
@@ -235,6 +327,12 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
   
 .title:hover {
   background-color: #f2f2f2;
+}
+
+
+#container {
+  width: 100%;
+  height: 400px; /* Sesuaikan dengan ukuran yang Anda inginkan */
 }
 
 </style>

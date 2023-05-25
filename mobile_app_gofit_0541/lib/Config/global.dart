@@ -46,7 +46,7 @@ var routesApp = {
   };
 
 //* Setingan URL
-String url = 'http://192.168.1.18:5000/api';
+String url = 'http://192.168.149.34:5000/api';
 // String url = 'http://10.54.10.247:5000/api';
 
 
