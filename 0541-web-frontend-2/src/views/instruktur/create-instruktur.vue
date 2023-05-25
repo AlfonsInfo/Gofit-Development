@@ -3,25 +3,27 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
 
 
   export default defineComponent({
-    //Component yang digunakan
     components:{
       HomeNavbar,
       BackButton
     },
 
     methods : {
-        goBack() {
+      
+      goBack() {
         if ($toast) {
         this.toast.goAway(0);
         }
       },
     },
 
+    //* Mounted
     mounted(){
       window.onpopstate = () => {
         this.goBack();
       };
     },
+
     //Setup
     setup(){
       const http = inject('$http');
@@ -35,19 +37,20 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
         password : '',
       })
 
+      // Submit
       const submitForm = (event) => {
         console.log(event)
         event.preventDefault(); // hindari default form submission
         storeInstruktur()
       }
 
+      //* Validasi
       function isValid({nama_instruktur,tanggal_lahir_instruktur, alamat_instruktur , no_telp_instruktur ,username,password}){
         let status = true;  
         if (!nama_instruktur) {
           $toast.warning('Nama instruktur harus diisi');
           status = false;
         }
-        // const regex = /^\d{4}-\d{2}-\d{2}$/;
         if (!tanggal_lahir_instruktur) {
           $toast.warning('Tanggal lahir instruktur harus diisi');
           status = false;
@@ -86,15 +89,14 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
       }
 
 
-
       return{
         router,
         instruktur,
         storeInstruktur,
         submitForm
       }
-    }
 
+    }
 })
 </script>
 <template >

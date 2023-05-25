@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 export function DataTables(id,columns){
     $(document).ready(function () {
 // Setup - add a text input to each footer cell

@@ -1,10 +1,6 @@
 
 <script>
 import BackButton from '../components/BackButton.vue';
-// import { defineComponent } from 'vue'
-// import { useRouter } from 'vue-router';
-
-
 
 
 export default {
@@ -13,10 +9,8 @@ export default {
   },
     //* name : nama komponen yang digunakan di file vue lainnya (template html)
     name: 'table-data',
-    
     //* props data yang diambil dari parent template
     props : ['context','data','actions','column','fields','create','hiddenClass'],
-    
     //* data untuk pagination
     data(){
       return{
@@ -25,7 +19,6 @@ export default {
     }
   },
 
-  //methods
   methods : {
 
     //generate link

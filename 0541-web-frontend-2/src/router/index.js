@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory ,} from 'vue-router'
 import LoginView from '../views/LoginView.vue'
 
+
+
+//* Pengecekan setiap enter halaman
 const beforeEnter = (to, from, next) => {
   if (isLoggedIn()) { // fungsi isLoggedIn() akan mengembalikan true jika pengguna sudah terautentikasi
     next();
@@ -10,9 +13,11 @@ const beforeEnter = (to, from, next) => {
 }
 
 
+//* Router 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
+    //* Autentikasi
     {
       path: '/',
       name: 'login',
@@ -25,6 +30,8 @@ const router = createRouter({
         }
       }
     },
+
+    //* Home
     {
       path: '/Home',
       name: 'Home',
@@ -37,6 +44,7 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/HomeView.vue')
     },
+    //* Member
     {
       path:'/member',
       name : 'member',
@@ -79,6 +87,8 @@ const router = createRouter({
       beforeEnter : beforeEnter,
       component: () => import('../views/member/deposit-kadeluarsa-member.vue')
     },
+
+    //* Instruktur
     {
       path:'/instruktur',
       name : 'instruktur',
@@ -103,6 +113,8 @@ const router = createRouter({
       beforeEnter : beforeEnter,
       component: () => import('../views/instruktur/ijin-instruktur.vue')
     },
+
+    //* Jadwal
     {
       path:'/jadwal-umum',
       name : 'jadwal-umum',
@@ -127,6 +139,8 @@ const router = createRouter({
       beforeEnter : beforeEnter,
       component: () => import('../views/jadwal/index-jadwal-harian.vue')
     },
+
+    //* Laporan
     {
       path:'/laporan',
       name : 'laporan',
@@ -157,6 +171,8 @@ const router = createRouter({
       beforeEnter : beforeEnter,
       component: () => import('../views/laporan/laporan-instruktur-bulanan.vue')
     },
+
+    //*Transaksi
     {
       path:'/transaksi-member',
       name : 'transaksi-member',
@@ -181,6 +197,8 @@ const router = createRouter({
       beforeEnter : beforeEnter,
       component: () => import('../views/transaksi/transaksi-deposit-kelas.vue')
     },
+
+    //*Presensi
     {
       path:'/presensi-member',
       name : 'presensi-member',
@@ -200,7 +218,8 @@ const router = createRouter({
       beforeEnter : beforeEnter,
       component: () => import('../views/member/presensi-member-gym.vue')
     },
-    // route fallback
+
+    //* Route Fallback
     {
       path: '/:pathMatch(.*)*',
       redirect: '/'

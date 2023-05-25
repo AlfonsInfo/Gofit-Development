@@ -1,7 +1,5 @@
 <script>
 import { defineComponent } from 'vue'
-// import { useRouter } from 'vue-router';
-// import VTooltip from 'v-tooltip';
 import { jsPDF } from "jspdf";
 
 export default defineComponent({

@@ -33,7 +33,6 @@ export default defineComponent({
 <template>
 <div id="myModal" class="modal text-dark" :class="toggleModalClass">
   <div class="modal-content modal-sm">
-      <!-- <div v-if="data"></div> -->
       <h4>Apakah Yakin ingin menghapus Data ini? </h4>
       <hr>
     <div class="d-flex justify-content-between" >
