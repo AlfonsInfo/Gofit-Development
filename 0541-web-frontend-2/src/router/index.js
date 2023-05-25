@@ -131,7 +131,31 @@ const router = createRouter({
       path:'/laporan',
       name : 'laporan',
       beforeEnter : beforeEnter,
-      component: () => import('../views/instruktur/ijin-instruktur.vue')
+      component: () => import('../views/laporan/laporan-index.vue')
+    },
+    {
+      path:'/laporan-tahunan',
+      name : 'laporan-tahunan',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/laporan/laporan-tahunan.vue')
+    },
+    {
+      path:'/laporan-gym-bulanan',
+      name : 'laporan-gym-bulanan',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/laporan/laporan-gym-bulanan.vue')
+    },
+    {
+      path:'/laporan-kelas-bulanan',
+      name : 'laporan-kelas-bulanan',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/laporan/laporan-kelas-bulanan.vue')
+    },
+    {
+      path:'/laporan-instruktur-bulanan',
+      name : 'laporan-instruktur-bulanan',
+      beforeEnter : beforeEnter,
+      component: () => import('../views/laporan/laporan-instruktur-bulanan.vue')
     },
     {
       path:'/transaksi-member',

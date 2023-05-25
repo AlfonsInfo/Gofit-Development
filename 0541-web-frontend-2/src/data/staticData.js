@@ -37,3 +37,12 @@ export const menuTransaksi = [
   new functionalMenu('Transaksi Deposit Uang', 'Fitur ini digunakan untuk mengecek kehadiran member disetiap kelas yang diikutinnya' , '../../src/assets/image/save-on-fitness.jpeg','transaksi-deposit-uang'),
   new functionalMenu('Transaksi Deposit Paket', 'Fitur ini digunakan untuk mengecek kehadiran member disetiap kelas yang diikutinnya' , '../../src/assets/image/classgym.jpeg','transaksi-deposit-kelas')
 ]
+
+
+export const menuLaporan = [
+  new functionalMenu('Pendapatan Bulanan Per Tahun', 'Fitur ini digunakan untuk menghasilkan laporan pendapatan bulanan dalam suatu tahun' , '../../src/assets/image/report.jpg','laporan-tahunan'),
+  new functionalMenu('Laporan Aktivitas Kelas Bulanan', 'Fitur ini digunakan untuk menghasilkan aktivitas kelas dalam satu bulan' , '../../src/assets/image/classgym.jpeg','laporan-kelas-bulanan'),
+  new functionalMenu('Laporan Aktivitas Gym Bulanan', 'Fitur ini digunakan untuk menghasilkan aktivitas gym dalam satu bulan' , '../../src/assets/image/background-1.jpg','laporan-gym-bulanan'),
+  new functionalMenu('Kinerja Instruktur Bulanan', 'Fitur ini digunakan untuk menampilkan kinerja instruktur' , '../../src/assets/image/instruktor.jpg','laporan-instruktur-bulanan')
+  // new functionalMenu('Laporan Aktivitas Kelas Bulanan', 'Fitur ini digunakan untuk menghasilkan aktivitas kelas dalam satu bulan' , '../../src/assets/image/classgym.jpeg','transaksi-deposit-kelas'),
+]

@@ -16,6 +16,8 @@ import * as ConfirmDialog from 'vuejs-confirm-dialog';
 import "https://code.jquery.com/jquery-3.5.1.js";
 import "https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js";
 import "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"
+import "https://cdn.datatables.net/buttons/2.3.6/js/dataTables.buttons.min.js"
+import "https://cdn.datatables.net/buttons/2.3.6/js/buttons.print.min.js"
 import { jsPDF } from "jspdf"
 import axios from 'axios'
 

@@ -88,7 +88,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     //* Jadwal umum mobile;
     Route::get('/jadwalumummobile', 'jadwalUmumController@getJadwalMobile');
 
-    //* History
+    //* History     
     Route::get('/riwayataktivitasmember', 'riwayatMemberController@showRiwayatByMember');
     Route::get('/riwayataktivitasinstruktur', 'riwayatInstrukturController@showRiwayatByInstruktur');
     //* History by merge presensi dan ijin
@@ -98,5 +98,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     //* Laporan Ges
     Route::get('laporanaktivitasgym','laporanController@aktivitasGymBulanan');
     Route::get('laporanaktivitaskelas','laporanController@aktivitasKelasBulanan');
+    Route::get('laporankinerjainstruktur','laporanController@kinerjaInstrukturBulanan');
+    Route::get('laporanpendapatantahunan','laporanController@laporanPendapatanPerTahun');
 
 });
