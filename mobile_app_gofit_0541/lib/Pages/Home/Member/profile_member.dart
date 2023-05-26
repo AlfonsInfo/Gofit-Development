@@ -85,7 +85,7 @@ class ProfileMemberPage extends StatelessWidget {
                   children: [
                     // subDescription('Active Period',DateFormatterForView.formatDayMonthYear(state.member!.tglKadeluarsaAktivasi ?? '') ,Icons.star_border_outlined),
                     subDescription('Deposit Money','${totalDepositUang}'  ,Icons.money),
-                    subDescription('Deposit Class',state.member!.totalDepositPaket ?? '' ,Icons.sports_gymnastics),
+                    subDescription('Deposit Class','${state.member!.totalDepositPaket} - ${state.member!.kelas?.jenisKelas}'  ,Icons.sports_gymnastics),
                     // subDescription('No Telp',state.member!.noTelpMember ?? '' ,Icons.numbers),
                   ],
                 ),

@@ -29,6 +29,11 @@ class member extends Model
         return $this->hasOne('App\Models\User\Pengguna','id_pengguna','id_pengguna');
     }
 
+    public function kelas()
+    {
+        return $this->hasOne('App\Models\kelas','id_kelas','id_kelas');
+    }
+
     public function latest($column = 'nama_member'){
             return $this->orderBy($column,'desc');
     }

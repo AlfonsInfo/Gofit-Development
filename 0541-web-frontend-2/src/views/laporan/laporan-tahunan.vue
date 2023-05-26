@@ -39,6 +39,7 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
                 this.table = $('#example').DataTable({
                 dom: 'pfrtip',
                 paging: false,
+                ordering: false,
                 buttons: [
                     {
                     extend: 'print',
@@ -62,8 +63,6 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
 
                 // On each draw, update the data in the chart
                 this.table.on('draw', () => {
-                // this.chart.xAxis[0].setCategories(this.chartCategories(this));
-                // this.chart.series[0].setData(this.chartData(this));
                 this.updateChart();
             });
 
@@ -120,25 +119,23 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
 },
 
 chartCategories(table) {
-  const categories = [];
+    const categories = [];
 
-  table.column(0).data().each((val) => {
-    categories.push(val);
-  });
-
-  return categories;
+    table.column(0).data().each((val) => {
+        categories.push(val);
+    });
+    return categories;
 },
 
 chartData(table) {
-  const data = [];
+    const data = [];
 
-  table.column(3).data().each((val) => {
-    data.push(parseFloat(val));
-  });
+    table.column(3).data().each((val) => {
+        data.push(parseFloat(val));
+    });
 
-  return data;
+    return data;
 },
-
     
         async getDataTahunan(message,year= null){
             const selectedYearLocal  = this.YearList[year-1];
@@ -147,30 +144,36 @@ chartData(table) {
             this.currentDate =  this.getCurrentDateTime();
             const request = await this.$http.get(url, {params : params})
             this.dataLaporan = request.data.data
-            this.DataTableFeatures()
-            if(this.countInit == 0)
-            {
-                this.countInit++;
-                $toast.success(message)
+            if(this.countInit == 0){
+                this.DataTableFeatures()
+                    this.countInit++;
+            }else{
+                this.uppdateTableData();
+                this.updateChart();
+            }
+            // {
+            //     $toast.success(message)
                 
-            }
-            console.log(this.chart);
-            if(this.chart != null){
-                this.updateChart()
-            }
-
-           
-                // console.log(this.table);
-            //             // Perbarui data pada chart
+            // }else{
+            // }
         },
 
+        uppdateTableData() {
+        const data = Object.entries(this.dataLaporan).map(([key, value]) => {
+            return Object.values(value);
+        });
+        this.table.clear().rows.add(data).draw();
+        console.log(this.table.data());
+        },
         updateChart() {
-  const categories = this.chartCategories(this.table);
-  const data = this.chartData(this.table);
-
-  this.chart.xAxis[0].setCategories(categories);
-  this.chart.series[0].setData(data);
-},
+            const newData = this.chartData(this.table);
+            const categories = this.chartCategories(this.table);
+            // console.log(newData);
+            // console.log(newData);
+    
+            this.chart.xAxis[0].setCategories(categories);
+            this.chart.series[0].setData(newData);
+        },
 
 
         getCurrentDateTime() {
@@ -178,16 +181,8 @@ chartData(table) {
             const date = now.getDate();
             const month = now.getMonth() + 1; // Perhatikan penambahan 1 karena indeks bulan dimulai dari 0
             const year = now.getFullYear();
-            // const hours = now.getHours();
-            // const minutes = now.getMinutes();
 
-            // Format tanggal
             const formattedDate = this.addLeadingZero(date) + "/" + this.addLeadingZero(month) + "/" + year;
-            
-            // Format waktu
-            // const formattedTime = this.addLeadingZero(hours) + ":" + this.addLeadingZero(minutes);
-            
-            // Gabungkan tanggal dan waktu
             const dateTime = formattedDate ;
             
             return dateTime;
@@ -230,8 +225,8 @@ chartData(table) {
                     </br>
                     <p><u>Bulan : ${this.getMonthName(this.selectedMonth)} Tahun: 2023</u></p>
                     <p>Tanggal Cetak : ${this.currentDate} </p>
-                    <div id="container">${$('#container').html()}</div>
                     <table>${tableContent}</table>
+                    <div id="container">${$('#container').html()}</div>
                 `;
 
                 // Membuka jendela baru untuk mencetak konten
@@ -269,7 +264,7 @@ chartData(table) {
             },
         getYearList(){
             const year = new Date().getFullYear();
-            for(var i = year -4; i<=year + 3 ; i++){
+            for(var i = year -4; i<=year ; i++){
                 this.YearList.push(i)
             }
         }
@@ -312,7 +307,6 @@ chartData(table) {
           <div  class="container-fluid  p-4">
               <h3 >Tabel Laporan Tahunan</h3>
               <button class="btn btn-primary m-3" @click="printData">Cetak Laporan</button>
-              <div id="container" ref="chartContainer"></div>
               <table id="example" class="#example table table-striped filters" style="width:100%;">
                 <thead>
                     <tr>
@@ -337,9 +331,9 @@ chartData(table) {
                     </tr>
                 </tbody>
             </table>
+            <div id="container" ref="chartContainer"></div>
             <div class="row">
                 <back-button class="col-md-3" className="btn btn-dark"></back-button>
-                <!-- <button class="btn btn-success  col col-md-3">Cetak Struk</button> -->
             </div>
         </div>
   </div>
@@ -355,17 +349,17 @@ chartData(table) {
 
 
     .title.active {
-  background-color: #e6e6e6;
-}
-  
-.title:hover {
-  background-color: #f2f2f2;
-}
+        background-color: #e6e6e6;
+    }
+    
+    .title:hover {
+        background-color: #f2f2f2;
+    }
 
 
-#container {
-  width: 100%;
-  height: 400px; /* Sesuaikan dengan ukuran yang Anda inginkan */
-}
+    #container {
+        width: 100%;
+        height: 400px; /* Sesuaikan dengan ukuran yang Anda inginkan */
+    }
 
 </style>

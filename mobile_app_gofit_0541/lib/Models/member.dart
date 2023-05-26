@@ -1,3 +1,5 @@
+import 'kelas.dart';
+
 class Member{
   String? idMember;
   String? idPengguna;
@@ -10,6 +12,7 @@ class Member{
   String? tglGabung;
   String? totalDepositPaket;
   String? tglKadeluarsaPaket;
+  Kelas? kelas;
 
   Member({
     this.idMember,
@@ -22,7 +25,8 @@ class Member{
     this.totalDepositUang,
     this.tglGabung,
     this.totalDepositPaket,
-    this.tglKadeluarsaPaket
+    this.tglKadeluarsaPaket,
+    this.kelas
   });
   
   factory Member.fromJson(Map<String,dynamic> json){
@@ -38,6 +42,7 @@ class Member{
       tglGabung: json['tgl_gabung_member']?.toString() ?? '',
       totalDepositPaket: json['total_deposit_paket']?.toString() ?? '',
       tglKadeluarsaPaket: json['tgl_kadeluarsa_paket']?.toString() ?? '',
+    kelas: (json['kelas'] != null) ? Kelas.fromJson(json['kelas']) : null
     );
   }
 }

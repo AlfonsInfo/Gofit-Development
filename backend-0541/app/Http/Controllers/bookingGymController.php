@@ -39,7 +39,7 @@ class bookingGymController extends Controller
             ]);
             
             //! Catat Log Booking
-            riwayatMemberController::storeHistory($request->id_member,'Booking gym member',null,$booking->no_booking);
+            riwayatMemberController::storeHistory($request->id_member,'Booking Gym Member',null,$booking->no_booking);
             return response([
                 'message' => 'Berhasil Booking',
                 'data' => $booking]);

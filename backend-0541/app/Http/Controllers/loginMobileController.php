@@ -58,7 +58,7 @@ class loginMobileController extends Controller
 
         //* Role Member
         if($user->role == 'member'){
-            $member = member::where('id_pengguna',$user->id_pengguna)->first();
+            $member = member::where('id_pengguna',$user->id_pengguna)->with(['kelas'])->first();
 
             return response([
                 'message' => 'Autenthicated',
