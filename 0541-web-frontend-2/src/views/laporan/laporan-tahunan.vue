@@ -17,95 +17,106 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
             countInit : 0,
             currentDate : null,
             test:'mantap',
-            selectedMonth: null,
+            selectedYear: null,
             months: [
                 "Januari", "Februari", "Maret", "April", "Mei", "Juni",
                 "Juli", "Agustus", "September", "Oktober", "November", "Desember"
-            ]
+            ],
+            YearList : [],
+            chart : null,
+            table : null,
         }
     },
 
     methods :{
         DataTableFeatures() {
-  $(document).ready(() => {
-    var selectedMonth = this.getMonthName(this.selectedMonth);
-    var currentDate=  this.currentDate;
-    const container = this.$refs.chartContainer;
-    console.log(container);
+            $(document).ready(() => {
+                var selectedYear = this.getMonthName(this.selectedYear);
+                var currentDate = this.currentDate;
+                const container = this.$refs.chartContainer;
+                console.log(container);
 
-    const table = $('#example').DataTable({
-      dom: 'Bfrtip',
-      buttons: [
-        {
-          extend: 'print',
-          text: 'Print',
-          title: '',
-          message: 
-          `<strong>Gofit</strong>
-            </br>
-            <p>Jl CentralPark No. 10 Yogyakarta</p>
-            </br>
-            <strong><u>Laporan Aktivitas Kelas Bulanan</u></strong>
-            </br>
-            <p><u>Bulan : ${selectedMonth} Tahun: 2023</u></p>
-            <p>Tanggal Cetak : ${currentDate} </p>
-            <div id="container">${container.innerHTML}</div>`,
-        },
-      ],
-    });
-    // Create the chart with initial data
-    const chart = Highcharts.chart(container, {
-      chart: {
-        type: 'column',
-      },
-      title: {
-        text: 'Grafik Pendapatan Perbulan',
-      },
-      xAxis: {
-        categories: this.chartCategories(table),
-        labels: {
-          rotation: 0, // Mengatur rotasi label menjadi 0 derajat (horizontal)
-        },
-      },
-      yAxis: {
-        title: {
-          text: 'Pendapatan(M = Million)',
-        },
-      },
-      plotOptions: {
-        bar: {
-          dataLabels: {
-            enabled: true,
-            inside: true,
-            align: 'center',
-            verticalAlign: 'bottom',
-            style: {
-              fontSize: '10px',
-            },
-          },
-        },
-      },
-      series: [
-        {
-          data: this.chartData(table),
-        },
-      ],
-    });
+                this.table = $('#example').DataTable({
+                dom: 'pfrtip',
+                paging: false,
+                buttons: [
+                    {
+                    extend: 'print',
+                    text: 'Print',
+                    title: '',
+                    message: `<strong>Gofit</strong>
+                                </br>
+                                <p>Jl CentralPark No. 10 Yogyakarta</p>
+                                </br>
+                                <strong><u>Laporan Aktivitas Kelas Bulanan</u></strong>
+                                </br>
+                                <p><u>Tahun: 2023</u></p>
+                                <p>Tanggal Cetak : ${currentDate} </p>
+                                <div id="chartContainer">${container.innerHTML}</div>`,
+                    },
+                ],
+                });
 
-    // On each draw, update the data in the chart
-    table.on('draw', () => {
-      chart.xAxis[0].setCategories(this.chartCategories(table));
-      chart.series[0].setData(this.chartData(table));
-    });
+                // Declare chart variable
+                
 
-    // Select elemen dalam grafik Highcharts
-    var chartTitle = $('#container .highcharts-title');
-    var chartSubtitle = $('#container .highcharts-subtitle');
+                // On each draw, update the data in the chart
+                this.table.on('draw', () => {
+                // this.chart.xAxis[0].setCategories(this.chartCategories(this));
+                // this.chart.series[0].setData(this.chartData(this));
+                this.updateChart();
+            });
 
-    // Melakukan operasi pada elemen yang dipilih
-    chartTitle.css('color', 'red');
-    chartSubtitle.hide();
-  });
+
+                let chartContainer = document.getElementById('chartContainer');
+                if (!chartContainer) {
+                chartContainer = document.createElement('div');
+                chartContainer.id = 'chartContainer';
+                container.parentNode.insertBefore(chartContainer, container.nextSibling);
+                }
+
+                // Create the chart with initial data
+                this.chart = Highcharts.chart(container, {
+                chart: {
+                    type: 'column',
+                },
+                title: {
+                    text: 'Grafik Pendapatan Perbulan',
+                },
+                xAxis: {
+                    categories: this.chartCategories(this.table),
+                    labels: {
+                    rotation: 0, // Mengatur rotasi label menjadi 0 derajat (horizontal)
+                    },
+                },
+                yAxis: {
+                    title: {
+                    text: 'Pendapatan(M = Million)',
+                    },
+                },
+                plotOptions: {
+                    bar: {
+                    dataLabels: {
+                        enabled: true,
+                        inside: true,
+                        align: 'center',
+                        verticalAlign: 'bottom',
+                        style: {
+                        fontSize: '10px',
+                        },
+                    },
+                    },
+                },
+                series: [
+                    {
+                    data: this.chartData(this.table),
+                    },
+                ],
+                });
+
+            });
+
+            console.log(this.table);
 },
 
 chartCategories(table) {
@@ -128,22 +139,39 @@ chartData(table) {
   return data;
 },
 
-
     
-        async getDataGymBulanan(message,bulan = null){
+        async getDataTahunan(message,year= null){
+            const selectedYearLocal  = this.YearList[year-1];
             const url = "/laporanpendapatantahunan";
-            const params = (bulan != null) ? { month: bulan } : {};
+            const params = (year != null) ? { year : selectedYearLocal } : {};
             this.currentDate =  this.getCurrentDateTime();
             const request = await this.$http.get(url, {params : params})
             this.dataLaporan = request.data.data
-            console.log('tanggal' , this.currentDate)
+            this.DataTableFeatures()
             if(this.countInit == 0)
             {
-                this.DataTableFeatures()
                 this.countInit++;
                 $toast.success(message)
+                
             }
+            console.log(this.chart);
+            if(this.chart != null){
+                this.updateChart()
+            }
+
+           
+                // console.log(this.table);
+            //             // Perbarui data pada chart
         },
+
+        updateChart() {
+  const categories = this.chartCategories(this.table);
+  const data = this.chartData(this.table);
+
+  this.chart.xAxis[0].setCategories(categories);
+  this.chart.series[0].setData(data);
+},
+
 
         getCurrentDateTime() {
             const now = new Date();
@@ -176,6 +204,10 @@ chartData(table) {
                 return month;
             },
 
+            cetakData(){
+                window.print();
+            },
+
             getMonthName(month) {
             const monthNames = [
                 "Januari", "Februari", "Maret", "April", "Mei", "Juni",
@@ -185,68 +217,71 @@ chartData(table) {
             },
 
             printData() {
-    // Mendapatkan konten tabel yang akan dicetak
-    const tableContent = $('#example').html();
+            // Mendapatkan konten tabel yang akan dicetak
+            const tableContent = $('#example').html();
 
-    // Menggabungkan konten tabel dengan konten grafik Highcharts
-    const contentToPrint = `
-      <strong>Gofit</strong>
-      </br>
-      <p>Jl CentralPark No. 10 Yogyakarta</p>
-      </br>
-      <strong><u>Laporan Aktivitas Kelas Bulanan</u></strong>
-      </br>
-      <p><u>Bulan : ${this.getMonthName(this.selectedMonth)} Tahun: 2023</u></p>
-      <p>Tanggal Cetak : ${this.currentDate} </p>
-      <div id="container">${$('#container').html()}</div>
-      <table>${tableContent}</table>
-    `;
+            // Menggabungkan konten tabel dengan konten grafik Highcharts
+            const contentToPrint = `
+                <strong>Gofit</strong>
+                    </br>
+                    <p>Jl CentralPark No. 10 Yogyakarta</p>
+                    </br>
+                    <strong><u>Laporan Aktivitas Kelas Bulanan</u></strong>
+                    </br>
+                    <p><u>Bulan : ${this.getMonthName(this.selectedMonth)} Tahun: 2023</u></p>
+                    <p>Tanggal Cetak : ${this.currentDate} </p>
+                    <div id="container">${$('#container').html()}</div>
+                    <table>${tableContent}</table>
+                `;
 
-    // Membuka jendela baru untuk mencetak konten
-    const printWindow = window.open('', '', 'width=800,height=600');
-    printWindow.document.open();
-    printWindow.document.write(`
-      <html>
-      <head>
-        <title>Cetak Laporan</title>
-        <style>
-          /* Gaya khusus untuk mencetak */
-          @media print {
-            /* Gaya untuk menyembunyikan elemen yang tidak perlu dicetak */
-            body * {
-              visibility: hidden;
+                // Membuka jendela baru untuk mencetak konten
+                const printWindow = window.open('', '', 'width=800,height=600');
+                printWindow.document.open();
+                printWindow.document.write(`
+                <html>
+                <head>
+                    <title>Cetak Laporan</title>
+                    <style>
+                    /* Gaya khusus untuk mencetak */
+                    @media print {
+                        /* Gaya untuk menyembunyikan elemen yang tidak perlu dicetak */
+                
+                        #container, #example {
+                        visibility: visible;
+                        }
+                        /* Gaya khusus lainnya sesuai kebutuhan Anda */
+                    }
+                    </style>
+                </head>
+                <body>
+                    ${contentToPrint}
+                </body>
+                </html>
+                `);
+                    printWindow.document.close();
+
+                // console.log(printWindow);
+                // Tunggu beberapa saat sebelum mencetak untuk memastikan konten dimuat
+                setTimeout(() => {
+                printWindow.print();
+                printWindow.close();
+                }, 500);
+            },
+        getYearList(){
+            const year = new Date().getFullYear();
+            for(var i = year -4; i<=year + 3 ; i++){
+                this.YearList.push(i)
             }
-            #container, #example {
-              visibility: visible;
-            }
-            /* Gaya khusus lainnya sesuai kebutuhan Anda */
-          }
-        </style>
-      </head>
-      <body>
-        ${contentToPrint}
-      </body>
-      </html>
-    `);
-    printWindow.document.close();
-
-    // Tunggu beberapa saat sebelum mencetak untuk memastikan konten dimuat
-    setTimeout(() => {
-      printWindow.print();
-    //   printWindow.close();
-    }, 3000);
-  },
-
-
-
-
+        }
 
 
     },
     async mounted(){
-        this.selectedMonth = this.getMonth();
-        await this.getDataGymBulanan('Berhasil Mengambil Data Gym Bulanan' ,this.selectedMonth );
-        console.log(this.selectedMonth);
+        this.selectedYear = this.getMonth();
+        await this.getDataTahunan('Berhasil Mengambil Data  Laporan Tahunan Gym' ,this.selectedYear );
+        console.log(this.selectedYear);
+        this.getYearList();
+        console.log(this.YearList);
     },
 
     computed: {
@@ -263,23 +298,22 @@ chartData(table) {
   </header>
   <main>
     <!--TODO Ubah jadi pilih tahun   -->
-    <!-- <div class="container mt-5">
-        <label for="bulan">Pilih Bulan:</label>
-            <select id="bulan" v-model="selectedMonth">
-                <option v-for="(bulan, index) in months" :key="index" :value="index+1">{{ bulan }}</option>
+    <div class="container mt-5">
+        <label for="bulan">Pilih Tahun:</label>
+            <select id="bulan" v-model="selectedYear">
+                <option v-for="(tahun, index) in YearList" :key="index" :value="index+1">{{ tahun }}</option>
             </select>
-        <button class="btn btn-primary m-2" @click="getDataGymBulanan('Ambil Kembali Data',selectedMonth)">Ambil Data</button>
-    </div> -->
+        <button class="btn btn-primary m-2" @click="getDataTahunan('Ambil Kembali Data',selectedYear)">Ambil Data</button>
+    </div>
       <div class="text-dark table-custom mt-5 ms-5 me-5 p-2 d-inline-block">
         <!-- <bu class="btn btn-primary">Presensi Gym</bu   tton> -->
       </div>
       <div class="content bg-white text-dark table-custom m-5 mt-2">
           <div  class="container-fluid  p-4">
               <h3 >Tabel Laporan Tahunan</h3>
-              <button id="printButton" class="btn btn-primary m-2" @click="printData">Print</button>
+              <button class="btn btn-primary m-3" @click="printData">Cetak Laporan</button>
               <div id="container" ref="chartContainer"></div>
-            <!-- <button class="btn btn-primary m-3" @click="cetakData">Cetak Laporan</button> -->
-            <table id="example" class="#example table table-striped filters" style="width:100%;">
+              <table id="example" class="#example table table-striped filters" style="width:100%;">
                 <thead>
                     <tr>
                         <th>Bulan</th>
@@ -303,7 +337,6 @@ chartData(table) {
                     </tr>
                 </tbody>
             </table>
-            <div id="chart"></div>
             <div class="row">
                 <back-button class="col-md-3" className="btn btn-dark"></back-button>
                 <!-- <button class="btn btn-success  col col-md-3">Cetak Struk</button> -->
