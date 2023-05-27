@@ -19,7 +19,7 @@ export const functionalKasir = [
 
 
 export const functionalAdmin = [
-  new functionalMenu('Olah Data Instruktur','Fitur pengolah data Admin, Admin bisa menambahkan data instruktur, mengupdate, menampilkan dan menghapus data instruktur','../../src/assets/image/instruktor.jpg','instruktur')
+  new functionalMenu('Olah Data Instruktur','Fitur Olah Data Instruktur (Menambahkan, Menampilkan, Mengubah, Menghapus) data instruktur','../../src/assets/image/instruktor.jpg','instruktur')
 ]
 export const functionalMO = [
   new functionalMenu('Olah Jadwal Umum','Fitur pengolah data Jadwal Secara Umum, Manajer Operasional bisa menambahkankan jadwal , mengupdate jadwal, menampilkan dan menghapus jadwal','../../src/assets/image/schedule.jpg','jadwal-umum'),

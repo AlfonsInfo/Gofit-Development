@@ -29,7 +29,7 @@
 
       goBack() {
         if (this.toast) {
-        this.toast.goAway(0);
+        this.toast.close();
         }
       },
 
@@ -39,6 +39,7 @@
       },
 
       submitForm(event) {
+        console.log(event)
         event.preventDefault(); // hindari default form submission
         this.updateMember()
       },
@@ -79,6 +80,7 @@
 
     //Mounted
     mounted(){
+      console.log('update')
       this.member = this.$route.query
       this.member.tanggal_lahir_member = this.formatDate(this.member.tgl_lahir_member)
       window.onpopstate = () => {

@@ -2,6 +2,7 @@
   // import LogoutButton from '../components/LogoutButton.vue';
   import HomeNavbar from '../components/HomeNavbar.vue';
   import MenuCard from '../components/menu-card.vue'  
+  import { Swal } from '@/plugins/global.js'
 
   //bagaimana cara kondisi tertentu -> data tertentu
   import {functionalKasir, functionalAdmin, functionalMO} from '../data/staticData'
@@ -11,7 +12,8 @@
         functionalKasir ,
         functionalAdmin,
         functionalMO,
-        showMenu : null ,        
+        showMenu : null ,
+        role : null,        
       }
     },
     methods : {
@@ -23,12 +25,16 @@
         if(jabatan_pegawai == 'kasir')
         {
          this.showMenu = this.functionalKasir;
+         this.role = 'Kasir'
         }else if(jabatan_pegawai == 'MO')
         {
           this.showMenu = this.functionalMO;
+          this.role = 'Manajer Operasional'
+          
         }else if(jabatan_pegawai == 'Admin')
         {
           this.showMenu = this.functionalAdmin;
+          this.role = 'Admin'
         }
       },
 
@@ -48,18 +54,12 @@
   
 
     mounted(){
-      //Change Class For Change CSS Styles
       this.changeClass()
-      //Get dataPegawai
       const dataPegawai = this.getDataPegawai();
-      //Render  based on Data
       this.renderContent(dataPegawai);
-
-      console.log(this.showMenu)
     },
 
     components : {
-      // LogoutButton,
       HomeNavbar,
       MenuCard
     }
@@ -67,7 +67,7 @@
 </script>
 <template >
   <header>
-    <home-navbar :message = "'Selamat Datang Di Aplikasi Gofit'"></home-navbar>
+    <home-navbar :message = "`Selamat Datang Di Aplikasi Gofit - Login Sebagai ${role}`"></home-navbar>
   </header>
   <main class="">
       <div class="pegawai-admin p-5">
@@ -75,18 +75,6 @@
           <menu-card :data ="showMenu"></menu-card>
         </div>
       </div>
-      <!-- <div class="pegawai-mo p-5 " v-show="showMenuMO">
-        <div class=" row row-cols-2 row-cols-md-12" >
-          <menu-card :data ="functionalMO"></menu-card>
-        </div>
-      </div>
-      <div class="pegawai-kasir p-5" v-show="showMenuKasir">
-        <div class=" row row-cols-2 row-cols-md-12" >
-          <menu-card :data ="functionalKasir"></menu-card>
-        </div>
-      </div> -->
-      <div>
-  </div>
   </main>
 </template>
 

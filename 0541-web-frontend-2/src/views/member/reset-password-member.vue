@@ -1,9 +1,11 @@
 <script>
-import { HomeNavbar, useRouter, ref ,  $toast, defineComponent, TableData,reactive,inject,ActionResetPassword, onMounted, Swal } from '@/plugins/global.js'
+import { 
+  HomeNavbar, useRouter, ref ,  $toast, defineComponent, TableData,
+  reactive,inject,ActionResetPassword, onMounted, Swal } 
+from '@/plugins/global.js'
 
 
   export default defineComponent({
-    //Component yang digunakan
     components:{
       HomeNavbar,
       TableData,

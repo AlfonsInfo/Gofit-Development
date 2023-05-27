@@ -1,8 +1,8 @@
 <script>
-import { HomeNavbar,  useRouter, reactive, $toast , defineComponent, BackButton} from '@/plugins/global.js'
+import { HomeNavbar,  useRouter, reactive, $toast , defineComponent, BackButton, customSwal, customSwalSuccess } from '@/plugins/global.js'
 
   export default defineComponent({
-    //Component yang digunakan
+
     components:{
       HomeNavbar,
       BackButton
@@ -10,10 +10,12 @@ import { HomeNavbar,  useRouter, reactive, $toast , defineComponent, BackButton}
 
     data (){
       return{
-        router : useRouter('router'), 
-        instruktur : reactive({})
+        router : useRouter(), 
+        instruktur : reactive({}),
+        backButtonPressed : false
         }
     },
+
     methods : {
 
       formatDate(date) {
@@ -21,15 +23,22 @@ import { HomeNavbar,  useRouter, reactive, $toast , defineComponent, BackButton}
       return `${yyyy}-${mm}-${dd}`;
       },
 
-        goBack() {
-        if ($toast) {
-        this.toast.goAway(0);
+      goBack() {
+        if (this.toast) {
+          this.toast.close(); // Menutup toast sebelum perpindahan halaman
         }
-      },
-      submitForm(event){
-        console.log(event)
+          this.backButtonPressed = true; // Set flag tombol "Back"
+          // Kode lainnya untuk perpindahan halaman
+        },
+
+      submitForm(event) {
         event.preventDefault(); // hindari default form submission
-        this.updateInstruktur()
+        if (!this.backButtonPressed) {
+          customSwal('Yakin ingin mengubah data instruktur ? ', 'question','blue','Yakin',this.updateInstruktur)
+          this.updateMember();
+        } else {
+          this.backButtonPressed = false; // Reset flag tombol "Back"
+        }
       },
 
       async updateInstruktur(){
@@ -40,19 +49,18 @@ import { HomeNavbar,  useRouter, reactive, $toast , defineComponent, BackButton}
             'alamat_instruktur' : alamat_instruktur,
             'no_telp_instruktur' : no_telp_instruktur
         }
-        console.log(data) 
+
         const statusValidate = this.isValid(this.instruktur)
         if(statusValidate){
           try{
             const url = `/instruktur/${this.instruktur.id_instruktur}`; 
             console.log(url);
-            const request = await this.$http.put(url,data); // ; 
-            console.log(request)
-            $toast.success(request.data.message)
+            const request = await this.$http.put(url,data); 
+            customSwalSuccess(request.data.message)
             this.router.push({name:'instruktur'})
           }catch(e){
           console.log(e)
-            $toast.warning('Gagal Menambahkan Data')
+            $toast.warning('Gagal Mengubah Data')
           }
         }
       },
@@ -63,7 +71,6 @@ import { HomeNavbar,  useRouter, reactive, $toast , defineComponent, BackButton}
           $toast.warning('Nama instruktur harus diisi');
           status = false;
         }
-        // const regex = /^\d{4}-\d{2}-\d{2}$/;
         if (!tanggal_lahir_instruktur) {
           $toast.warning('Tanggal lahir instruktur harus diisi');
           status = false;
@@ -129,19 +136,9 @@ import { HomeNavbar,  useRouter, reactive, $toast , defineComponent, BackButton}
           <div class="bg-danger text-white  my-2 rounded-3">
             <p class="p-2 text-center">Fitur Update Akun tidak tersedia, Ubah password tersedia di aplikasi Mobile !!</p>
           </div>
-          <!-- <div class="mb-3">
-            <label for="username" class="form-label">username</label>
-            <input type="text" v-model="instruktur.username" class="form-control" id="username" disabled>
-            <div id="usernameHelp" class="form-text">ex : ucup1</div>
-          </div> -->
           <hr>
           <div>
           </div>
-          <!-- <div class="mb-3">
-            <label for="password" class="form-label">No Telp instruktur</label>
-            <input type="password" v-model="instruktur.password" class="form-control" id="password">
-            <div id="passwordHelp" class="form-text">ex : 08123456789</div>
-          </div>  -->
           <div class="d-flex justify-content-between">
             <back-button :className="'btn btn-dark'" @click="goBack"></back-button>
             <button type="submit" class="btn btn-primary">Submit</button>

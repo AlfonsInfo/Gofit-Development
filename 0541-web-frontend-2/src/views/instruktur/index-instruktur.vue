@@ -1,7 +1,7 @@
-<script>
+  <script>
 import { HomeNavbar, TableData,  ref, useRouter, 
   reactive,inject,$toast,onMounted,ActionRouteToCreate , 
-  ActionDelete,ActionUpdate, defineComponent, Swal} from '@/plugins/global.js'
+  ActionDelete,ActionUpdate, defineComponent, customSwalSuccess  ,CustomDateTimeFormatter , customSwal } from '@/plugins/global.js'
 
   export default defineComponent({
     //Component yang digunakan
@@ -19,14 +19,11 @@ import { HomeNavbar, TableData,  ref, useRouter,
       const state = reactive({
         searchInput : '',
       })      
-      //konversi Tanggal
+
+      
       function konversiTanggal(instruktur){
         instruktur.value.forEach((e)=>{
-        const tanggalLengkap = e['tanggal_lahir_instruktur'].split(' ');
-        const tanggal = new Date(tanggalLengkap[0])
-        const formattedDate = tanggal.toLocaleDateString('en-GB');
-        console.log(formattedDate)  
-        return e['tanggal_lahir_instruktur'] = formattedDate;
+        e['tanggal_lahir_instruktur'] = CustomDateTimeFormatter.reverseDate(e['tanggal_lahir_instruktur'],'/');
       })
       }
 
@@ -48,48 +45,25 @@ import { HomeNavbar, TableData,  ref, useRouter,
 
       //Delete
       const deleteData = async ({id_instruktur}) => {
-
-        const result = await Swal.fire({
-          title: 'Apakah Anda yakin ingin menghapus data ini?',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#dc3545',
-          confirmButtonText: 'Hapus',
-          cancelButtonText: 'Batal',
-        })
-        //Jika di confirm
-      if (result.isConfirmed) {
         try{
 
           const deleteRoute = `/instruktur/${id_instruktur}`
           const deleteRequest = await http.delete(deleteRoute)
-          $toast.success(deleteRequest.data.message)
+          await customSwalSuccess(deleteRequest.data.message)
           getAllInstruktur('Tabel Data Member di update')
-          
-
-          // Tampilkan notifikasi SweetAlert setelah data dihapus
-      Swal.fire({
-        title: 'Data berhasil dihapus!',
-        icon: 'success',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      })
-    }catch{
-      $toast.warning('Gagal Menghapus Data')
-    }
+        }catch{
+          $toast.warning('Gagal Menghapus Data')
         }
       }
 
 
       ActionDelete.functionAction = (instruktur) => {
-        deleteData(instruktur)
-        // deleteDataWrapper(deleteData,id)
+        customSwal('Apakah Anda yakin ingin menghapus data ini?','warning','red','yakin',deleteData, instruktur)
       }
 
       const actions = [
         ActionUpdate,ActionDelete
-    ]
+      ]
 
       return{
         ActionCreateInstruktur,
@@ -125,9 +99,9 @@ import { HomeNavbar, TableData,  ref, useRouter,
       <table-data 
         :context="'instruktur'" 
         :data="displayedInstruktur" 
-        :column="['ID Instruktur','Nama Instruktur','Tanggal Lahir','Alamat','No Telp']" 
+        :column="[/*'ID Instruktur',*/ 'Nama Instruktur','Tanggal Lahir','Alamat','No Telp']" 
         :actions="actions" 
-        :fields="['id_instruktur','nama_instruktur','tanggal_lahir_instruktur','alamat_instruktur','no_telp_instruktur']"
+        :fields="[/*'id_instruktur',*/'nama_instruktur','tanggal_lahir_instruktur','alamat_instruktur','no_telp_instruktur']"
         :create="ActionCreateInstruktur"
         ></table-data>
       </div>

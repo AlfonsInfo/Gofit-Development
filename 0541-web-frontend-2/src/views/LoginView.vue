@@ -2,6 +2,7 @@
 import { defineComponent, reactive,inject } from 'vue';
 import { useRouter} from 'vue-router';
 import {$toast} from '../plugins/notifHelper.js'
+import {Swal} from '@/plugins/global.js';
 
 export default defineComponent({
   mounted(){
@@ -36,7 +37,8 @@ export default defineComponent({
         localStorage.setItem('token', access_token);
         localStorage.setItem('userData', JSON.stringify(user));
         localStorage.setItem('pegawaiData', JSON.stringify(pegawai))
-        $toast.success(`Welcome  ${user.username}!`);
+        $toast.success(`Welcome  ${user.username} ! Login Role : ${user.role}`);
+
 
         //Route ke Home
         router.push({name: "Home"});
@@ -54,6 +56,19 @@ export default defineComponent({
 
     const toggleIconPassword = () => {
       return showPassword ? 'mdi mdi-eye-off' : ''
+    }
+
+
+    // eslint-disable-next-line no-unused-vars
+    const swalFireNotif = async (user) =>   {
+       Swal.fire({
+          title: `Selamat Datang  ${user.username}`,
+          html : `<p>Berhasil Login Sebagai ${user.role}</p>`,
+          icon: 'success',
+          timer: 1500,
+          timerProgressBar: true,
+          showConfirmButton: false,
+        })
     }
     
     return{
@@ -118,6 +133,15 @@ export default defineComponent({
 .icon-blue{
   color: darkblue;
 }
+  /* Animasi masuk dari atas ke bawah */
+  @keyframes slideIn {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
 
 
 

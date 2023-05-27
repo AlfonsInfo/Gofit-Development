@@ -1,6 +1,5 @@
 <script>
-import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , inject} from '@/plugins/global.js'
-
+import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , inject, customSwal} from '@/plugins/global.js'
 
   export default defineComponent({
     components:{
@@ -8,13 +7,21 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
       BackButton
     },
 
-    methods : {
-      
+
+    data(){
+      return {
+        backButtonPressed : false,
+      }
+    },
+
+    methods : {      
       goBack() {
         if ($toast) {
-        this.toast.goAway(0);
+          $toast.close(); // Menutup toast sebelum perpindahan halaman
         }
-      },
+          this.backButtonPressed = true; // Set flag tombol "Back"
+          // Kode lainnya untuk perpindahan halaman
+        },
     },
 
     //* Mounted
@@ -37,11 +44,12 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
         password : '',
       })
 
-      // Submit
+      // Submit message,icon,confirmButtonColor,confirmButtonText = 'Okay', callBackAction
       const submitForm = (event) => {
         console.log(event)
         event.preventDefault(); // hindari default form submission
-        storeInstruktur()
+        customSwal('Yakin ingin menambah data instruktur ? ', 'question','blue','Yakin',storeInstruktur)
+        // storeInstruktur()
       }
 
       //* Validasi
@@ -73,6 +81,8 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
         }
         return status;
       }
+
+      
 
       const storeInstruktur = async() => {
         const statusValidate = isValid(instruktur)
@@ -145,8 +155,8 @@ import { HomeNavbar, useRouter, reactive, $toast, defineComponent, BackButton , 
           </div>
           <hr>
           <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-primary">Submit</button>
             <back-button :className="'btn btn-dark'" @click="goBack"></back-button>
+            <button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </form>
         <hr>
