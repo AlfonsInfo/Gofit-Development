@@ -91,6 +91,12 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     //* History     
     Route::get('/riwayataktivitasmember', 'riwayatMemberController@showRiwayatByMember');
     Route::get('/riwayataktivitasinstruktur', 'riwayatInstrukturController@showRiwayatByInstruktur');
+    
+    //*History2
+    Route::get('/riwayataktivitasmembergym', 'riwayatMemberController@showRiwayatByMemberGym');
+    Route::get('/riwayataktivitasmemberkelas', 'riwayatMemberController@showRiwayatByMemberKelas');
+    // Route::get('/riwayataktivitasinstruktur2', 'riwayatInstrukturController@showRiwayatByInstruktur');
+    
     //* History by merge presensi dan ijin
     Route::get('/riwayataktivitasinstrukturmerge', 'riwayatInstrukturController@mergeIjinPresensi');
 

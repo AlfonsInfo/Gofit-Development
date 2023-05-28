@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\riwayat_aktivitas_member;
+use App\Models\booking_gym;
+use App\Models\booking_kelas;
 use Exception;
 use Carbon\Carbon;
 
@@ -38,4 +40,23 @@ class riwayatMemberController extends Controller
         ]);
     }
 
+
+    public function showRiwayatByMemberGym(Request $request){
+        $riwayatMember = booking_gym::where('id_member', $request->id_member)->with(['sesi'])
+        ->orderBy('created_at', 'desc')
+        ->get();
+        return response([
+            'data' => $riwayatMember
+        ]);
+    }
+
+    public function showRiwayatByMemberKelas(Request $request){
+        $riwayatMember = booking_kelas::where('id_member', $request->id_member)
+        ->orderBy('created_at', 'desc')
+        ->get();
+        return response([
+            'data' => $riwayatMember
+        ]);
+    }
+ 
 }

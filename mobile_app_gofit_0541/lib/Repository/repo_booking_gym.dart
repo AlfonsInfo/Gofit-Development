@@ -69,5 +69,6 @@ class BookingGymRepository{
         inspect(e);
         return ['Gagal'];
     }
-    }  
+    }
+
 }
