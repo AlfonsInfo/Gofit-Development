@@ -1,5 +1,5 @@
 <script>
-import { HomeNavbar, useRouter, reactive , $toast, defineComponent, BackButton , inject} from '@/plugins/global.js'
+import { HomeNavbar, useRouter, reactive , $toast, defineComponent, BackButton , inject, customSwal} from '@/plugins/global.js'
 
   export default defineComponent({
     //Component yang digunakan
@@ -37,7 +37,10 @@ import { HomeNavbar, useRouter, reactive , $toast, defineComponent, BackButton ,
         console.log(event)
         event.preventDefault(); // hindari default form submission
         // kode untuk memproses data form
-        storeMember()
+        if(isValid(member)){
+          customSwal('Yakin ingin menambahkan data member? ', 'question','blue','Yakin',storeMember)
+        }
+        // storeMember()
       }
 
       function isValid({nama_member,tgl_lahir_member,no_telp_member}){

@@ -45,18 +45,20 @@ class riwayatMemberController extends Controller
         $riwayatMember = booking_gym::where('id_member', $request->id_member)->with(['sesi'])
         ->orderBy('created_at', 'desc')
         ->get();
+
+
         return response([
             'data' => $riwayatMember
         ]);
     }
 
-    public function showRiwayatByMemberKelas(Request $request){
-        $riwayatMember = booking_kelas::where('id_member', $request->id_member)
-        ->orderBy('created_at', 'desc')
-        ->get();
-        return response([
-            'data' => $riwayatMember
-        ]);
-    }
+    // public function showRiwayatByMemberKelas(Request $request){
+    //     $riwayatMember = booking_kelas::where('id_member', $request->id_member)
+    //     ->orderBy('created_at', 'desc')
+    //     ->get();
+    //     return response([
+    //         'data' => $riwayatMember
+    //     ]);
+    // }
  
 }

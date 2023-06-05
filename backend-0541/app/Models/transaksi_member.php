@@ -16,4 +16,15 @@ class transaksi_member extends Model
         'no_struk_transaksi' => 'string'
     ];
 
+
+    public function aktivasi(){
+        return $this->belongsTo(transaksi_aktivasi::class,'no_struk_transaksi','no_struk');
+    }
+    public function deposit_uang(){
+        return $this->belongsTo(transaksi_deposit_reguler::class,'no_struk_transaksi','no_struk');
+    }
+    public function deposit_kelas_paket(){
+        return $this->belongsTo(transaksi_deposit_paket::class,'no_struk_transaksi','no_struk');
+    }
+
 }

@@ -11,9 +11,11 @@ export default defineComponent({
       return this.data
     },
     toggleModalClass() {
+      console.log(this.display);
       return this.display ? 'show' : 'hidden'
     }
   },
+
   methods: {
     closeModal() {
       this.$emit('close-modal');
@@ -63,7 +65,6 @@ export default defineComponent({
 
         // Menyimpan dokumen ke dalam PDF
         doc.save(`${this.data['ID Member']}.pdf`);
-
     }
   }
 }
@@ -85,9 +86,10 @@ export default defineComponent({
 </div>
 </template>
 
-<style>
+<style scoped>
+
 .modal {
-  display: none;
+  display: block;
   position: fixed;
   z-index: 1;
   left: 0;

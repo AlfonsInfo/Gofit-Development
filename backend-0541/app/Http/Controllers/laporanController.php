@@ -88,12 +88,12 @@ class laporanController extends Controller
             FROM booking_kelas AS bk
             JOIN jadwal_harian AS jh ON bk.id_jadwal_harian = jh.id_jadwal_harian
             JOIN jadwal_umum AS ju ON jh.id_jadwal_umum = ju.id_jadwal_umum
-            JOIN instruktur AS i ON ju.id_instruktur = i.id_instruktur
-            JOIN kelas AS k ON ju.id_kelas = k.id_kelas
+            LEFT JOIN instruktur AS i ON ju.id_instruktur = i.id_instruktur
+            LEFT JOIN kelas AS k ON ju.id_kelas = k.id_kelas
             WHERE MONTH(jh.tanggal_jadwal_harian) = ?
             GROUP BY k.jenis_kelas, i.nama_instruktur
-        ', [$bulan]);
-    
+            ', [$bulan]);
+            
         //akumulasi terlambat direset tiap bulan jam mulai tiap bulan - jam selesai bulan 
         
         return response([

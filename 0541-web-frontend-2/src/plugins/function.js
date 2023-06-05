@@ -39,7 +39,6 @@ export const customSwal = async (message,icon,confirmButtonColor,confirmButtonTe
     })
   if (result.isConfirmed) {
     callBackAction(data)
-
   }
 }
 

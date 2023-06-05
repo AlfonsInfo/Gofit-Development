@@ -121,7 +121,7 @@ class memberController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'member Deleted',
+                'message' => 'Member Deleted',
             ], 200);
         }else{
             return response()->json([

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\transaksi_member;
-
+use Carbon\Carbon;
 
 //*Transaksi in general 
 class transaksiController extends Controller
@@ -18,7 +18,8 @@ class transaksiController extends Controller
 
     public function todayTransaction()
     {
-        $transaksi_member = transaksi_member::get();
+        $created = Carbon::today()->toDateString();
+        $transaksi_member = transaksi_member::whereDate('created_at',$created)->with(['aktivasi','deposit_uang','deposit_kelas_paket.kelas'])->get();
         return response([
             'message'=>'Success Tampil Data',
             'data' => $transaksi_member
@@ -27,8 +28,13 @@ class transaksiController extends Controller
 
     public function index()
     {
-        //
+        $transaksi = transaksi_member::get();
+        return response([
+            'message'=>'Success Tampil Data',
+            'data' => $transaksi
+        ],200);
     }
+
 
     /**
      * Show the form for creating a new resource.

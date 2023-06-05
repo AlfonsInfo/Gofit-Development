@@ -1,7 +1,7 @@
 <script>
 import { HomeNavbar, TableData, ModalDetail, ref, useRouter, 
   reactive,inject,$toast,onMounted,ActionRouteToCreate ,ActionViewDetail, 
-  ActionDelete,ActionUpdate, defineComponent, Swal} from '@/plugins/global.js'
+  ActionDelete,ActionUpdate, defineComponent,  customSwal , customSwalSuccess} from '@/plugins/global.js'
 
 
   export default defineComponent({
@@ -64,6 +64,7 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
         try{
           const detailRequest = await http.get(showDetailMemberRoute)
           const detailData = detailRequest.data.data[0];
+          console.log(detailData);
           state.modalToggle = true;
           const mappedData = {
             'ID Member': detailData.id_member,
@@ -78,8 +79,7 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
             'Tanggal Kadeluarsa Paket': detailData.tgl_kadeluarsa_paket,
             'username': detailData.pengguna.username,
           };
-
-          state.sendDataDetail = mappedData ;          
+          state.sendDataDetail = mappedData ;
         }catch(e){
           alert(e)
           alert('Gagal Menampilkan Detail')
@@ -93,35 +93,14 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
       //Confirm Delete
       
       //Fungsi Delete
-      const deleteData = async ({id_member}) => {
-        //Confirm
-        const result = await Swal.fire({
-          title: 'Apakah Anda yakin ingin menghapus data ini?',
-          icon: 'warning',
-          showCancelButton: true,
-          confirmButtonColor: '#dc3545',
-          confirmButtonText: 'Hapus',
-          cancelButtonText: 'Batal',
-        })
-        //Jika di confirm
-      if (result.isConfirmed) {
+      const deleteData = async ({id_member}) => 
+      {
         const deleteRoute = `/member/${id_member}`
         console.log(deleteRoute);
         const deleteRequest = await http.delete(deleteRoute)
         getAllMember('Tabel Data Member di update')
-        $toast.success(deleteRequest.data.message)
-      // Tampilkan notifikasi SweetAlert setelah data dihapus
-    
-      Swal.fire({
-        title: 'Data berhasil dihapus!',
-        icon: 'success',
-        timer: 2000,
-        timerProgressBar: true,
-        showConfirmButton: false,
-      })
-    
-    }
-  }
+        customSwalSuccess(deleteRequest.data.message)        
+      }
 
     const resetTerlambat = async ()=>{
       const reset=confirm('apakah yakin ingin reset terlambat semua instruktur ?');
@@ -135,7 +114,8 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
     }
 
       ActionDelete.functionAction = (member) => {
-        deleteData(member)
+        customSwal('Apakah Anda yakin ingin menghapus data ini?','warning','#dc3545','yakin',deleteData, member)
+        // deleteData(member)
         // deleteDataWrapper(deleteData,id)
       }
 
@@ -158,9 +138,13 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
     displayedMembers() {
         const searchKeyword = this.state.searchInput.toLowerCase();
         return this.members.filter(member => {
-          const memberString = Object.values(member).join(' ').toLowerCase();
-          return memberString.includes(searchKeyword);
-    });
+          if(searchKeyword.length>= 3){
+            const memberString = Object.values(member).join(' ').toLowerCase();
+            return memberString.includes(searchKeyword);
+          }else{
+            return member;
+          }
+        });
     }
 
     },
@@ -188,7 +172,9 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
       :create="ActionCreateMember"
       ></table-data>
       <div>
-        <!-- :to="{name: items.route}" -->
+        <modal-detail :display="state.modalToggle" :data="state.sendDataDetail"  @close-modal="state.modalToggle = false;" ></modal-detail>
+      </div>
+      <div>
         <router-link :to="{name: 'deaktivasi'}" class="btn btn-primary mt-2" >
           Reset Deposit Member
         </router-link>
@@ -200,11 +186,7 @@ import { HomeNavbar, TableData, ModalDetail, ref, useRouter,
         </button>
       </div>
     </div>
-    <div>
-      <modal-detail :display="state.modalToggle" :data="state.sendDataDetail"  @close-modal="state.modalToggle = false;" ></modal-detail>
-    </div>
   </main>
-  <div class="modal-dialog modal-sm"></div>
 </template>
 
 

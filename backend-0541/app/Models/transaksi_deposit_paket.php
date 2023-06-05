@@ -16,5 +16,9 @@ class transaksi_deposit_paket extends Model
     {
         return $this->hasOne('App\Models\transaksi_member','no_struk_transaksi','no_struk');
     }
+    public function kelas()
+    {
+        return $this->hasOne('App\Models\kelas','id_kelas','id_kelas');
+    }
 
 }

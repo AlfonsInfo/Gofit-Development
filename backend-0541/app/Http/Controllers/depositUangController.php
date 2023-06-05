@@ -48,7 +48,7 @@ class depositUangController extends Controller
             $nominal_deposit = $request->nominal_deposit;
             $total_deposit = $request->nominal_deposit;
             if($minimal_deposit <= $nominal_deposit){
-                $id_promo = $request->minimal_deposit;
+                $id_promo = $request->id_promo;
                 // dd($promo->bonus_promo);
                 $total_deposit += $promo->bonus_promo;
             }else{

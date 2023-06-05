@@ -76,11 +76,17 @@ import { HomeNavbar, TableData,  ref, useRouter,
 
     computed : {
       displayedInstruktur() {
-        const searchKeyword = this.state.searchInput.toLowerCase();
+        //Data Search Keyword
+        let searchKeyword = this.state.searchInput.toLowerCase();
+        // Return instruktur yang difilter  
         return this.instrukturs.filter(instruktur => {
-          const instrukturString = Object.values(instruktur).join(' ').toLowerCase();
-          return instrukturString.includes(searchKeyword);
-    });
+          if(searchKeyword.length>= 3){
+            const instrukturString = Object.values(instruktur).join(' ').toLowerCase();
+            return instrukturString.includes(searchKeyword);
+          }else{
+            return instruktur;
+          }
+          });
     }
   }
 

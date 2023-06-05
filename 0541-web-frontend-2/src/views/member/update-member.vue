@@ -7,6 +7,7 @@
   import { defineComponent  } from 'vue';
   import { useRouter} from 'vue-router';
   import {$toast} from '../../plugins/notifHelper.js'
+  import { customSwal } from '../../plugins/function';
 
   // import { ActionCreate,ActionUpdate,ActionDelete} from '../../data/actionData'
 
@@ -41,14 +42,15 @@
       submitForm(event) {
         console.log(event)
         event.preventDefault(); // hindari default form submission
-        this.updateMember()
+        customSwal('Yakin ingin mengubah data member ? ', 'question','blue','Yakin',this.updateMember)
       },
 
       async updateMember(){
         const statusValidate = this.isValid(this.member)
         if(statusValidate){
           try{
-            const url = `/member/${this.member.id_member}`; 
+            const url = `/member/${this.member.id_member}`;
+            console.log(this.member); 
             const request = await this.$http.put(url,this.member); 
             console.log
             $toast.success(request.data.message)
@@ -82,7 +84,7 @@
     mounted(){
       console.log('update')
       this.member = this.$route.query
-      this.member.tanggal_lahir_member = this.formatDate(this.member.tgl_lahir_member)
+      this.member.tgl_lahir_member = this.formatDate(this.member.tgl_lahir_member)
       window.onpopstate = () => {
         this.goBack();
       };
@@ -121,8 +123,8 @@
             <div id="namaHelp" class="form-text">ex : 08123456789</div>
           </div>
           <div class="d-flex justify-content-between">
-            <button type="submit" class="btn btn-primary">Submit</button>
             <back-button :className="'btn btn-dark'" @click="goBack"></back-button>
+            <button type="submit" class="btn btn-primary">Submit</button>
           </div>
         </form>
         <hr>

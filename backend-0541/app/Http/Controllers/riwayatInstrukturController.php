@@ -43,7 +43,7 @@ class riwayatInstrukturController extends Controller
     ->with(['jadwalHarian.jadwal_umum.kelas', 'jadwalHarian.ijin_instruktur'])
     ->get();
 
-$dataPresensi = presensi_instruktur::where('id_instruktur', $request->id_instruktur)
+    $dataPresensi = presensi_instruktur::where('id_instruktur', $request->id_instruktur)
     ->with(['jadwalHarian.jadwal_umum.kelas'])
     ->get();
 
