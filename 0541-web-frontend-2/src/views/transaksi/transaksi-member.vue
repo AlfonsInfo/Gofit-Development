@@ -1,5 +1,5 @@
 <script>
-  import { HomeNavbar, useRouter, reactive , $toast, defineComponent, BackButton , inject, customSwal} from '@/plugins/global.js'
+  import { HomeNavbar, $toast,   customSwal, jsPDF, reactive, CustomDateTimeFormatter,} from '@/plugins/global.js'
   // import {CustomDateTimeFormatter } from '@/plugins/global.js'
   // import function from '../../plugins/function';
   // import MenuCard from '../../components/menu-card.vue'  
@@ -29,8 +29,6 @@
         },
         dataTodayTransaction : null,
         dataTransaksiAktivasi : null,
-        dataTransaksiDepoReguler : null,
-        dataTransaksiDepoPkaet : null,
         
 
         //Toggle
@@ -39,7 +37,41 @@
         inputJenisToggle : true,
         bayarButtonToggle : true,
         prefixQuantity : 'Rp',
-        showToggle : 'aktivasi'
+        showToggle : 'aktivasi',
+
+
+        // Data will print
+        FormPrint : reactive ({
+          id_member : '',
+          no_struk_transaksi : '',
+          tanggal_aktivasi: '',
+          nama_member : '',
+          masa_aktif : '',
+          id_pegawai : '',
+          nama_pegawai : '',
+          //*deposit reguler (uang)
+          deposit : '',
+          bonus_deposit : '',
+          sisa_deposit : '',
+          total_deposit : '',
+          tanggal_depo_reguler : '',
+          bonus_promo : '',
+          //* depost paket
+          nominal_uang : '',
+          nominal_deposit_kelas : '',
+          tanggal_kadeluarsa_paket : '',
+          jenis_kelas : '',
+          harga_kelas : '',
+          harga_total : '',
+        }),
+        // this.FormPrint.nama_member = data.member.nama_member
+        //   this.FormPrint.nominal_uang = data.deposit_kelas_paket.nominal_uang
+        //   this.FormPrint.nominal_deposit_kelas = data.deposit_kelas_paket.nominal_deposit_kelas
+        //   this.FormPrint.tanggal_kadeluarsa_paket = data.deposit_kelas_paket.tanggal_kadeluarsa
+        //   this.FormPrint.jenis_kelas = data.deposit_kelas_paket.kelas.jenis_kelas
+        //   this.FormPrint.harga_kelas = data.deposit_kelas_paket.kelas.harga_kelas
+        //   this.FormPrint.harga_total = parseFloat(this.FormPrint.harga_kelas) * parseFloat(this.FormPrint.nominal_deposit_kelas ) 
+
       }
     },
     methods : {
@@ -140,10 +172,12 @@
               id_pegawai : this.FormData.pegawai.id_pegawai,
               id_member : this.FormData.idMember
             }
+            console.log('data', data);
             //transaksiaktivasi2 simpan transaksi + update expired datenya
-            const response = await this.$http.post('/transaksiaktivasi2',data);
-            console.log(response)
-            //generate struk aktivasi()
+            const response = await this.$http.post('/aktivasi',data);
+            console.log('response' , response)
+            this.cetakStrukAktivasi(response.data.data,'langsung');
+            // generate struk aktivasi()
             $toast.success('Transaksi Berhasil')
         }catch{
           $toast.warning('Aktivasi Gagal')
@@ -161,6 +195,7 @@
           }
           const url = '/transaksideposituang';
           const response = await this.$http.post(url,data);
+          this.cetakStrukDepoReguler(response.data.data,'langsung');
           $toast.success(response.data.message);        
         }catch{
           $toast.warning('Transaksi Deposit Reguler Gagal!')
@@ -180,7 +215,7 @@
           console.log(data);
           const url = '/transaksidepositpaket';
           const response = await this.$http.post(url,data);
-          console.log(response);
+          this.cetakStrukDepoReguler(response.data.data,'langsung');
           $toast.success(response.data.message);        
         }catch(error){
           if(error.response.data.message != undefined || error.response.data.message != null ){
@@ -189,10 +224,6 @@
             $toast.warning('Transaksi Deposit Paket Gagal!');
           }
         }
-      },
-
-      async getDataTransaction(){
-
       },
 
       //Proses Trasaksi
@@ -217,12 +248,152 @@
 
 
       async getTodayTransaction(){
-        console.log('ngga dijalanin ulang bang ?')
         const url = '/transaksihariini';
         const response = await this.$http.get(url);
         this.dataTodayTransaction = response.data.data;
-        console.log(this.dataTodayTransaction);
       },
+
+      setDataCetakAktivasi(data){
+        console.log('data di fungsi cetka', data)
+        try{
+          this.FormPrint.no_struk_transaksi = data.transaksi_aktivasi.no_struk 
+          this.FormPrint.id_member = data.transaksi_member.id_member
+          this.FormPrint.id_pegawai = this.FormData.pegawai.id_pegawai
+          this.FormPrint.tanggal_aktivasi = CustomDateTimeFormatter.dateTimeSlash(data.transaksi_aktivasi.tanggal_aktivasi, '/') ;
+          this.FormPrint.masa_aktif = CustomDateTimeFormatter.reverseDate(data.transaksi_aktivasi.tanggal_kadeluarsa, '/') 
+          this.FormPrint.nama_member = data.member.nama_member
+          this.FormPrint.nama_pegawai = this.FormData.pegawai.nama_pegawai
+          console.log('data', this.FormPrint);
+        }catch(e){
+          console.log(e);
+        }
+      },
+
+      setDataCetakPaket(data){
+        console.log('data di fungsi cetak paket', data)
+        try{
+          this.FormPrint.no_struk_transaksi = data.transaksi_aktivasi.no_struk 
+          this.FormPrint.id_member = data.transaksi_member.id_member
+          this.FormPrint.id_pegawai = this.FormData.pegawai.id_pegawai
+          this.FormPrint.tanggal_aktivasi = CustomDateTimeFormatter.dateTimeSlash(data.transaksi_aktivasi.tanggal_aktivasi, '/') ;
+          this.FormPrint.masa_aktif = CustomDateTimeFormatter.reverseDate(data.transaksi_aktivasi.tanggal_kadeluarsa, '/') 
+          this.FormPrint.nama_member = data.member.nama_member
+          this.FormPrint.nama_pegawai = this.FormData.pegawai.nama_pegawai
+          console.log('data', this.FormPrint);
+        }catch(e){
+          console.log(e);
+        }
+      },
+      setDataCetakReguler(data){
+        console.log('data di fungsi cetak reguler', data)
+        try{
+          this.FormPrint.no_struk_transaksi = data.transaksi_deposit_reguler.no_struk 
+          this.FormPrint.id_member = data.transaksi_member.id_member
+          this.FormPrint.id_pegawai = this.FormData.pegawai.id_pegawai
+          this.FormPrint.nama_member = data.member_sebelum.nama_member
+          this.FormPrint.nama_pegawai = this.FormData.pegawai.nama_pegawai
+          // belum tau
+          this.FormPrint.sisa_deposit = data.member_sebelum.sisa_deposit
+          this.FormPrint.nominal_deposit = data.transaksi_deposit_reguler.sisa_deposit
+          this.FormPrint.nominal_total = data.transaksi_deposit_reguler.nominal_total
+          this.FormPrint.bonus_promo = data.promo.bonus_promo
+          this.FormPrint.tanggal_depo_reguler = CustomDateTimeFormatter.dateTimeSlash(data.transaksi_deposit_reguler.created_at, '/', 'T') 
+
+          // 
+          console.log('data', this.FormPrint);
+        }catch(e){
+          console.log(e);
+        }
+      },
+
+      cetakStrukAktivasi(data,way){
+        if(way == 'table'){
+          this.FormPrint.id_member = data.id_member
+          this.FormPrint.no_struk_transaksi = data.no_struk_transaksi
+          this.FormPrint.tanggal_aktivasi = CustomDateTimeFormatter.dateTimeSlash(data.aktivasi.tanggal_aktivasi,'/');
+          console.log(this.FormPrint.tanggal_aktivasi)
+          this.FormPrint.nama_member = data.member.nama_member
+          this.FormPrint.tanggal_struk = data.created_at
+          this.FormPrint.masa_aktif = data.aktivasi.tanggal_kadeluarsa
+          this.FormPrint.id_pegawai = data.id_pegawai
+          this.FormPrint.nama_pegawai = data.pegawai.nama_pegawai
+        }else{
+          console.log('masuk di else cetakStrukAktivasi')
+          this.setDataCetakAktivasi(data)
+        }
+          this.templatePDF('#pdfContent',['250','100'])
+      },
+      cetakStrukDepoReguler(data,way){
+        if(way == 'table'){
+          console.log(data.deposit_uang)
+          this.FormPrint.id_member = data.id_member
+          this.FormPrint.no_struk_transaksi = data.no_struk_transaksi
+          this.FormPrint.nama_member = data.member.nama_member
+          this.FormPrint.id_pegawai = data.id_pegawai
+          this.FormPrint.nama_pegawai = data.pegawai.nama_pegawai
+          this.FormPrint.sisa_deposit = data.deposit_uang.sisa_deposit
+          this.FormPrint.nominal_deposit = data.deposit_uang.nominal_deposit
+          this.FormPrint.nominal_total = data.deposit_uang.nominal_total
+          this.FormPrint.bonus_promo = data.deposit_uang.promo.bonus_promo
+          this.FormPrint.tanggal_depo_reguler = CustomDateTimeFormatter.dateTimeSlash(data.deposit_uang.created_at, '/', 'T') 
+          console.log(this.FormPrint)
+        }else{
+          this.setDataCetakReguler(data);
+        }
+        this.templatePDF('#ContentDepoReguler', ['300','100'])
+      },
+
+      cetakStrukDepoPaket(data,way){
+
+        console.log(data)
+        if(way == 'table'){
+          // No Struk
+          // Tanggal
+          this.FormPrint.id_pegawai = data.id_pegawai
+          this.FormPrint.nama_pegawai = data.pegawai.nama_pegawai
+          this.FormPrint.id_member = data.id_member
+          this.FormPrint.no_struk_transaksi = data.no_struk_transaksi
+          this.FormPrint.tanggal_depo_paket = CustomDateTimeFormatter.dateTimeSlash(data.deposit_kelas_paket.created_at, '/', 'T') 
+          this.FormPrint.nama_member = data.member.nama_member
+          this.FormPrint.nominal_uang = data.deposit_kelas_paket.nominal_uang
+          this.FormPrint.nominal_deposit_kelas = data.deposit_kelas_paket.nominal_deposit_kelas
+          this.FormPrint.tanggal_kadeluarsa_paket = data.deposit_kelas_paket.tanggal_kadeluarsa
+          this.FormPrint.jenis_kelas = data.deposit_kelas_paket.kelas.jenis_kelas
+          this.FormPrint.harga_kelas = data.deposit_kelas_paket.kelas.harga_kelas
+          this.FormPrint.harga_total = parseFloat(this.FormPrint.harga_kelas) * parseFloat(this.FormPrint.nominal_deposit_kelas ) 
+          this.FormPrint.bonus_promo = data.deposit_kelas_paket.promo.bonus_promo
+          console.log(this.FormPrint);
+        }else{
+          this.setDataCetakPaket()
+        }
+        this.templatePDF('#ContentDepoPaket', ['300','100'])
+      },
+
+      templatePDF(selector, format){
+        var elementHTML = document.querySelector(selector);
+            elementHTML.style.display = "block";
+            elementHTML.style.fontSize = '5px';
+
+            //Spasi
+            elementHTML.style.lineHeight = '1.2'; 
+            elementHTML.style.margin = '0';
+            elementHTML.style.padding = '0';
+            
+            let doc = new jsPDF({
+                orientation: 'l', // orientasi landscape
+                unit: 'mm', // satuan millimeter
+                format: format, // ukuran kertas A4
+            });
+
+            doc.html(elementHTML, {
+            callback: function (doc) {
+                doc.save('file.pdf');
+                elementHTML.style.display = "none";
+            },
+            x: 10,
+            y: 10
+            });
+      }
     },
     //Akhir dari method
 
@@ -241,6 +412,7 @@
       //* get pilihan kelas
       this.getAllKelas();
       
+      console.log(CustomDateTimeFormatter);
       //* promo
       this.getPromo();
       //*get pilihan kelas
@@ -529,6 +701,7 @@
                 <th>Pegawai</th>
                 <th>Member</th>
                 <th>Tanggal Aktivasi</th>
+                <th>Tanggal Kadeluarsa</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -538,9 +711,10 @@
                 <td>{{ row.jenis_transaksi }}</td>
                 <td>{{ row.id_pegawai }}</td>
                 <td>{{ row.id_member }}</td>
-                <td>{{ row.aktivasi.tanggal_aktivasi }}</td>
+                <td>{{ (row.aktivasi.tanggal_aktivasi !=null)  ? row.aktivasi.tanggal_aktivasi.split(' ')[0] : '' }}</td>
+                <td>{{ (row.aktivasi.tanggal_kadeluarsa != null) ?  row.aktivasi.tanggal_kadeluarsa.split(' ')[0]  : ' '}}</td>
                 <td>
-                  <button class="btn btn-primary">Cetak Struk</button>
+                  <button class="btn btn-primary" @click="cetakStrukAktivasi(row,'table')">Cetak Struk</button>
                 </td>
               </tr>
             </tbody>
@@ -553,8 +727,10 @@
                 <th>Pegawai</th>
                 <th>Member</th>
                 <th>Waktu Deposit</th>
-                <th>Nominal Deposit(depo+bonus)</th>
-                <th>Aksi</th>
+                <th>Nominal Deposit</th>
+                <th>Promo</th>
+                <th>Saldo(New)</th>
+                <!-- <th>Aksi</th> -->
               </tr>
             </thead>
             <tbody>
@@ -564,10 +740,12 @@
                 <td>{{ row.id_pegawai }}</td>
                 <td>{{ row.id_member }}</td>
                 <td>{{ row.deposit_uang.tanggal_deposit }} </td>
-                <td>{{ row.deposit_uang.nominal_deposit}} ({{row.deposit_uang.nominal_total  }})</td>
+                <td>{{ row.deposit_uang.nominal_deposit}}</td>
+                <td>{{ row.deposit_uang.promo.nama_promo}}</td>
+                <!-- <td>{{ row.deposit_uang.nominal_total}}</td> -->
                 <!-- <td>{{ row }}</td> -->
                 <td>
-                  <button class="btn btn-primary">Cetak Struk</button>
+                  <button class="btn btn-primary" @click="cetakStrukDepoReguler(row)">Cetak Struk</button>
                 </td>
               </tr>
             </tbody>
@@ -597,19 +775,178 @@
                 <td>{{ row.deposit_kelas_paket.nominal_deposit_kelas }}</td>
                 <td>{{ row.deposit_kelas_paket.kelas.jenis_kelas }}</td>
                 <td>
-                  <button class="btn btn-primary">Cetak Struk</button>
+                  <button class="btn btn-primary" @click="cetakStrukDepoPaket(row,'table')">Cetak Struk</button>
                 </td>
               </tr>
             </tbody>
           </table>
       </div>
     </div>
-
-      <!-- <div class="pegawai-mo p-5 " >
-        <div class=" row row-cols-2 row-cols-md-12" >
-          <menu-card :data ="menuTransaksi"></menu-card>
+    <div  width="600px" id="pdfContent" style=" display: none;" class="text-dark">
+      <table style="border: 1px solid black;" >
+        <tr>
+          <td style="width: 65%;">
+              <p><strong>GoFit</strong></p>
+              <p>Jl. Centralpark No. 10 Yogyakarta</p>
+          </td>
+          <td>
+            <tr>
+              <td><p>No Struk</p></td>
+              <td>:</td>
+              <td>{{ FormPrint.no_struk_transaksi }}</td>
+            </tr>
+            <tr>
+              <td><p>Tanggal</p></td>
+              <td><p>:</p></td>
+              <td>{{ FormPrint.tanggal_aktivasi }}</td>
+            </tr>
+          </td>
+        </tr>
+        <tr style="height: 1mm;"></tr>
+        <tr>
+          <table>
+          <tr>
+            <td style="width:50%"><strong>Member</strong></td>
+            <td><strong>:</strong></td>
+            <td>{{ FormPrint.id_member }} / {{FormPrint.nama_member}}</td>
+          </tr>
+          <tr>
+            <td>Aktivasi Tahunan</td>
+            <td>:</td>
+            <td>Rp.3000.000,-</td>
+          </tr>
+          <tr>
+            <td>Masa Aktif Member</td>
+            <td>:</td>
+            <td>{{ FormPrint.masa_aktif }}</td>
+          </tr>
+        </table>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <tr>Kasir : {{ FormPrint.id_pegawai }} / {{ FormPrint.nama_pegawai }} </tr>
+          <!-- <tr>:</tr> -->
+          <!-- <tr></tr> -->
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div  width="600px" id="ContentDepoReguler" style=" display: none;" class="text-dark">
+            <div width="600px" class="p-1 ">
+                <table class="border border-dark">
+                    <tr>
+                      <td style="width: 50%;">
+                        <strong>Gofit</strong>  
+                      </td>
+                      <td>
+                        No Struk : {{ FormPrint.no_struk_transaksi }}
+                      </td>
+                    </tr>
+                      <td>
+                        <p>Jl Centralpark No 10 Yogyakarta</p>
+                      </td>
+                      <td>
+                        Tanggal : {{ FormPrint.tanggal_depo_reguler }}
+                      </td>
+     
+                    <tr></tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr style="width: 80%;">
+                                    <td><strong>Member</strong></td>
+                                    <td>:</td>
+                                    <td>{{FormPrint.id_member }}/{{ FormPrint.nama_member }}</td>
+                                </tr>
+                                <tr>
+                                    <td >Nominal Deposit</td>
+                                    <td>:</td>
+                                    <td>Rp. {{FormPrint.nominal_deposit}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Bonus Deposit</td>
+                                    <td>:</td>
+                                    <td>Rp. {{ FormPrint.bonus_promo}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Sisa Deposit</td>
+                                    <td>:</td>
+                                    <td>Rp. {{ FormPrint.nominal_total}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Total Deposit</td>
+                                    <td>:</td>
+                                    <td>{{ FormPrint.nominal_total }}</td>
+                                    <!-- <td>{{ parseInt(hasilTransaksi.member_sesudah.total_deposit_uang) }}</td> -->
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Kasir : {{ FormPrint.id_pegawai }} / {{ FormPrint.nama_pegawai }} </td>
+                    </tr>
+                    <!-- <tr>
+                      <td></td>
+                    </tr> -->
+                </table>
+            </div>
         </div>
-      </div> -->
+  <div  width="600px" id="ContentDepoPaket" style=" display: none;" class="text-dark">
+    <div width="600px" class="p-1 ">
+                <table class="border border-dark">
+                    <tr>
+                      <td style="width: 50%;">
+                        <strong>Gofit</strong>  
+                      </td>
+                      <td>
+                        No Struk : {{ FormPrint.no_struk_transaksi }}
+                      </td>
+                    </tr>
+                      <td>
+                        <p>Jl Centralpark No 10 Yogyakarta</p>
+                      </td>
+                        <td>Tanggal : {{ FormPrint.tanggal_depo_paket }}</td>
+                    <tr></tr>
+                    <tr>
+                        <td>
+                            <table>
+                                <tr style="width: 80%;">
+                                    <td><strong>Member</strong></td>
+                                    <td>:</td>
+                                    <td>{{ FormPrint.id_member }}/{{ FormPrint.nama_member }}</td>
+                                </tr>
+                                <tr>
+                                    <td > Deposit Bayar ({{ FormPrint.nominal_deposit_kelas}} gratis {{FormPrint.bonus_promo}})</td>
+                                    <td>:</td>
+                                    <td>Rp.{{FormPrint.nominal_uang}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Jenis Kelas</td>
+                                    <td>:</td>
+                                    <td> {{FormPrint.jenis_kelas }} </td>
+                                </tr>
+                                <tr>
+                                    <td>Total Deposit {{ FormPrint.jenis_kelas }}</td>
+                                    <td>:</td>
+                                    <td>{{ parseInt(FormPrint.nominal_deposit_kelas) + parseInt(FormPrint.bonus_promo)}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Masa Berlaku sampai dengan</td>
+                                    <td>:</td>
+                                    <td>{{ FormPrint.tanggal_kadeluarsa_paket }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Kasir : {{ FormPrint.id_pegawai }} / {{ FormPrint.nama_pegawai }} </td>
+                    </tr>
+                </table>
+            </div>
+  </div>
   </main>
 
 </template>
@@ -620,4 +957,7 @@
   background-color: rgba(0,0,0,0.7  );
 }
 
+#pdfContent p{
+  margin: 0;
+}
 </style>

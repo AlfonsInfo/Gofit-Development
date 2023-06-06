@@ -78,14 +78,20 @@ class depositUangController extends Controller
         ->first();
         
         
-            $depositreguler = transaksi_deposit_reguler::create([
+        $depositreguler = transaksi_deposit_reguler::create([
             'tanggal_deposit' => date('Y-m-d H:i:s', strtotime('now')),
             'nominal_deposit' => $nominal_deposit,
+            //* nominal total awal : deposit + bonus ->  jadi merepresentasikan saldo sesudah deposit
+            'sisa_deposit' =>   $member_sebelum->total_deposit_uang,
             'nominal_total' =>   $total_deposit,
             'id_promo' => $id_promo,
             'no_struk' => $transaksi_deposit_reguler['no_struk_transaksi']
         ]);
         $member_sesudah = member::findOrFail($request->id_member);
+        $depositreguler->nominal_total = $member_sesudah->total_deposit_uang;
+        $depositreguler->save();
+
+        $promo = promo::find($id_promo);
         
         //! Store Riwayat 
         riwayatMemberController::storeHistory($request->id_member,'Transaksi Deposit Uang',$depositreguler->no_struk);
@@ -96,7 +102,7 @@ class depositUangController extends Controller
         }
         return response([
             'message'=> 'Berhasil Melakukan Transaksi',
-            'data' => ['transaksi_member' => $transaksi_member, 'transaksi_deposit_reguler' => $depositreguler, 'member_sebelum' => $member_sebelum , 'member_sesudah' => $member_sesudah],
+            'data' => ['transaksi_member' => $transaksi_member, 'transaksi_deposit_reguler' => $depositreguler, 'member_sebelum' => $member_sebelum , 'member_sesudah' => $member_sesudah, 'promo' => $promo],
             'total' => $total_deposit,
         ]);
     }

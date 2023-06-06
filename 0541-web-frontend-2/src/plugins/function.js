@@ -8,11 +8,12 @@ export const CustomDateTimeFormatter = {
         return tanggal_baru;
     },
     
-    dateTimeSlash(tanggalWaktu,separator){
-        var dateTimeSplit = tanggalWaktu.split(" ");
+    dateTimeSlash(tanggalWaktu,separator, firstSplit = " "){
+        var dateTimeSplit = tanggalWaktu.split(firstSplit);
         var tanggal = dateTimeSplit[0];
+        console.log(tanggal)
         var waktu = dateTimeSplit[1].split(":").slice(0, 2).join(":");
-        var tanggalBaru = tanggal.split(separator).reverse().join("-");
+        var tanggalBaru = tanggal.split('-').reverse().join(separator);
         var formattedDateTime = tanggalBaru + " " + waktu;
         return formattedDateTime;
     }

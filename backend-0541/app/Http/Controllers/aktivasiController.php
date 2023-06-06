@@ -62,7 +62,6 @@ class aktivasiController extends Controller
     
     public function store2(Request $request)
     {
-    try{
          //* Create Transaksi Member (Tabel transaksi_member)
         $transaksi_member = transaksi_member::create([
             'jenis_transaksi' => 'transaksi-aktivasi',
@@ -85,25 +84,24 @@ class aktivasiController extends Controller
         ]);
 
 
-        //* Update Expired Date
-        $member = member::where('id_member', $request->id_member)->first();
+        // //* Update Expired Date
+        $member = Member::where('id_member', $request->id_member)->first();
         if ($member->tgl_kadeluarsa_aktivasi == null) {
-            $tgl_aktivasi = date('Y-m-d H:i:s'); // jika kosong, gunakan tanggal hari ini
+            $tgl_aktivasi = date('Y-m-d H:i:s'); // If empty, use today's date
         } else {
-            $tgl_aktivasi = $member->tgl_kadeluarsa_aktivasi; // gunakan tanggal aktivasi yang ada di database
+            $tgl_aktivasi = $member->tgl_kadeluarsa_aktivasi; // Use existing activation date from the database
         }
-        // tambahkan 1 tahun
+        // Add 1 year
         $tgl_kadaluarsa = date('Y-m-d H:i:s', strtotime('+1 year', strtotime($tgl_aktivasi)));
         $member->tgl_kadeluarsa_aktivasi = $tgl_kadaluarsa;
         $member->save();
-
-        }catch(Exception $e)
-        {
-            dd($e);
-        }
+        
+        $aktivasi->tanggal_kadeluarsa = $tgl_kadaluarsa;
+        $aktivasi->save();
+// 'member' => $member
         return response([
             'message'=> 'success tambah data transaksi aktivasi',
-            'data' => ['transaksi_member' => $transaksi_member, 'transaksi_aktivasi' => $aktivasi],
+            'data' => ['transaksi_member' => $transaksi_member, 'transaksi_aktivasi' => $aktivasi, 'member'=>$member ],
         ]);
     
     }

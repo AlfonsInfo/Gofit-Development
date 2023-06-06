@@ -19,7 +19,7 @@ class transaksiController extends Controller
     public function todayTransaction()
     {
         $created = Carbon::today()->toDateString();
-        $transaksi_member = transaksi_member::whereDate('created_at',$created)->with(['aktivasi','deposit_uang','deposit_kelas_paket.kelas'])->get();
+        $transaksi_member = transaksi_member::whereDate('created_at',$created)->with(['member','pegawai','aktivasi','deposit_uang.promo','deposit_kelas_paket.kelas', 'deposit_kelas_paket.promo'])->get();
         return response([
             'message'=>'Success Tampil Data',
             'data' => $transaksi_member

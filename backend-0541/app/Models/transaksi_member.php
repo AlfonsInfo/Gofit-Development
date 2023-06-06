@@ -17,6 +17,12 @@ class transaksi_member extends Model
     ];
 
 
+    public function pegawai(){
+        return $this->hasOne(user\pegawai::class,'id_pegawai','id_pegawai');
+    }
+    public function member(){
+        return $this->hasOne(user\member::class,'id_member','id_member');
+    }
     public function aktivasi(){
         return $this->belongsTo(transaksi_aktivasi::class,'no_struk_transaksi','no_struk');
     }

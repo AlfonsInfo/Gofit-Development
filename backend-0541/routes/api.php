@@ -53,7 +53,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::post('/hitungtransaksi', 'transaksiController@countTransaction');
     Route::get('/transaksihariini' , 'transaksiController@todayTransaction');
     Route::apiResource('/transaksiaktivasi', 'aktivasiController');  
-    Route::post('/transaksiaktivasi2', 'aktivasiController@store2');  
+    Route::post('/aktivasi', 'aktivasiController@store2');  
     Route::apiResource('/transaksideposituang', 'depositUangController');  
     Route::apiResource('/transaksidepositpaket', 'depositPaketController');  
     Route::get('/td-deposituang', 'depositUangController@todayTransaction');

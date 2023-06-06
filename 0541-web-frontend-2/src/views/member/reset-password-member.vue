@@ -55,21 +55,11 @@ from '@/plugins/global.js'
       return `${yyyy}-${mm}-${dd}`;
       }
 
-      // const validasiPIC = ()=>{
-      //   let user =localStorage.getItem('userData');
-      //   user = JSON.parse(user);
-      //   let konfirmUsername = prompt('Konfirmasi username sebelum melakukan reset password');
-      //   if(user.username == konfirmUsername)
-      //   {
-      //     return true;
-      //   }
-      //   return false;
-      // }
 
       //Fungsi ResetPW
       const ResetPw = async ({id_pengguna,tgl_lahir_member}) => {
 
-        tgl_lahir_member = formatDate(tgl_lahir_member)
+        // tgl_lahir_member = formatDate(tgl_lahir_member)
         const result = await Swal.fire({
           title: 'Apakah Anda yakin ingin reset password member ini?',
           icon: 'warning',
@@ -83,6 +73,7 @@ from '@/plugins/global.js'
           try{
               const url = `/pengguna/${id_pengguna}`
               const request = await http.put(url,{ } ); // ; 
+              console.log(request);
               $toast.success(request.data.message)
           }catch{
               $toast.warning('Gagal Menambahkan Data')
