@@ -15,7 +15,6 @@ return new class extends Migration
     {
         Schema::create('promo', function (Blueprint $table) {
             $table->integer('id_promo', true);
-            $table->string('nama_promo')->nullable();
             $table->string('jenis_promo');
             $table->double('minimal_deposit');
             $table->double('bonus_promo');
@@ -23,6 +22,7 @@ return new class extends Migration
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
+
         });
     }
 

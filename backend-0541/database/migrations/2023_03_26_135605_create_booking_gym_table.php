@@ -13,15 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('booking_kelas', function (Blueprint $table) {
+        Schema::create('booking_gym', function (Blueprint $table) {
             $table->integer('no_booking', true);
-            $table->timestamp('tanggal_booking')->useCurrentOnUpdate()->useCurrent();
+            $table->date('tanggal_booking'); //* Diubah nanti ? date ? 
             $table->boolean('is_canceled')->default(false);
-            $table->boolean('status_kehadiran')->nullable()->default(false);
-            $table->string('metode_pembayaran')->nullable();
+            $table->date('tanggal_sesi_gym');
+            $table->boolean('status_kehadiran')->default(false);
+            $table->integer('id_sesi')->nullable()->index('id_sesi');
+            $table->foreignUlid('id_member')->index('id_member');
             $table->string('no_struk')->nullable()->index('no_struk');
-            $table->integer('id_jadwal_harian')->index('id_jadwal_harian');
-            $table->string('id_member')->index('id_member');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('booking_kelas');
+        Schema::dropIfExists('booking_gym');
     }
 };

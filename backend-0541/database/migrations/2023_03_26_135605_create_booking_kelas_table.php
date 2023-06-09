@@ -13,10 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sesi_gym', function (Blueprint $table) {
-            $table->integer('id_sesi', true);
-            $table->time('waktu_mulai')->nullable();
-            $table->time('waktu_selesai')->nullable();
+        Schema::create('booking_kelas', function (Blueprint $table) {
+            $table->integer('no_booking',true);
+            $table->timestamp('tanggal_booking');
+            $table->boolean('is_canceled')->default(false);
+            $table->boolean('status_kehadiran')->default(false);
+            $table->string('no_struk')->index('no_struk');
+            $table->integer('id_jadwal_harian')->index('id_jadwal_harian');
+            $table->string('id_member')->index('id_member');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
@@ -30,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sesi_gym');
+        Schema::dropIfExists('booking_kelas');
     }
 };

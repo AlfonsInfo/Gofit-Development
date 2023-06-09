@@ -14,12 +14,12 @@ return new class extends Migration
     public function up()
     {
         Schema::table('jadwal_harian', function (Blueprint $table) {
-            $table->foreign(['id_jadwal_umum'], 'jadwal_harian_ibfk_1')->references(['id_jadwal_umum'])->on('jadwal_umum')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign(['id_jadwal_umum'], 'jadwal_harian_ibfk_1')->references(['id_jadwal_umum'])->on('jadwal_umum');
         });
     }
 
     /**
-     * Reverse the migrations.
+ * Reverse the migrations.
      *
      * @return void
      */
