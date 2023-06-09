@@ -47,6 +47,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/presensikelas', 'presensiKelasController');  
     Route::apiResource('/bookinggym', 'bookingGymController');  
     Route::apiResource('/bookingkelas', 'bookingKelasController');  
+    Route::apiResource('/transaksibooking', 'bookingKelasController@');  
     
     //*History Aktivitas
     Route::apiResource('/riwayatmember', 'riwayatMemberController');  

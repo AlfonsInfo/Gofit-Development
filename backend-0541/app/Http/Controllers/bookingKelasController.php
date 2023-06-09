@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\booking_gym;
 use App\Models\booking_kelas;
+use App\Models\jadwal_harian;
 use App\Models\User\member;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -58,38 +59,48 @@ class bookingKelasController extends Controller
 
     //! ubah konteksnya dari booking gym menajdi booking kelas 
      //* Fungsi Utama Fungsionalitas
-     public function store(Request $request)
-     {
+    public function store(Request $request)
+    {
          //* Cek Status Aktif Member
-         if(!self::cekNotKadeluarsa($request->id_member)){
-             return Response(['message' => 'Akun Anda Sudah Kadeluarsa'],400);
-         }
+        if(!self::cekNotKadeluarsa($request->id_member)){
+            return Response(['message' => 'Akun Anda Sudah Kadeluarsa'],400);
+        }
+
+        //* Cek Saldo Member
+        // dd(self::cekSaldoMember($request->id_member, $request->id_jadwal_harian));
+        $deposit = self::cekSaldoMember($request->id_member, $request->id_jadwal_harian);
+        if( $deposit == false){
+            return Response(['message' => 'Saldo Anda Tidak Cukup'],400);
+        }
+
          //* Cek  Kuota
-         if(!self::cekKuotaIsFull($request->tanggal_sesi_gym , $request->id_sesi)){
-             return Response(['message' => 'Kuota Telah Penuh'],400);
-         }
-         
+        if(!self::cekKuotaIsFull($request->id_jadwal_harian )){
+            return Response(['message' => 'Kuota Telah Penuh'],400);
+        }
+    
          //* Cek Apakah Booking Sama
-         if(self::cekBookingSame($request->tanggal_sesi_gym,$request->id_sesi,$request->id_member)){
-             return Response(['message' => 'Anda Telah Melakuakn Booking pada sesi dan tanggal ini'],400);
+         if(self::cekBookingSame($request->id_jadwal_harian ,$request->id_member)){
+             return Response(['message' => 'Anda Telah Melakuakn Booking yang sama '],400);
          }
          //* Apakah Member melakukan Booking pada Hari yang sama (Sama kayak diatas tp tidak perlu sesi)
- 
-         try{
-             $booking = booking_gym::create([
-                 'id_member' => $request->id_member,
-                 'tanggal_booking' => Carbon::now(),
-                 'tanggal_sesi_gym' => $request->tanggal_sesi_gym,
-                 'id_sesi' => $request->id_sesi,
-             ]);
-             
-             return response([
-                 'message' => 'Berhasil Booking',
-                 'data' => $booking]);
-         }catch(Exception $e){
-             dd($e);
-         }   
-     }
+
+        try{
+            $booking = booking_kelas::create([
+                'id_member' => $request->id_member,
+                'tanggal_booking' => Carbon::now(),
+                'is_canceled' => 0,
+                'metode_pembayaran' => $deposit,
+                'id_jadwal_harian' => $request->id_jadwal_harian
+
+                ]);
+            
+            return response([
+                'message' => 'Berhasil Booking',
+                'data' => $booking]);
+        }catch(Exception $e){
+            dd($e);
+        }   
+    }
 
 
       //* Fungsi Validasi-validasi yang digunakan pada Store Data
@@ -102,16 +113,50 @@ class bookingKelasController extends Controller
         return true;
     }
 
-    public function cekKuotaIsFull($tanggalSesi , $idSesi){
-        $daftarBooking = booking_gym::where('tanggal_sesi_gym', $tanggalSesi )->where('id_sesi',$idSesi)->count();
+    public function cekKuotaIsFull($idjadwalharian){
+        $daftarBooking = booking_kelas::where('id_jadwal_harian',$idjadwalharian )->count();
         if($daftarBooking < 10 ){
             return true;
         }
         return false;
     }
 
-    public function cekBookingSame($tanggalSesi , $idSesi, $idMember){
-        $daftarBooking = booking_gym::where('tanggal_sesi_gym', $tanggalSesi )->where('id_sesi',$idSesi)->where('id_member',$idMember)->count();        
+    public function cekSaldoMember($id, $idjadwalharian){
+        //* Ambil Data Member dan jadwal harian(kelas)
+        $member = member::find($id);
+        $jadwalharian = jadwal_harian::where('id_jadwal_harian',$idjadwalharian)->with(['jadwal_umum'])->get();
+
+        //* Cek dia punya saldo depo paket yang sesuai atau tidak, jika ada , masuk ke depo paket (di Member)
+        if($member->id_kelas == $jadwalharian[0]->jadwal_umum->kelas->id_kelas){
+            $saldoPaket = $member->total_deposit_paket;
+            $jumlahSatuanBooking = booking_kelas::where('id_member',$id)
+            ->where('metode_pembayaran','Deposit Paket')
+            ->where('is_canceled',0)
+            ->where('status_kehadiran',0)
+            ->count();
+            if($saldoPaket > $jumlahSatuanBooking){
+                return 'Deposit Paket';
+            }
+        }else if($member->total_deposit_uang > 0){
+            return 'Deposit Reguler';
+            $uangMember = $member->total_deposit_uang;
+            $jumlahUangBooking = booking_kelas::where('id_member',$id)
+            ->where('metode_pembayaran','Deposit Reguler')
+            ->where('is_canceled',0)
+            ->where('status_kehadiran',0)
+            ->get();
+            // ->;
+        }else{
+            return false;
+        }
+            //* Depo paket -> cek lagi jumlah bookingnya cukup atau engga
+            //* Cek Saldo uang 
+            //* Cek Sisa Saldonya > foreach booking kelas (is_canceled) * 
+
+    }
+
+    public function cekBookingSame($idjadwalharian , $idMember){
+        $daftarBooking = booking_kelas::where('id_jadwal_harian', $idjadwalharian )->where('id_member',$idMember)->count();        
         if($daftarBooking == 0 ){
             //* tidak ada yang sama
             return false;

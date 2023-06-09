@@ -34,8 +34,8 @@ class _BookingGymState extends State<BookingGym> {
           _showSnackBar(context, state.message);
         }else{}
       },
-        child : SizedBox(
-          height: MediaQuery.of(context).size.height * 9/10,
+        child : Expanded(
+          // height: MediaQuery.of(context).size.height * 9/10,
           child: Padding(
             padding: const EdgeInsets.all(40.0),
               child: Form(child: 

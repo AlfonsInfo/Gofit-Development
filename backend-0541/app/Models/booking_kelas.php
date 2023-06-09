@@ -10,6 +10,7 @@ class booking_kelas extends Model
 use HasFactory;
 protected $table = 'booking_kelas';
 protected $primaryKey = 'no_booking';
+protected $guarded = [];
 
 
 public function jadwal_harian(){

@@ -2,9 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_app_gofit_0541/Bloc/app/app_bloc.dart';
+import 'package:mobile_app_gofit_0541/Components/component.dart';
 import 'package:mobile_app_gofit_0541/Models/jadwal_harian.dart';
 import 'package:mobile_app_gofit_0541/Models/kelas.dart';
+import 'package:mobile_app_gofit_0541/Repository/repo_booking_gym.dart';
 import 'package:mobile_app_gofit_0541/Repository/repo_booking_kelas.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class BookingKelasPage extends StatefulWidget {
   const BookingKelasPage({
@@ -33,8 +36,8 @@ class _BookingKelasPageState extends State<BookingKelasPage> {
   }
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 9/10,
+    return Expanded(
+      // height: MediaQuery.of(context).size.height * 9/10,
       child : ListView.builder(
         itemCount: kelas.length,
         itemBuilder: (context, index) => unitKelas(context,kelas[index]),
@@ -48,7 +51,13 @@ Card unitKelas(BuildContext context, JadwalHarian rm){
     const textStyle = TextStyle(color: Colors.white, backgroundColor: Colors.black);
     
     void bookingKelas() async{
-      print('dipencet');
+    var appBloc = context.read<AppBloc>();
+    var idMember = appBloc.state.member?.idMember;
+    BookingKelasRepository bookingKelasRepository = BookingKelasRepository();
+    var response = await bookingKelasRepository.store(idMember: idMember ?? '', idJadwalHarian: rm.idJadwalHarian ?? '');
+    showSnackBarMessage(context, response[0]);
+
+      Navigator.pop(context);
     }
     return Card(
         margin: const EdgeInsets.all(10),
@@ -128,6 +137,12 @@ showAlertDialog(BuildContext context, VoidCallback continueAction) {
     },
   );
 }
+
+void _showSnackBar(BuildContext context, String message) {
+    final snackBar = SnackBar(content: Text(message));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+}
+  
 
 //*Booking Kelas -> Store / Create data booking kelas
 //* Tampilkan Kelasnya Apa

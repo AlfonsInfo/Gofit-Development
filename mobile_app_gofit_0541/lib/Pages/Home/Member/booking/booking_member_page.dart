@@ -19,7 +19,7 @@ class _BookingPageState extends State<BookingPage> {
   Widget build(BuildContext context) {
     return  BlocProvider(
       create: (context) => BookingGymBloc(),
-      child: ListView(
+      child: Column(
         children: [
           //* Button Booking kelas  / Gym
             Row(

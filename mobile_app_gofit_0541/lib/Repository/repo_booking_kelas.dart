@@ -91,4 +91,33 @@ class BookingKelasRepository{
             return data;
         }
   }
+
+
+
+  
+    Future<List> store({required String idMember, required String idJadwalHarian }) async{
+      String apiUrl = '$url/bookingkelas';
+      try{
+        var apiResult = await http.post(Uri.parse(apiUrl), 
+        body: 
+        {
+          'id_member' : idMember,
+          'id_jadwal_harian': idJadwalHarian,
+        });
+        //* + validasi di backend
+        
+        final responseData = jsonDecode(apiResult.body);
+        final responseMessage = responseData['message'];
+        if(apiResult.statusCode == 200){
+          return [responseMessage,true];
+        }else if(apiResult.statusCode == 400){
+          return [responseMessage,false];
+        }else{
+          return ['Gagal Booking',false];
+        }
+      }catch(e){
+        inspect(e);
+        return ['Gagal Booking',false];
+      }
+    }
 }

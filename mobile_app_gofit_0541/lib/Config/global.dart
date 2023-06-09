@@ -50,7 +50,8 @@ var routesApp = {
 // http://10.53.0.65:
 // String url = 'http://192.168.149.34:5000/api';
 // String url = 'http://192.168.1.7:5000/api';
-String url = 'http://192.168.1.7:5000/api';
+// String url = 'http://192.168.1.7:5000/api';
+String url = 'http://10.53.10.57:5000/api';
 // String url = 'http://10.53.10.162:5000/api';
 // 10.53.10.162
 // String url = 'http://10.54.10.247:5000/api';
