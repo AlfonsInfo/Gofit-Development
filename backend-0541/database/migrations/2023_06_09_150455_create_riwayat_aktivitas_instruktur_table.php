@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sesi_gym', function (Blueprint $table) {
-            $table->integer('id_sesi',true);
-            $table->time('waktu_mulai')->nullable();
-            $table->time('waktu_selesai')->nullable();
-            $table->timestamp('created_at')->nullable()->useCurrent();
+        Schema::create('riwayat_aktivitas_instruktur', function (Blueprint $table) {
+            $table->integer('id_riwayat');
+            $table->string('id_instruktur')->nullable();
+            $table->string('nama_aktivitas')->nullable();
+            $table->integer('id_jadwal_harian')->nullable();
+            $table->timestamp('created_at')->useCurrentOnUpdate()->useCurrent();
             $table->timestamp('updated_at')->nullable();
-            $table->softDeletes();    
         });
     }
 
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sesi_gym');
+        Schema::dropIfExists('riwayat_aktivitas_instruktur');
     }
 };

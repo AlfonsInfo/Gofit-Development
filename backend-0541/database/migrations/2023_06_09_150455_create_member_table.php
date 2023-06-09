@@ -16,9 +16,11 @@ return new class extends Migration
         Schema::create('member', function (Blueprint $table) {
             $table->string('id_member')->primary();
             $table->integer('id_pengguna')->index('id_pengguna');
+            $table->integer('id_kelas')->nullable()->index('id_kelas');
             $table->string('nama_member');
             $table->timestamp('tgl_lahir_member')->nullable();
             $table->string('no_telp_member');
+            $table->string('alamat_member');
             $table->timestamp('tgl_kadeluarsa_aktivasi')->nullable();
             $table->double('total_deposit_uang')->default(0);
             $table->timestamp('tgl_gabung_member')->useCurrent();

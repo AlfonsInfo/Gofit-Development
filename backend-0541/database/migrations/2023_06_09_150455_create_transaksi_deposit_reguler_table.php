@@ -13,16 +13,17 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('instruktur', function (Blueprint $table) {
-            $table->string('id_instruktur')->primary();
-            $table->integer('id_pengguna')->index('instruktur_ibfk_1');
-            $table->string('nama_instruktur');
-            $table->timestamp('tanggal_lahir_instruktur')->useCurrentOnUpdate()->useCurrent();
-            $table->string('alamat_instruktur');
-            $table->string('no_telp_instruktur');
+        Schema::create('transaksi_deposit_reguler', function (Blueprint $table) {
+            $table->integer('id_deposit_reguler', true);
+            $table->timestamp('tanggal_deposit')->useCurrent();
+            $table->double('sisa_deposit')->nullable();
+            $table->double('nominal_deposit');
+            $table->double('nominal_total');
+            $table->integer('id_promo')->nullable()->index('id_promo');
             $table->timestamp('created_at')->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
+            $table->string('no_struk')->index('no_struk');
         });
     }
 
@@ -33,6 +34,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('instruktur');
+        Schema::dropIfExists('transaksi_deposit_reguler');
     }
 };

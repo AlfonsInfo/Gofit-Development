@@ -13,17 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('ijin_instruktur', function (Blueprint $table) {
-            $table->integer('id_ijin', true);
-            $table->integer('id_jadwal_harian')->index();
-            $table->string('status_ijin');
-            $table->date('tanggal_pengajuan');
-            $table->string('id_instruktur');
-            $table->string('id_instruktur_pengganti');
+        Schema::create('kelas', function (Blueprint $table) {
+            $table->integer('id_kelas', true);
+            $table->string('jenis_kelas');
+            $table->double('harga_kelas');
+            $table->text('deskripsi_kelas');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
-
         });
     }
 
@@ -34,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ijin_instruktur');
+        Schema::dropIfExists('kelas');
     }
 };

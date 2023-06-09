@@ -14,9 +14,9 @@ return new class extends Migration
     public function up()
     {
         Schema::table('booking_kelas', function (Blueprint $table) {
-            $table->foreign(['no_struk'], 'booking_kelas_ibfk_1')->references(['no_struk_transaksi'])->on('transaksi_member');
-            $table->foreign(['id_jadwal_harian'], 'booking_kelas_ibfk_2')->references(['id_jadwal_harian'])->on('jadwal_harian');
-            $table->foreign(['id_member'], 'booking_kelas_ibfk_3')->references(['id_member'])->on('member');
+            $table->foreign(['id_jadwal_harian'], 'booking_kelas_ibfk_2')->references(['id_jadwal_harian'])->on('jadwal_harian')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign(['no_struk'], 'booking_kelas_ibfk_1')->references(['no_struk_transaksi'])->on('transaksi_member')->onUpdate('CASCADE')->onDelete('CASCADE');
+            $table->foreign(['id_member'], 'booking_kelas_ibfk_3')->references(['id_member'])->on('member')->onUpdate('CASCADE')->onDelete('CASCADE');
         });
     }
 
@@ -28,8 +28,8 @@ return new class extends Migration
     public function down()
     {
         Schema::table('booking_kelas', function (Blueprint $table) {
-            $table->dropForeign('booking_kelas_ibfk_1');
             $table->dropForeign('booking_kelas_ibfk_2');
+            $table->dropForeign('booking_kelas_ibfk_1');
             $table->dropForeign('booking_kelas_ibfk_3');
         });
     }

@@ -13,13 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('presensi_instruktur', function (Blueprint $table) { 
-            $table->integer('id_presensi', true);
-            $table->timestamp('waktu_presensi')->useCurrent();
-            $table->timestamp('waktu_selesai')->nullable();
-            $table->string('status_presensi');
-            $table->foreignUlid('id_instruktur')->references('id_instruktur')->on('instruktur');
-            $table->integer('id_jadwal_harian')->index('id_jadwal_harian');
+        Schema::create('ijin_instruktur', function (Blueprint $table) {
+            $table->integer('id_ijin', true);
+            $table->integer('id_jadwal_harian')->index();
+            $table->string('status_ijin');
+            $table->date('tanggal_pengajuan');
+            $table->string('id_instruktur')->index('ijin_instruktur_ibfk_2');
+            $table->string('id_instruktur_pengganti')->index('ijin_instruktur_ibfk_3');
             $table->timestamp('created_at')->nullable()->useCurrent();
             $table->timestamp('updated_at')->nullable();
             $table->softDeletes();
@@ -33,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('presensi_instruktur');
+        Schema::dropIfExists('ijin_instruktur');
     }
 };
