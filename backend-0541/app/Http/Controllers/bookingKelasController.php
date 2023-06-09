@@ -54,4 +54,69 @@ class bookingKelasController extends Controller
         //* total deposit uang, total deposit paket
         // if($member->)
     }
+
+
+    //! ubah konteksnya dari booking gym menajdi booking kelas 
+     //* Fungsi Utama Fungsionalitas
+     public function store(Request $request)
+     {
+         //* Cek Status Aktif Member
+         if(!self::cekNotKadeluarsa($request->id_member)){
+             return Response(['message' => 'Akun Anda Sudah Kadeluarsa'],400);
+         }
+         //* Cek  Kuota
+         if(!self::cekKuotaIsFull($request->tanggal_sesi_gym , $request->id_sesi)){
+             return Response(['message' => 'Kuota Telah Penuh'],400);
+         }
+         
+         //* Cek Apakah Booking Sama
+         if(self::cekBookingSame($request->tanggal_sesi_gym,$request->id_sesi,$request->id_member)){
+             return Response(['message' => 'Anda Telah Melakuakn Booking pada sesi dan tanggal ini'],400);
+         }
+         //* Apakah Member melakukan Booking pada Hari yang sama (Sama kayak diatas tp tidak perlu sesi)
+ 
+         try{
+             $booking = booking_gym::create([
+                 'id_member' => $request->id_member,
+                 'tanggal_booking' => Carbon::now(),
+                 'tanggal_sesi_gym' => $request->tanggal_sesi_gym,
+                 'id_sesi' => $request->id_sesi,
+             ]);
+             
+             return response([
+                 'message' => 'Berhasil Booking',
+                 'data' => $booking]);
+         }catch(Exception $e){
+             dd($e);
+         }   
+     }
+
+
+      //* Fungsi Validasi-validasi yang digunakan pada Store Data
+    //* Fungsi sebelum store
+    public function cekNotKadeluarsa($id){
+        $member = member::find($id);
+        if($member->tgl_kadeluarsa_aktivasi == null || $member->tgl_kadeluarsa_aktivasi < Carbon::now() ){
+            return false;
+        }
+        return true;
+    }
+
+    public function cekKuotaIsFull($tanggalSesi , $idSesi){
+        $daftarBooking = booking_gym::where('tanggal_sesi_gym', $tanggalSesi )->where('id_sesi',$idSesi)->count();
+        if($daftarBooking < 10 ){
+            return true;
+        }
+        return false;
+    }
+
+    public function cekBookingSame($tanggalSesi , $idSesi, $idMember){
+        $daftarBooking = booking_gym::where('tanggal_sesi_gym', $tanggalSesi )->where('id_sesi',$idSesi)->where('id_member',$idMember)->count();        
+        if($daftarBooking == 0 ){
+            //* tidak ada yang sama
+            return false;
+        }
+        //* ada yang sama
+        return true;
+    }
 }   

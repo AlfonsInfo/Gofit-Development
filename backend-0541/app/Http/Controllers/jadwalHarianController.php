@@ -7,6 +7,7 @@ use App\Models\jadwal_umum;
 use App\Helpers\ValidatorHelper;
 use App\Models\ijin_instruktur;
 use App\Models\jadwal_harian;
+use App\Models\booking_kelas;
 use App\Models\kelas;
 use App\Models\presensi_instruktur;
 use Carbon\Carbon;
@@ -257,63 +258,21 @@ class jadwalHarianController extends Controller
     }
 
 
+    public function ClassList(){
+
+        $today = Carbon::now();
+        $class = jadwal_harian::whereDate('tanggal_jadwal_harian', '>', $today)
+        ->with(['jadwal_umum', 'jadwal_umum.instruktur', 'jadwal_umum.kelas', 'ijin_instruktur', 'ijin_instruktur.instruktur', 'ijin_instruktur.instrukturPengganti'])
+        ->get();
+
+        
+        foreach ($class as $jadwal) {
+            $jumlah_booking_kelas = booking_kelas::where('id_jadwal_harian', $jadwal->id_jadwal_harian)->where('is_canceled', 0)->count();
+            $jadwal->jumlah_peserta_kelas = $jumlah_booking_kelas;
+        }
+        
+        return response(['data'=> $class]);
+    }
+
 }
 
-                
-                // $jadwalHarian = DB::table('jadwal_harian')
-                // ->get();
-                // dd($jadwalHarian);
-                // ->join('jadwal_umum', 'jadwal_harian.id_jadwal_umum', '=', 'jadwal_umum.id_jadwal_umum')
-                // ->join('kelas', 'jadwal_umum.id_kelaas', '=', 'kelas.id_kelas')
-                // ->join('instruktur', 'jadwal_umum.id_instruktur', '=', 'instruktur.id_instruktur')
-                // // ->leftJoin('status_jadwal_harian', 'jadwal_harian.status_id', '=', 'status_jadwal_harian.id')
-                // // ->leftJoin('izin_instruktur', function ($join) {
-                //     // $join->on('jadwal_umum.id', '=', 'izin_instruktur.jadwal_umum_id')
-                //         // ->on('jadwal_harian.tanggal', '=', 'izin_instruktur.tanggal_izin')
-                //         // ->where('izin_instruktur.is_confirmed', true);
-                // // })
-                // ->leftJoin('instruktur as instruktur_penganti', 'izin_instruktur.instruktur_penganti_id', '=', 'instruktur_penganti.id')
-                // ->select('jadwal_harian.id', 'jadwal_harian.tanggal', 'jadwal_umum.jam_mulai', 'jadwal_umum.hari' ,'kelas.nama as nama_kelas', 'instruktur.nama as nama_instruktur', DB::raw('IFNULL(status_jadwal_harian.jenis_status, "") as jenis_status'), DB::raw('IFNULL(instruktur_penganti.nama, "") as instruktur_penganti'))
-                
-                // ->orWhere('jadwal_harian.tanggal', 'like', '%'.$request->data.'%')
-                //     ->orWhere('jadwal_umum.jam_mulai', 'like', '%'.$request->data.'%')
-                //     ->orWhere('kelas.nama', 'like', '%'.$request->data.'%')
-                //     ->orWhere('instruktur.nama', 'like', '%'.$request->data.'%')
-                //     ->orWhere('status_jadwal_harian.jenis_status', 'like', '%'.$request->data.'%')
-                //     ->orWhere('instruktur_penganti.nama', 'like', '%'.$request->data.'%')
-            
-                // ->orderBy('jadwal_harian.tanggal', 'asc')
-                // ->orderBy('jadwal_umum.jam_mulai')
-                // ->get()
-                // ->groupBy('tanggal')
-                // ->map(function ($items) {
-                //     return $items->map(function ($item) {
-                //         $item->jam_mulai = date('H:i', strtotime($item->jam_mulai));
-                //         return $item;
-                //     })->sortBy('jam_mulai');
-                // })
-                // ->groupBy(function ($items, $key) {
-                //     return Carbon::parse($key)->startOfWeek()->format('Y-m-d');
-                // }, true);
-            
-                // return response()->json([
-                //     'success' => true,
-                //     'message' => 'Daftar Jadwal harian',
-                //     'data' => $jadwalHarian
-                // ], 200);
-                // //* find data based on params
-                // $jadwal_umum = jadwal_umum::where('id_jadwal_umum', $id_jadwal_umum)->with(['instruktur'])->first();
-                
-                // //* not found
-                // if($jadwal_umum == null)
-                // {
-                //     return response([
-                //         'Jadwal Umum Not Found'
-                //     ],404);
-                // }
-            
-                // //* return response
-                // return response([
-                //     'message'=>'Success Tampil Data',
-                //     'data' => $jadwal_umum
-                // ],200);

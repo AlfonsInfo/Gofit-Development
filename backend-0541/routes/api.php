@@ -34,6 +34,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/instruktur', 'instrukturController')->middleware('cors');
     Route::apiResource('/jadwalumum', 'jadwalUmumController');
     Route::apiResource('/jadwalharian', 'jadwalHarianController');
+    Route::get('/classlist', 'jadwalHarianController@ClassList');
     Route::post('/jadwalharianfind', 'jadwalHarianController@findData');
     Route::get('/jadwalharianlibur/{id}', 'jadwalHarianController@updateLibur');
     Route::apiResource('/promo', 'promoController');
@@ -45,6 +46,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/presensigym', 'presensiGymController');  
     Route::apiResource('/presensikelas', 'presensiKelasController');  
     Route::apiResource('/bookinggym', 'bookingGymController');  
+    Route::apiResource('/bookingkelas', 'bookingKelasController');  
     
     //*History Aktivitas
     Route::apiResource('/riwayatmember', 'riwayatMemberController');  

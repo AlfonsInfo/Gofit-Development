@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:mobile_app_gofit_0541/Config/global.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile_app_gofit_0541/Models/booking_kelas.dart';
+import 'package:mobile_app_gofit_0541/Models/jadwal_harian.dart';
 
 
 class BookingKelasRepository{
@@ -69,4 +70,25 @@ class BookingKelasRepository{
         return ['Gagal'];
     }
     }  
+
+
+    //* Menambahkan Booking Baru
+
+    //? Tampilkan Data Kelas
+      Future<List<JadwalHarian>> showClass() async {
+      String apiUrl = '$url/classlist';
+        List<JadwalHarian> data =  [];
+        try{
+            var apiResult = await http.get(Uri.parse(apiUrl));
+            var jsonObject = json.decode(apiResult.body);
+              for(var item in jsonObject['data']){
+                data.add(JadwalHarian.fromJson(item));
+              }
+              inspect(data);
+            return data;
+        }catch(e){
+            inspect(e);
+            return data;
+        }
+  }
 }
