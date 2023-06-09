@@ -41,8 +41,15 @@ class _RiwayatIjinPageState extends State<RiwayatIjinPage> {
         itemBuilder: (context, index) {
           return Card(
             child: ListTile(
-              title: Text(ijinInstruktur[index].idIjin ?? ''),
-              subtitle: Text(ijinInstruktur[index].statusIjin ?? ''),
+              title: Text('#${ijinInstruktur[index].idIjin} - Tanggal pengajuan ${ijinInstruktur[index].tanggalPengajuan}'  ),
+              subtitle: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(ijinInstruktur[index].statusIjin ?? ''),
+                  Text('Ijin pada ${ijinInstruktur[index].jadwalHarian?.tanggal} kelas : ${ijinInstruktur[index].jadwalHarian?.jadwalUmum?.kelas?.jenisKelas} '),
+                  Text('Kode instruktur pengganti : ${ijinInstruktur[index].instrukturPengganti}')
+                ],
+              ),
             ),
           );
         },

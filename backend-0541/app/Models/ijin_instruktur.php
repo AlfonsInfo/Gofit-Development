@@ -9,6 +9,7 @@ class ijin_instruktur extends Model
 {   
     use HasFactory;
     protected $table = 'ijin_instruktur';
+    protected $primaryKey = 'id_ijin';
     protected $guarded = [];
      
     public function instruktur()

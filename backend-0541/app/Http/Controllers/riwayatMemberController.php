@@ -51,14 +51,57 @@ class riwayatMemberController extends Controller
             'data' => $riwayatMember
         ]);
     }
+    public function showRiwayatByMemberKelas(Request $request){
+        $riwayatMember = booking_kelas::where('id_member', $request->id_member)->with(['jadwal_harian.jadwal_umum.kelas','jadwal_harian.jadwal_umum.instruktur','jadwal_harian.ijin_instruktur'])
+        ->orderBy('created_at', 'desc')
+        ->get();
 
-    // public function showRiwayatByMemberKelas(Request $request){
-    //     $riwayatMember = booking_kelas::where('id_member', $request->id_member)
-    //     ->orderBy('created_at', 'desc')
-    //     ->get();
-    //     return response([
-    //         'data' => $riwayatMember
-    //     ]);
-    // }
+
+        return response([
+            'data' => $riwayatMember
+        ]);
+    }
+
+
+    //* Dengan Filter
+
+    public function showRiwayatByMemberGymFilter(Request $request){
+        
+
+        $tanggal_mulai = Carbon::parse($request->tanggal_mulai)->format('Y-m-d');
+        $tanggal_selesai = Carbon::parse($request->tanggal_selesai)->format('Y-m-d');
+        
+        $riwayatMember = booking_gym::where('id_member', $request->id_member)
+        ->whereBetween('tanggal_sesi_gym', [$tanggal_mulai, $tanggal_selesai])
+        ->with(['sesi'])
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+
+        return response([
+            'data' => $riwayatMember
+        ]);
+    }
+
+
+    public function showRiwayatByMemberKelasFilter(Request $request){
+
+        $tanggal_mulai = Carbon::parse($request->tanggal_mulai)->format('Y-m-d');
+        $tanggal_selesai = Carbon::parse($request->tanggal_selesai)->format('Y-m-d');
+        
+        $riwayatMember = booking_kelas::where('id_member', $request->id_member)
+            ->whereHas('jadwal_harian', function ($query) use ($tanggal_mulai, $tanggal_selesai) {
+                $query->whereBetween('tanggal_jadwal_harian', [$tanggal_mulai, $tanggal_selesai]);
+            })
+            ->with(['jadwal_harian.jadwal_umum.kelas', 'jadwal_harian.jadwal_umum.instruktur', 'jadwal_harian.ijin_instruktur'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+
+
+        return response([
+            'data' => $riwayatMember
+        ]);
+    }
  
 }

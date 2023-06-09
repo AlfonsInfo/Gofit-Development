@@ -13,7 +13,6 @@ class IjinRepository {
       var apiResult = await http.post(Uri.parse(apiURL),body: {'id_instruktur' : idInstruktur});
       if(apiResult.statusCode == 200){
         var jsonObject = json.decode(apiResult.body);
-        inspect(jsonObject);
         List<IjinInstruktur> ijinInstruktur = [];
         for (var item in jsonObject['data']) {
           ijinInstruktur.add(IjinInstruktur.fromJson(item));
@@ -21,6 +20,7 @@ class IjinRepository {
         return ijinInstruktur;
       }
     }catch(e){
+      inspect(e);
       return [];
     }
     return [];

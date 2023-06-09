@@ -9,11 +9,12 @@ class BookingGym{
   String? isCanceled;
   String? tanggalSesiGym;
   String? statusKehadiran;
+  String? waktuPresensi;
   // String? idSesi;
   Sesi? sesi;
   String? idMember;
 
-  BookingGym({required this.noBooking, this.idMember, this.isCanceled, this.sesi , this.statusKehadiran, this.tanggalBooking , this.tanggalSesiGym});
+  BookingGym({required this.noBooking, this.idMember, this.isCanceled, this.sesi , this.statusKehadiran, this.tanggalBooking , this.tanggalSesiGym, this.waktuPresensi});
 
   factory BookingGym.fromJson(Map<String, dynamic> json){
     return BookingGym(
@@ -24,6 +25,7 @@ class BookingGym{
       tanggalBooking: json['tanggal_booking'].toString(),
       tanggalSesiGym: json['tanggal_sesi_gym'].toString(),
       statusKehadiran: json['status_kehadiran'].toString(),
+      waktuPresensi: (json['waktu_presensi']?.toString()  != null) ? json['waktu_presensi'].toString() : ''
     );
   }
 

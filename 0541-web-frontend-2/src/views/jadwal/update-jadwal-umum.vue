@@ -13,7 +13,7 @@ export default defineComponent({
     data(){
         return{
         router : useRouter(),
-        days : ['senin','selasa','rabu','kamis','jumat','sabtu','minggu'],
+        days : ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'],
         selectedDay  : 'senin',
         instrukturs : ({}),
         kelas : ({}),
@@ -87,7 +87,7 @@ export default defineComponent({
                 status = false;
             }
             if(parseInt(jam_mulai.replace(':',''))> parseInt(jam_selesai.replace(':',''))){
-                $toast.warning(`Jam selesai harus lebih besar dari Jam Mulai`);
+                $toast.warning(`Jam selesai harus setelah jam Mulai`);
                 status = false;
             }
             return status;

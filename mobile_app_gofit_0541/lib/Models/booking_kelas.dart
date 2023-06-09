@@ -11,45 +11,25 @@ class BookingKelas{
   String? isCanceled;
   String? statusKehadiran;
   String? noStruk;
+  String? metodePembayaran; 
   JadwalHarian? jadwalHarian;
   Member? member;
 
-  BookingKelas({required this.noBooking, this.tanggalBooking, this.isCanceled, this.statusKehadiran, this.jadwalHarian, this.member, this.noStruk });
+  BookingKelas({required this.noBooking, this.tanggalBooking, this.isCanceled, this.statusKehadiran, this.jadwalHarian, this.member, this.noStruk , this.metodePembayaran});
 
   factory BookingKelas.fromJson(Map<String, dynamic> json){
     return BookingKelas(
       noBooking: json['no_booking'].toString(),
-      tanggalBooking: json['tanggal_bo'].toString(),
+      tanggalBooking: json['tanggal_booking'].toString(),
       isCanceled: json['is_canceled'].toString(),
       jadwalHarian: JadwalHarian.fromJson(json['jadwal_harian']),
-      member: Member.fromJson(json['member']),
+      metodePembayaran : json['metode_pembayaran']?.toString() ?? '',
+      member: (json['member'] != null) ? Member.fromJson(json['member']) : null  ,
       noStruk: json['no_struk']?.toString() ?? '',
-      statusKehadiran: json['status_kehadiran'].toString(),
+      statusKehadiran: json['status_kehadiran']?.toString() ?? '',
     );
   }
 
 
 }
 
-
-// class Instruktur{
-//   String? idPengguna;
-//   String? idInstruktur;
-//   String? nama;
-//   String? tglLahir;
-//   String? alamat;
-//   String? noTelp;
-
-//   Instruktur({required this.idPengguna, required this.idInstruktur , required this.nama ,required  this.tglLahir ,required  this.alamat,required  this.noTelp});
-
-//   factory Instruktur.fromJson(Map<String, dynamic> json){
-//     return Instruktur(
-//       idPengguna: json['id_pengguna'].toString(),
-//       idInstruktur: json['id_instruktur'].toString(), 
-//       nama: json['nama_instruktur'].toString(), 
-//       tglLahir: json['tanggal_lahir_instruktur'].toString(), 
-//       alamat: json['alamat_instruktur'].toString(), 
-//       noTelp: json['no_telp'].toString()
-//       );
-//   }
-// }

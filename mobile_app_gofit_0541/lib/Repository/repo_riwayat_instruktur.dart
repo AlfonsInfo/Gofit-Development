@@ -29,6 +29,25 @@ class RiwayatInstrukturRepository{
   }
 
 
+      Future<List<RiwayatInstruktur>> showHistoryInstruktur(String idInstruktur ) async {
+  String apiUrl = '$url/riwayataktivitasinstruktur?id_instruktur=$idInstruktur';
+    List<RiwayatInstruktur> data =  [];
+    try{
+        var apiResult = await http.get(Uri.parse(apiUrl));
+        inspect(apiResult);
+        var jsonObject = json.decode(apiResult.body);
+          for(var item in jsonObject['data']){
+            data.add(RiwayatInstruktur.fromJson(item));
+          }
+          inspect(data);
+        return data;
+    }catch(e){  
+        inspect(e);
+        return data;
+    }
+  }
+
+
 
 
 }

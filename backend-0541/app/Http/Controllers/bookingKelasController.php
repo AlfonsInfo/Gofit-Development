@@ -21,6 +21,7 @@ class bookingKelasController extends Controller
     public function presensiKelas($noBook){
         $bookingKelas = booking_kelas::find($noBook);
         $bookingKelas->status_kehadiran = 1;
+        $bookingKelas->waktu_presensi = Carbon::now();
         $bookingKelas->update();
         self::potongDeposit($noBook);
         return response(['message' => 'Berhasil Presensi','data'=>$bookingKelas]);

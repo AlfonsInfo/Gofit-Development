@@ -22,6 +22,7 @@ class JadwalUmumRepository{
         return jadwalUmums;
       }
     }catch(e){
+      inspect(e);
       return [];
     }
     return [];

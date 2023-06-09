@@ -1,18 +1,23 @@
 <script>
 import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackButton , inject} from '@/plugins/global.js'
+import { customSwal } from '../../plugins/function';
 
   export default defineComponent({
-    //Component yang digunakan
+    // Component
     components:{
       HomeNavbar,
       BackButton,
     },
+    // Akhir dari Comment
 
+
+    // data
     data() {
       return {
         toggle:true,
         toggleModeTabel : false,
     } 
+    // Akhir dari data
 },
 
     //Setup
@@ -25,7 +30,7 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
       let maxPagi = ref([]);
       let maxSore = ref([]);
 
-      //cek http dan $http update~~~~~~~`
+
       const getAllJadwal= async (message) => {
         const dataRoute = "/jadwalumum";
         const request = await http.get(dataRoute)
@@ -48,10 +53,12 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
       }
 
       //Delete
-      const deleteDataCell = async ({id_jadwal_umum}) =>{
-        const confirmDelete = confirm('Apakah Yakin ingin menghapus jadwal ini ? ');
+      const confirmDelete = (data) => {
+        customSwal('Apakah Anda yakin ingin menghapus data ini?','warning','#dc3545','yakin',deleteDataCell,data)
+      }
 
-        if(confirmDelete){
+      const deleteDataCell = async ({id_jadwal_umum}) =>{
+
           const deleteRoute = `/jadwalumum/${id_jadwal_umum}`
           try{
             const deleteRequest = await http.delete(deleteRoute)
@@ -60,8 +67,6 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
           }catch{
             $toast.warning('Gagal Menghapus Data')
           }
-        }
-
       }
 
       return{
@@ -70,16 +75,21 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
         maxPagi,
         maxSore,
         updateDataCell,
-        deleteDataCell
+        confirmDelete
       }
     },
+
+    // Computed
     computed:{
+      // display jadwal juga berdasarkan toggle pagi atau malam
       displayedJadwal(){
         if(this.toggle){
           return this.jadwalPagi;
         }
         return this.jadwalSore
       },
+
+      // Set Max based tampil data pagi atau malam
       max(){
         if(this.toggle){ 
           return this.maxPagi;
@@ -127,7 +137,7 @@ import { HomeNavbar, useRouter, ref ,onMounted, $toast, defineComponent, BackBut
                 </p>
                 <div v-show="toggleModeTabel">
                   <button class="btn btn-warning m-2" @click.prevent="updateDataCell(column)">Update</button>
-                  <button class="btn btn-danger" @click.prevent="deleteDataCell(column)">Delete</button>
+                  <button class="btn btn-danger" @click.prevent="confirmDelete(column)">Delete</button>
                 </div>
               </td>
               <td v-for="i in (max - jd.length)" :key="i" class="text-center">*</td>

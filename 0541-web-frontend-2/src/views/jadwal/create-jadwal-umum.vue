@@ -1,5 +1,5 @@
 <script>
-import { HomeNavbar, ref, useRouter, reactive, BackButton, inject, $toast,onMounted, defineComponent} from '@/plugins/global.js'
+import { HomeNavbar, ref, useRouter, reactive, BackButton, inject, $toast,onMounted, defineComponent, customSwal} from '@/plugins/global.js'
 
 
   export default defineComponent({
@@ -46,19 +46,19 @@ import { HomeNavbar, ref, useRouter, reactive, BackButton, inject, $toast,onMoun
       const http = inject('$http');
       
       //Input 1 : Days
-      const days = ['senin','selasa','rabu','kamis','jumat','sabtu','minggu'];
+      const days = ['Senin','Selasa','Rabu','Kamis','Jumat','Sabtu','Minggu'];
       
       //Input 2 : Instruktur
       const instrukturs = ({});
       const getAllInstruktur = async () => {
-        const dataRoute = "http://localhost:8000/api/instruktur";
+        const dataRoute = "/instruktur";
         const request = await http.get(dataRoute)
         instrukturs.value = request.data.data 
       }
       //Input 3 : 
       const kelas = ({});
       const getAllKelas = async () => {
-        const dataRoute = "http://localhost:8000/api/kelas";
+        const dataRoute = "/kelas";
         const request = await http.get(dataRoute)
         kelas.value = request.data.kelas
       }
@@ -75,7 +75,7 @@ import { HomeNavbar, ref, useRouter, reactive, BackButton, inject, $toast,onMoun
 
       const jadwals  = reactive({})
       const getAllJadwal= async () => {
-        const dataRoute = "http://localhost:8000/api/jadwalumum";
+        const dataRoute = "/jadwalumum";
         const request = await http.get(dataRoute)
         jadwals.value = request.data.data
 
@@ -97,7 +97,8 @@ import { HomeNavbar, ref, useRouter, reactive, BackButton, inject, $toast,onMoun
         console.log(event)
         event.preventDefault(); // hindari default form submission
         // kode untuk memproses data form
-        storeJadwal();
+        customSwal('Yakin ingin menambahkan data jadwal ini? ', 'question','blue','Yakin',storeJadwal)
+
       }
 
       function isValid({hari, id_instruktur,id_kelas,jam_mulai,jam_selesai}){
@@ -124,7 +125,7 @@ import { HomeNavbar, ref, useRouter, reactive, BackButton, inject, $toast,onMoun
           status = false;
         }
         if(parseInt(jam_mulai.replace(':',''))> parseInt(jam_selesai.replace(':',''))){
-          $toast.warning(`Jam selesai harus lebih besar dari Jam Mulai`);
+          $toast.warning(`Jam selesai harus setelah jam mulai`);
           status = false;
         }
         return status;
@@ -180,7 +181,7 @@ import { HomeNavbar, ref, useRouter, reactive, BackButton, inject, $toast,onMoun
         const statusJadwalInstruktur = isNotConflict(jadwal)
         if( statusValidate && statusJadwalInstruktur){
           try{
-            const post = "/api/jadwalumum"; 
+            const post = "/jadwalumum"; 
             const request = await http.post(post,jadwal); // ; 
             $toast.success(request.data.message)
             getAllJadwal()

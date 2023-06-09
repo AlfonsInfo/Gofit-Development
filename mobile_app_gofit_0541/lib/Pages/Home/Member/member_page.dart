@@ -20,10 +20,10 @@ class _MemberPageState extends State<MemberPage> {
   static const List<Widget> _widgetOptions = <Widget>[
     HomePageMember(),
     BookingPage(),
-    Text(
-      'Index 2: School',
-      // style: optionStyle,
-    ),
+    // Text(
+    //   'Index 2: School',
+    //   // style: optionStyle,
+    // ),
   ];
 
   void _onItemTapped(int index) {
@@ -49,10 +49,10 @@ class _MemberPageState extends State<MemberPage> {
             icon: Icon(Icons.business),
             label: 'Booking',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'History',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Icon(Icons.school),
+          //   label: 'History',
+          // ),
         ],
         currentIndex: _selectedIndex,
         selectedItemColor: ColorApp.colorButtonPrimary,

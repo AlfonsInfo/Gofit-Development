@@ -1,5 +1,6 @@
 <script>
 import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from '@/plugins/global.js'
+import { customSwal } from '../../plugins/function';
 
 
 
@@ -13,8 +14,10 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
     data(){
         return{
             router : useRouter(),
+            ijininstrukturforconfirm : ref([]),
             ijinInstruktur : ref([]),
             countInit : 0,
+            countInit2 : 0,
         }
     },
 
@@ -89,20 +92,59 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
                 });
             });
         },
+        TableAll()
+        {
+            $(document).ready(function () {
+    // Setup - add a text input to each footer cell
+            $('#example2 thead tr')
+                .clone(true)
+                .addClass('filters')
+                // .appendTo('#example2 thead');
+        
+                var table = $('#example2').DataTable({
+                  "columnDefs": [
+                { "width": "10%", "targets": 0 },
+                { "width": "10%", "targets": 1 },
+                { "width": "10%", "targets": 2 }
+                ],
+                    orderCellsTop: true,
+                    fixedHeader: true,
+                    initComplete: function () {
+
+                    },
+                });
+            });
+        },
+
+        confirm(id){
+            customSwal('Yakin ingin mengijinkan instruktur ? ', 'question','blue','Yakin',this.confirmPermit,id)
+        },
+
+        deny(id){
+            customSwal('Yakin ingin menolak perijinan instruktur ? ', 'question','blue','Yakin',this.denyPermit,id)
+        },
 
         async confirmPermit(id){
+            console.log(id);
             const url = `/ijininstruktur/${id}`
-            const request = await this.$http.put(url,{status_ijin : 'dikonfirmasi'});
+            const request = await this.$http.put(url,{status_ijin : 'Perijinan dikonfirmasi'});
             $toast.success('Berhasil Konfirmasi Ijin Instruktur')
-            this.getAllPresence()
+            this.getBeforeConfirm()
+            console.log(request)
+        },
+        async denyPermit(id){
+            console.log(id);
+            const url = `/ijininstruktur/${id}`
+            const request = await this.$http.put(url,{status_ijin : 'Perijinan ditolak'});
+            $toast.success('Berhasil Konfirmasi Ijin Instruktur')
+            this.getBeforeConfirm()
             console.log(request)
         },
     
-        async getAllPermit(message){
-            const url = "http://localhost:8000/api/ijininstruktur";
+        async getBeforeConfirm(message){
+            const url = "http://localhost:8000/api/ijininstrukturforconfirm";
             const request = await this.$http.get(url)
-            this.ijinInstruktur = request.data.data
-            console.log(this.ijinInstruktur)
+            this.ijininstrukturforconfirm = request.data.data
             if(this.countInit == 0)
             {
                 this.DataTablesFeatures()
@@ -110,9 +152,21 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
                 $toast.success(message)
             }
             },
+
+        async getAllPermit(){
+            const url = "http://localhost:8000/api/ijininstruktur";
+            const request = await this.$http.get(url)
+            this.ijinInstruktur = request.data.data
+            if(this.countInit2 == 0)
+            {
+                this.TableAll()
+                this.countInit2++;
+            }
+        }
 },
     mounted(){
-        this.getAllPermit('Berhasil Mengambil Data Ijin Instruktur');
+        this.getBeforeConfirm('Berhasil Mengambil Data Ijin Instruktur');
+        this.getAllPermit()
     },
 
 })
@@ -127,11 +181,11 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
       </div>
       <div class="content bg-white text-dark table-custom m-5 mt-2">
         <div  class="container-fluid  p-4">
-            <h3 >Tabel Data Ijin Instruktur</h3>
+            <h3 >Tabel Data Ijin Instruktur Belum Dikonfirmasi</h3>
             <table id="example" class="#example table table-striped filters" style="width:100%;">
                 <thead>
                     <tr>
-                        <th>ID Ijin</th>
+                        <!-- <th>ID Ijin</th> -->
                         <th>Tanggal Pengajuan</th>
                         <th>Jadwal Harian</th>
                         <th>Instruktur Ijin</th>
@@ -141,16 +195,57 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(row,key) in ijinInstruktur" :key="key">
-                        <td>{{row.id_ijin}}</td>
+                    <tr v-for="(row,key) in ijininstrukturforconfirm" :key="key">
+                        <!-- <td>{{row.id_ijin}}</td> -->
                         <td>{{row.tanggal_pengajuan}}</td>
-                        <td>{{row.id_jadwal_harian}}</td>
-                        <td>{{ row.id_instruktur }}</td>
-                        <td>{{row.id_instruktur_pengganti}}</td>
-                        <td>{{ (row.status_ijin)? row.status_ijin : 'belum dikonfirmasi' }}</td>
+                        <td>{{row.jadwal_harian.tanggal_jadwal_harian}}</td>
+                        <td>{{ row.instruktur.nama_instruktur }}</td>
+                        <td>{{row.instruktur_pengganti.nama_instruktur}}</td>
+                        <td>{{ row.status_ijin  }}</td>
                         <td>
-                            <button v-if="row.status_ijin == null" @click="confirmPresence(row.no_booking)" class="btn btn-success">Presensi</button>
+                            <!-- <button v-if="row.status_ijin == 'Belum dikonfirmasi'" @click="confirmPermit(row.id_ijin)" class="btn btn-success mx-2">👍</button> -->
+                            <button v-if="row.status_ijin == 'Belum dikonfirmasi'" @click="confirm(row.id_ijin)" class="btn btn-success mx-2">👍</button>
+                            <button v-if="row.status_ijin == 'Belum dikonfirmasi'" @click="deny(row.id_ijin)" class="btn btn-danger">🙅‍♂️</button>
+                            <!-- <button v-if="row.status_ijin == 'Belum dikonfirmasi'" @click="confirmPermit(row.id_ijin)" class="btn btn-danger">🙅‍♂️</button> -->
                         </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="row">
+                <back-button class="col-md-3" className="btn btn-dark"></back-button>
+                <!-- <button class="btn btn-success  col col-md-3">Cetak Struk</button> -->
+            </div>
+        </div>
+  </div>
+      <div class="content bg-white text-dark table-custom m-5 mt-2">
+        <div  class="container-fluid  p-4">
+            <h3 >Tabel Data Ijin</h3>
+            <table id="example2" class="#example2 table table-striped filters" style="width:100%;">
+                <thead>
+                    <tr>
+                        <!-- <th>ID Ijin</th> -->
+                        <th>Tanggal Pengajuan</th>
+                        <th>Jadwal Harian</th>
+                        <th>Instruktur Ijin</th>
+                        <th>Instruktur Pengganti</th>
+                        <th>Status Ijin</th>
+                        <!-- <th>Aksi</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(row,key) in ijinInstruktur" :key="key">
+                        <!-- <td>{{row.id_ijin}}</td> -->
+                        <td>{{row.tanggal_pengajuan}}</td>
+                        <td>{{row.jadwal_harian.tanggal_jadwal_harian}}</td>
+                        <td>{{ row.instruktur.nama_instruktur }}</td>
+                        <td>{{row.instruktur_pengganti.nama_instruktur}}</td>
+                        <td>{{ row.status_ijin  }}</td>
+                        <!-- <td> -->
+                            <!-- <button v-if="row.status_ijin == 'Belum dikonfirmasi'" @click="confirmPermit(row.id_ijin)" class="btn btn-success mx-2">👍</button> -->
+                            <!-- <button v-if="row.status_ijin == 'Belum dikonfirmasi'" @click="confirm(row.id_ijin)" class="btn btn-success mx-2">👍</button> -->
+                            <!-- <button v-if="row.status_ijin == 'Belum dikonfirmasi'" @click="deny(row.id_ijin)" class="btn btn-danger">🙅‍♂️</button> -->
+                            <!-- <button v-if="row.status_ijin == 'Belum dikonfirmasi'" @click="confirmPermit(row.id_ijin)" class="btn btn-danger">🙅‍♂️</button> -->
+                        <!-- </td> -->
                     </tr>
                 </tbody>
             </table>

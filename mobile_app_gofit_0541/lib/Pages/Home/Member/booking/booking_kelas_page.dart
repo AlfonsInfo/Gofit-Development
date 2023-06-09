@@ -14,3 +14,13 @@ class BookingKelasPage extends StatelessWidget {
       ),);
   }
 }
+
+
+//*Booking Kelas -> Store / Create data booking kelas
+//* Tampilkan Kelasnya Apa
+
+//* Periksa Status Aktif / Tidak
+
+//* Periksa Kuota Masih Ada atau Tidak
+
+//* Generate No Booking

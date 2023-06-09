@@ -215,7 +215,7 @@
           console.log(data);
           const url = '/transaksidepositpaket';
           const response = await this.$http.post(url,data);
-          this.cetakStrukDepoReguler(response.data.data,'langsung');
+          this.cetakStrukDepoPaket(response.data.data,'langsung');
           $toast.success(response.data.message);        
         }catch(error){
           if(error.response.data.message != undefined || error.response.data.message != null ){
@@ -272,14 +272,19 @@
       setDataCetakPaket(data){
         console.log('data di fungsi cetak paket', data)
         try{
-          this.FormPrint.no_struk_transaksi = data.transaksi_aktivasi.no_struk 
-          this.FormPrint.id_member = data.transaksi_member.id_member
           this.FormPrint.id_pegawai = this.FormData.pegawai.id_pegawai
-          this.FormPrint.tanggal_aktivasi = CustomDateTimeFormatter.dateTimeSlash(data.transaksi_aktivasi.tanggal_aktivasi, '/') ;
-          this.FormPrint.masa_aktif = CustomDateTimeFormatter.reverseDate(data.transaksi_aktivasi.tanggal_kadeluarsa, '/') 
-          this.FormPrint.nama_member = data.member.nama_member
           this.FormPrint.nama_pegawai = this.FormData.pegawai.nama_pegawai
-          console.log('data', this.FormPrint);
+          this.FormPrint.id_member = data.member.id_member
+          this.FormPrint.nama_member = data.member.nama_member
+          this.FormPrint.no_struk_transaksi = data.transaksi_deposit_paket.no_struk_transaksi
+          this.FormPrint.tanggal_depo_paket = CustomDateTimeFormatter.dateTimeSlash(data.transaksi_deposit_paket.tanggal_kadeluarsa, '/', 'T') 
+          this.FormPrint.nominal_uang = data.transaksi_deposit_paket.nominal_uang
+          this.FormPrint.nominal_deposit_kelas = data.transaksi_deposit_paket.nominal_deposit_kelas
+          this.FormPrint.tanggal_kadeluarsa_paket  = CustomDateTimeFormatter.reverseDate(data.transaksi_deposit_paket.tanggal_kadeluarsa,'/', 'T') 
+          this.FormPrint.jenis_kelas = data.kelas.jenis_kelas
+          this.FormPrint.harga_kelas = data.kelas.harga_kelas
+          this.FormPrint.harga_total = parseFloat(this.FormPrint.harga_kelas) * parseFloat(this.FormPrint.nominal_deposit_kelas ) 
+          this.FormPrint.bonus_promo = data.promo.bonus_promo
         }catch(e){
           console.log(e);
         }
@@ -347,8 +352,6 @@
 
         console.log(data)
         if(way == 'table'){
-          // No Struk
-          // Tanggal
           this.FormPrint.id_pegawai = data.id_pegawai
           this.FormPrint.nama_pegawai = data.pegawai.nama_pegawai
           this.FormPrint.id_member = data.id_member
@@ -364,7 +367,7 @@
           this.FormPrint.bonus_promo = data.deposit_kelas_paket.promo.bonus_promo
           console.log(this.FormPrint);
         }else{
-          this.setDataCetakPaket()
+          this.setDataCetakPaket(data)
         }
         this.templatePDF('#ContentDepoPaket', ['300','100'])
       },
@@ -759,8 +762,8 @@
                 <th>Member</th>
                 <th>Tanggal Deposit</th>
                 <th>Nominal Uang</th>
-                <th>Nominal Kelas</th>
-                <th>Jenis Kelas</th>
+                <th>Kuota Sesi(Kelas)</th>
+                <th>Promo</th>
                 <th>Aksi</th>
               </tr>
             </thead>
@@ -772,8 +775,8 @@
                 <td>{{ row.id_member }}</td>
                 <td>{{ row.deposit_kelas_paket.tanggal_deposit }}</td>
                 <td>{{ row.deposit_kelas_paket.nominal_uang }}</td>
-                <td>{{ row.deposit_kelas_paket.nominal_deposit_kelas }}</td>
-                <td>{{ row.deposit_kelas_paket.kelas.jenis_kelas }}</td>
+                <td>{{ row.deposit_kelas_paket.nominal_deposit_kelas }} ({{ row.deposit_kelas_paket.kelas.jenis_kelas }} )</td>
+                <td>+{{row.deposit_kelas_paket.promo.bonus_promo}} ({{ row.deposit_kelas_paket.promo.nama_promo }})</td>
                 <td>
                   <button class="btn btn-primary" @click="cetakStrukDepoPaket(row,'table')">Cetak Struk</button>
                 </td>

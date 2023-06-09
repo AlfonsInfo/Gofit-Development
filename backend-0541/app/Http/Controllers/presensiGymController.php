@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\booking_gym;
 use App\Models\transaksi_member;
 use App\Models\User\member;
+use Carbon\Carbon;
 
 class presensiGymController extends Controller
 {
@@ -31,6 +32,7 @@ class presensiGymController extends Controller
     {
         $presensi_gym = booking_gym::find($id);
         $presensi_gym->status_kehadiran = $request->status_kehadiran; 
+        $presensi_gym->waktu_presensi = Carbon::now(); 
         $presensi_gym->save();
         return response()->json([
             'success' => true,

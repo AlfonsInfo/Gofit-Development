@@ -13,21 +13,22 @@ class jadwalUmumController extends Controller
     {
         //* find all data
         // $jadwal_umum = jadwal_umum::latest()->with(['instruktur','kelas'])->get();
-        $jadwalPagi = ['senin' => jadwal_umum::where('hari','senin')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'selasa' => jadwal_umum::where('hari','selasa')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'rabu' => jadwal_umum::where('hari','rabu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'kamis' => jadwal_umum::where('hari',   'kamis')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'jumat' => jadwal_umum::where('hari','jumat')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'sabtu' => jadwal_umum::where('hari','sabtu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'minggu' => jadwal_umum::where('hari','minggu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->get(),
+        $jadwalPagi = ['Senin' => jadwal_umum::where('hari','senin')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Selasa' => jadwal_umum::where('hari','selasa')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Rabu' => jadwal_umum::where('hari','rabu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Kamis' => jadwal_umum::where('hari',   'kamis')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Jumat' => jadwal_umum::where('hari','jumat')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Sabtu' => jadwal_umum::where('hari','sabtu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Minggu' => jadwal_umum::where('hari','minggu')->whereTime('jam_mulai', '<', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
     ];
-    $jadwalSore = ['senin' => jadwal_umum::where('hari','senin')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'selasa' => jadwal_umum::where('hari','selasa')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'rabu' => jadwal_umum::where('hari','rabu')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'kamis' => jadwal_umum::where('hari','kamis')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'jumat' => jadwal_umum::where('hari','jumat')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'sabtu' => jadwal_umum::where('hari','sabtu')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
-        'minggu' => jadwal_umum::where('hari','minggu')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->get(),
+
+    $jadwalSore = ['Senin' => jadwal_umum::where('hari','senin')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Selasa' => jadwal_umum::where('hari','selasa')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Rabu' => jadwal_umum::where('hari','rabu')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Kamis' => jadwal_umum::where('hari','kamis')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Jumat' => jadwal_umum::where('hari','jumat')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Sabtu' => jadwal_umum::where('hari','sabtu')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
+        'Minggu' => jadwal_umum::where('hari','minggu')->whereTime('jam_mulai', '>', '17:00:00')->with(['instruktur','kelas'])->orderBy('jam_mulai','asc')->get(),
     ];
         $jadwal = ['pagi' => $jadwalPagi, 'sore' => $jadwalSore]; 
         return response([
@@ -144,7 +145,7 @@ class jadwalUmumController extends Controller
 
     public function JadwalByInstruktur(Request $request){
         // $jadwal = jadwal_umum::get();
-        $jadwal = jadwal_umum::where('id_instruktur', $request->id_instruktur)->get();
+        $jadwal = jadwal_umum::where('id_instruktur', $request->id_instruktur)->with(['instruktur','kelas'])->get();
         if($jadwal){
             return response(['data' =>  $jadwal]);
         }else{
@@ -153,7 +154,7 @@ class jadwalUmumController extends Controller
     }
 
     public function getJadwalMobile(){
-        $jadwal = jadwal_umum::orderByRaw("FIELD(hari, 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu')")->with(['instruktur','kelas'])->get();
+        $jadwal = jadwal_umum::orderByRaw("FIELD(hari, 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu')")->with(['instruktur','kelas'])->get();
         // $sortedData = DB::table('jadwal_umum')
             // ->orderByRaw("FIELD(hari, 'senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu')")
             // ->get();

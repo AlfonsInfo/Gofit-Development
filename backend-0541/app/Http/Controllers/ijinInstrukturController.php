@@ -23,17 +23,25 @@ class ijinInstrukturController extends Controller
     //* Store Data Ijin
     public function store(Request $request)
     {
-        $jadwalharian = jadwal_harian::where('id_jadwal_umum', $request->id_jadwal_umum)->first();
+        //* store ijin sesudah hari ini
+        $today = date('Y-m-d');
+        // $jadwalharian = jadwal_harian::where('id_jadwal_umum', $request->id_jadwal_umum)->first();
+        $jadwalharian_terakhir = jadwal_harian::where('id_jadwal_umum', $request->id_jadwal_umum)
+        ->whereDate('tanggal_jadwal_harian', '>', $today)
+        ->orderByDesc('tanggal_jadwal_harian')
+        ->first();
+
+        if($jadwalharian_terakhir == null){
+            return response(['message' => 'Gagal Melakukan perijinan, MO belum melakukan generate Jadwal']);
+        }
 
         //* Create Jadwal Umum
         $ijin = ijin_instruktur::create([
-            // 'hari' => $request->hari,
-            'id_jadwal_harian' => $request->id_jadwal_harian,
-            'status_ijin' => 'belum-dikonfirmasi',
+            'status_ijin' => 'Belum dikonfirmasi',
             'tanggal_pengajuan' => Carbon::now(),
             'id_instruktur' => $request->id_instruktur,
             'id_instruktur_pengganti' => $request->id_instruktur_pengganti,
-            'id_jadwal_harian' => $jadwalharian->id_jadwal_harian
+            'id_jadwal_harian' => $jadwalharian_terakhir->id_jadwal_harian
         ]);
         
         //! Store Riwayat Ijin
@@ -44,12 +52,34 @@ class ijinInstrukturController extends Controller
         ]);
 
     }
+    public function getOnlyBeforePermit(Request $request)
+    {
+        $ijin_instruktur = ijin_instruktur::where('status_ijin','Belum dikonfirmasi')->with(['instruktur','instrukturPengganti','jadwalHarian','jadwalHarian.jadwal_umum'])->get();
+
+        return response([
+            'message'=>'Success Tampil Data',
+            'data' => $ijin_instruktur
+        ],200); 
+
+    }
+
+    function update(Request $request, $id){
+        $ijin = ijin_instruktur::where('id_ijin', $id)->first();
+        $ijin->status_ijin  = $request->status_ijin;
+        // dd($id,$ijin, $request->status_ijin);
+        $ijin->save();  
+
+        return response([
+            'message'=>'Sukses Konfirmasi Ijin',
+            'data' => $ijin
+        ],200); 
+    }
 
 
     //* Tampilin Data Ijin 
     public function indexByInstruktur(Request $request)
     {   
-        $ijin_instruktur = ijin_instruktur::where('id_instruktur',$request->id_instruktur)->with(['instruktur','instrukturPengganti','jadwalHarian','jadwalHarian.jadwal_umum'])->get();
+        $ijin_instruktur = ijin_instruktur::where('id_instruktur',$request->id_instruktur)->with(['instruktur','instrukturPengganti','jadwalHarian','jadwalHarian.jadwal_umum.kelas'])->get();
 
         return response([
             'message'=>'Success Tampil Data',

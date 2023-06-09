@@ -60,7 +60,7 @@ import { HomeNavbar,  ref ,onMounted, $toast, defineComponent, BackButton , inje
       // Tampilkan notifikasi SweetAlert setelah data dihapus
     
       Swal.fire({
-        title: 'Data berhasil dihapus!',
+        title: 'Jadwal Berhasil diliburkan!',
         icon: 'success',
         timer: 2000,
         timerProgressBar: true,
@@ -179,7 +179,8 @@ import { HomeNavbar,  ref ,onMounted, $toast, defineComponent, BackButton , inje
                 <p v-if="column.ijin_instruktur == null"> 
                   Instruktur : {{column.jadwal_umum.instruktur.nama_instruktur}}
                 </p>
-                <p v-else class="bg-success rounded p-2">
+                <p v-else-if="column.ijin_instruktur.status_ijin == 'Perijinan dikonfirmasi'" class="bg-success rounded p-2">
+                  <!-- ijin instruktur telah dikonfirmasi -->
                   {{ column.ijin_instruktur.instruktur_pengganti.nama_instruktur }}
                   (menggantikan {{ column.ijin_instruktur.instruktur.nama_instruktur }})
                   <!-- Instruktur Test : {{column.jadwal_umum}} -->
@@ -190,10 +191,7 @@ import { HomeNavbar,  ref ,onMounted, $toast, defineComponent, BackButton , inje
                   <button class="btn btn-warning m-2" @click.prevent="confirmChangeStatus(column)">Liburkan</button>
                 </div>
               </td>
-              <td>
-              </td>
               <td v-for="i in (maxJadwal - jd[1].length)" :key="i" class="text-center">*</td>
-              
             </tr>
           </tbody>
         </table>

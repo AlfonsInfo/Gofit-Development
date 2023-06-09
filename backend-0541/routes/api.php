@@ -40,6 +40,7 @@ Route::group(['middleware' => ['cors','customCors']], function () {
     Route::apiResource('/member', 'memberController');
     Route::apiResource('/pengguna', 'penggunaController');
     Route::apiResource('/ijininstruktur', 'ijinInstrukturController');  
+    Route::get('/ijininstrukturforconfirm', 'ijinInstrukturController@getOnlyBeforePermit');  
     Route::post('/selectijin', 'ijinInstrukturController@indexByInstruktur');  
     Route::apiResource('/presensigym', 'presensiGymController');  
     Route::apiResource('/presensikelas', 'presensiKelasController');  
@@ -92,12 +93,14 @@ Route::group(['middleware' => ['cors','customCors']], function () {
 
     //* History     
     Route::get('/riwayataktivitasmember', 'riwayatMemberController@showRiwayatByMember');
-    Route::get('/riwayataktivitasinstruktur', 'riwayatInstrukturController@showRiwayatByInstruktur');
+    Route::get('/riwayataktivitasinstruktur', 'riwayatInstrukturController@riwayatInstruktur');
     
     //*History2
     Route::get('/riwayataktivitasmembergym', 'riwayatMemberController@showRiwayatByMemberGym');
     Route::get('/riwayataktivitasmemberkelas', 'riwayatMemberController@showRiwayatByMemberKelas');
     // Route::get('/riwayataktivitasinstruktur2', 'riwayatInstrukturController@showRiwayatByInstruktur');
+    Route::get('/riwayataktivitasmembergymfilter', 'riwayatMemberController@showRiwayatByMemberGymFilter');
+    Route::get('/riwayataktivitasmemberkelasfilter', 'riwayatMemberController@showRiwayatByMemberKelasFilter');
     
     //* History by merge presensi dan ijin
     Route::get('/riwayataktivitasinstrukturmerge', 'riwayatInstrukturController@mergeIjinPresensi');

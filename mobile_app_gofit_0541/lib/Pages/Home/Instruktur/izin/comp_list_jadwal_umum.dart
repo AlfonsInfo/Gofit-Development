@@ -1,4 +1,6 @@
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_app_gofit_0541/Models/jadwal_umum.dart';
 import 'package:mobile_app_gofit_0541/Repository/repo_jadwal_umum.dart';
@@ -30,7 +32,7 @@ class ListJadwalState extends State<ListJadwal> {
     var appBloc = BlocProvider.of<AppBloc>(context);
     var loginJadwalUmum = appBloc.state.instruktur;
     jadwalUmum = await repository.getJadwalByInstruktur(loginJadwalUmum!.idInstruktur);
-    // inspect(jadwalUmum);
+    inspect(jadwalUmum);
     setState(() {});
   }
 

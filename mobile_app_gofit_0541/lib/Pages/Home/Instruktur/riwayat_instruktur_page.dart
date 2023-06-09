@@ -23,15 +23,14 @@ class _RiwayatInstrukturPageState extends State<RiwayatInstrukturPage> {
   @override
   void initState() {
     super.initState();
-    getRiwayat();
+    getRiwayat2();
 
   }
 
-
-  getRiwayat() async{
+  getRiwayat2() async{
     var appBloc = context.read<AppBloc>();
     var idInstruktur =  appBloc.state.instruktur?.idInstruktur ;
-    riwayats = await riwayatInstrukturRepository.getInstrukturHistory(idInstruktur ?? '');
+    riwayats = await riwayatInstrukturRepository.showHistoryInstruktur(idInstruktur ?? '');
     inspect(riwayats);
     setState(() {});
   }
@@ -49,19 +48,14 @@ class _RiwayatInstrukturPageState extends State<RiwayatInstrukturPage> {
 Widget activityUnit(RiwayatInstruktur rm) {
   return Builder(
     builder: (BuildContext context) {
-      if (rm.ijinInstruktur != null) {
-        return unitIjin(rm);
-      } else if (rm.presensiInstruktur != null){ 
-        return unitPresensi(rm);
-      }else {
-        return const SizedBox.shrink();
-      }
+      return unitRiwayatInstruktur(rm);
     },
   );
 }
 
-Card unitIjin(RiwayatInstruktur rm){
+Card unitRiwayatInstruktur(RiwayatInstruktur rm){
     const textStyle = TextStyle(color: Colors.white);
+    const textStyle2 = TextStyle(color: Colors.white, backgroundColor: Color.fromARGB(255, 0, 0, 0));
     return Card(
         margin: const EdgeInsets.all(10),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -76,101 +70,35 @@ Card unitIjin(RiwayatInstruktur rm){
             ),
           ),
           child:  ListTile(
-            title: Text('Ijin Instruktur - ${rm.ijinInstruktur?.tanggalPengajuan}' ,style: textStyle,),
-            subtitle: Text('Nice Move', style: textStyle,),
-          ),
-        ),
-      );  
-}
-Card unitPresensi(RiwayatInstruktur rm){
-    const textStyle = TextStyle(color: Colors.white,backgroundColor: Color.fromARGB(200, 0, 0, 0));
-    return Card(
-        margin: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        elevation: 5,
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/image4.jpg"),
-              fit: BoxFit.cover,
-              alignment: Alignment(0, 0),
+            title: Text('#${rm.jenisKelas} ' ,style: textStyle,),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                lineDetail('Class Date : ${rm.hari}, ${rm.tanggalJadwalHarian}', textStyle, Icons.calendar_month),
+                lineDetail('Start time ${rm.jamMulai} - End time ${rm.jamSelesai}', textStyle, Icons.watch_later_outlined),
+                lineDetail('Rp ${rm.hargaKelas}', textStyle, Icons.money),
+                lineDetail('${rm.jumlahPeserta} of 10' ,textStyle, Icons.person),
+                (rm.jamMulaiSebenarnya != '') ? Text('Kelas dimulai : ${rm.jamMulaiSebenarnya} dan berakhir ${rm.jamSelesaiSebenarnya}') : SizedBox.shrink()
+              ],
             ),
-          ),
-          child:  ListTile(
-            title: Text('Presensi ${rm.presensiInstruktur?.jadwalHarian?.tanggal} - ${rm.presensiInstruktur?.jadwalHarian?.jadwalUmum?.kelas?.jenisKelas}' ,style: textStyle,),
-            // subtitle: Text('Nice Move', style: textStyle,),
           ),
         ),
       );  
 }
 
-Card unitDepositUangActivity(RiwayatMember rm) {
-    const textStyle = TextStyle(color: Colors.white,);
-    return Card(
-        margin: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        elevation: 5,
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/image6.jpg"),
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
-            ),
-          ),
-          child:  ListTile(
-            title: Text('${rm.namaAktivitas} - ${rm.tanggal}' ,style: textStyle,),
-            subtitle: Text('Nice Move', style: textStyle,),
-          ),
-        ),
-      );  
+
+
+Widget lineDetail(String text, TextStyle textStyle, IconData ic) {
+  return Padding(
+    padding: const EdgeInsets.all(3.0),
+    child: Row(
+                  children: [
+                    Icon(ic,color: Colors.white,),
+                    const SizedBox(width: 10,),
+                    Text(text,style: textStyle,)
+                  ],
+                ),
+  );
 }
 
-Card unitActivasiActivity(RiwayatMember rm){
-    const textStyle = TextStyle(color: Colors.white,);
-    return Card(
-        margin: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        elevation: 5,
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/image8.jpg"),
-              fit: BoxFit.cover,
-              alignment: Alignment.bottomCenter,
-            ),
-          ),
-          child:  ListTile(
-            title: Text('${rm.namaAktivitas} - ${rm.tanggal}' ,style: textStyle,),
-            subtitle: Text('Nice Move', style: textStyle,),
-          ),
-        ),
-      );  
-}
-
-Card unitRegisterActivity(RiwayatMember rm){
-    const textStyle = TextStyle(color: Colors.white,);
-    return Card(
-        margin: const EdgeInsets.all(10),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        elevation: 5,
-        child: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/images/image9.jpg"),
-              fit: BoxFit.cover,
-              alignment: Alignment.center,
-            ),
-          ),
-          child:  ListTile(
-            title: Text('${rm.namaAktivitas} - ${rm.tanggal}' ,style: textStyle,),
-            subtitle: Text('Nice Move', style: textStyle,),
-          ),
-        ),
-      );  
-}
 }

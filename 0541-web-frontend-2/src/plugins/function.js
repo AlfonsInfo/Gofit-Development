@@ -2,8 +2,8 @@ import Swal from 'sweetalert2'
 
 
 export const CustomDateTimeFormatter = {
-    reverseDate(tanggal, separator){
-        var tanggal_split_space = tanggal.split(" ")[0];
+    reverseDate(tanggal, separator, firstSplit = " "){
+        var tanggal_split_space = tanggal.split(firstSplit)[0];
         var tanggal_baru = tanggal_split_space.split("-").reverse().join(separator);
         return tanggal_baru;
     },

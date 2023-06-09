@@ -64,13 +64,13 @@ class jadwalHarianController extends Controller
         $start_date = Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDay();
         $end_date =  Carbon::now()->startOfWeek(Carbon::SUNDAY)->addDays(7);
         $mapHari = [
-            'monday' => 'senin',
-            'tuesday' => 'selasa',
-            'wednesday' => 'rabu',
-            'thursday' => 'kamis',
-            'friday' => 'jumat',
-            'saturday' => 'sabtu',
-            'sunday' => 'minggu'
+            'monday' => 'Senin',
+            'tuesday' => 'Selasa',
+            'wednesday' => 'Rabu',
+            'thursday' => 'Kamis',
+            'friday' => 'Jumat',
+            'saturday' => 'Sabtu',
+            'sunday' => 'Minggu'
         ];
         for($date = $start_date; $date->lte($end_date); $date->addDay()){
             $hari = Carbon::parse($date)->format('l');

@@ -82,6 +82,8 @@ class depositPaketController extends Controller
         $member->tgl_kadeluarsa_paket = Carbon::now()->addMonth($masa_berlaku);
         $member->save();
 
+        $promo = promo::find($id_promo);
+        
         //! Catat Riwayat / Log
         riwayatMemberController::storeHistory($request->id_member,'Transaksi Deposit Paket',$transaksi_deposit_paket['no_struk_transaksi']);
         
@@ -93,7 +95,7 @@ class depositPaketController extends Controller
         $kelas = kelas::findOrFail($request->id_kelas);
         return response([
             'message' => 'Berhasil Melakukan Transaksi',
-            'data' => ['member' => $member , 'transaksi_member'=>$transaksi_member,'transaksi_deposit_paket' => $depositPaket, 'kelas' => $kelas]
+            'data' => ['member' => $member , 'transaksi_member'=>$transaksi_member,'transaksi_deposit_paket' => $depositPaket, 'kelas' => $kelas, 'promo'=>$promo]
         ]);
     
         }
