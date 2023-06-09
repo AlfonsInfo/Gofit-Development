@@ -137,7 +137,7 @@ class bookingKelasController extends Controller
             if($saldoPaket > $jumlahSatuanBooking){
                 return 'Deposit Paket';
             }
-        }else if($member->total_deposit_uang > 0){
+        }else if($member->total_deposit_uvang > 0){
             return 'Deposit Reguler';
             $uangMember = $member->total_deposit_uang;
             $jumlahUangBooking = booking_kelas::where('id_member',$id)

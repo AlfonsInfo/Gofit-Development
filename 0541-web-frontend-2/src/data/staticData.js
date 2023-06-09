@@ -9,9 +9,17 @@ class functionalMenu{
 
 }
 
+
+
+
+export const getImageUrl = (path) => {
+  return new URL(`../../src/assets/${path}`, import.meta.url).href;
+};
+ 
+
 export const functionalKasir = [
   new functionalMenu('Olah Member',
-  'Fitur ini memungkinkan pegawai untuk menambahkan, mengubah, mengupdate, dan menghapus data member.','../../src/assets/image/gym-membership-app.jpeg','member'),
+  'Fitur ini memungkinkan pegawai untuk menambahkan, mengubah, mengupdate, dan menghapus data member.',getImageUrl('image/gym-membership-app.jpeg'),'member'),
   new functionalMenu('Reset Password Member','Fitur ini mendukung pegawai melayani member yang ingin melakukan reset password karena lupa','../../src/assets/image/reset-password.jpg','member-reset-password'),
   new functionalMenu('Transaksi','Fitur ini mendukung layanan transaksi seperti aktivasi membership, deposit uang, deposit kelas dan cetak struk','../../src/assets/image/transaction-gym.jpg','transaksi-member',),
   new functionalMenu('Presensi Member','Fitur ini digunakan untuk konfirmasi kehadiran member gym dan member kelas','../../src/assets/image/presensi.jpg','presensi-member','presensi-member'),
