@@ -14,29 +14,29 @@ return new class extends Migration
     public function up()
     {
 
-        DB::unprepared("
-        CREATE TRIGGER kadeluarsa_member
-        AFTER INSERT ON transaksi_aktivasi
-        FOR EACH ROW
-        BEGIN
-            DECLARE member_id INT;
-            DECLARE tgl_kadeluarsa_aktivasi DATE;
+        // DB::unprepared("
+        // CREATE TRIGGER kadeluarsa_member
+        // AFTER INSERT ON transaksi_aktivasi
+        // FOR EACH ROW
+        // BEGIN
+        //     DECLARE member_id INT;
+        //     DECLARE tgl_kadeluarsa_aktivasi DATE;
             
-            SELECT id_member INTO member_id FROM transaksi_aktivasi JOIN transaksi_member ON transaksi_aktivasi.nomor_struk = transaksi_member.no_struk_transaksi
-            WHERE transaksi_aktivasi.id_transaksi_aktivasi = NEW.id_transaksi_aktivasi;
-            SELECT tgl_kadeluarsa_aktivasi INTO tgl_kadeluarsa_aktivasi FROM member WHERE id_member = member_id;
+        //     SELECT id_member INTO member_id FROM transaksi_aktivasi JOIN transaksi_member ON transaksi_aktivasi.nomor_struk = transaksi_member.no_struk_transaksi
+        //     WHERE transaksi_aktivasi.id_transaksi_aktivasi = NEW.id_transaksi_aktivasi;
+        //     SELECT tgl_kadeluarsa_aktivasi INTO tgl_kadeluarsa_aktivasi FROM member WHERE id_member = member_id;
             
-            IF tgl_kadeluarsa_aktivasi IS NULL THEN
-                SET tgl_kadeluarsa_aktivasi = DATE_ADD(NOW(), INTERVAL 1 YEAR);
-            ELSE
-                SET tgl_kadeluarsa_aktivasi = DATE_ADD(tgl_kadeluarsa_aktivasi, INTERVAL 1 YEAR);
-            END IF;
+        //     IF tgl_kadeluarsa_aktivasi IS NULL THEN
+        //         SET tgl_kadeluarsa_aktivasi = DATE_ADD(NOW(), INTERVAL 1 YEAR);
+        //     ELSE
+        //         SET tgl_kadeluarsa_aktivasi = DATE_ADD(tgl_kadeluarsa_aktivasi, INTERVAL 1 YEAR);
+        //     END IF;
             
-            UPDATE member SET tgl_kadeluarsa_aktivasi = tgl_kadeluarsa_aktivasi WHERE id_member = member_id;
-        END;
+        //     UPDATE member SET tgl_kadeluarsa_aktivasi = tgl_kadeluarsa_aktivasi WHERE id_member = member_id;
+        // END;
         
 
-        ");
+        // ");
     }
 
     /**

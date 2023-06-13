@@ -21,25 +21,24 @@ class laporanController extends Controller
         //*Group Pendapatannya perbulan
         //*Group Tampilan Pertahun -> Request->Year
         //*Group 
-        $pendapatanPerTahun = DB::select("
-        SELECT
+            $pendapatanPerTahun = DB::select('SELECT
             bulan.nama_bulan,
             COALESCE(SUM(nominal_aktivasi), 0) AS total_pendapatan_aktivasi,
-            COALESCE(SUM(pendapatan_reguler + pendapatan_paket), 0) AS total_pendapatan_deposit,
+            o AS total_pendapatan_deposit,
             COALESCE(SUM(nominal_aktivasi + pendapatan_reguler + pendapatan_paket), 0) AS total_pendapatan
         FROM (
-            SELECT 1 AS bulan_id, 'January' AS nama_bulan UNION ALL
-            SELECT 2 AS bulan_id, 'February' AS nama_bulan UNION ALL
-            SELECT 3 AS bulan_id, 'March' AS nama_bulan UNION ALL
-            SELECT 4 AS bulan_id, 'April' AS nama_bulan UNION ALL
-            SELECT 5 AS bulan_id, 'May' AS nama_bulan UNION ALL
-            SELECT 6 AS bulan_id, 'June' AS nama_bulan UNION ALL
-            SELECT 7 AS bulan_id, 'July' AS nama_bulan UNION ALL
-            SELECT 8 AS bulan_id, 'August' AS nama_bulan UNION ALL
-            SELECT 9 AS bulan_id, 'September' AS nama_bulan UNION ALL
-            SELECT 10 AS bulan_id, 'October' AS nama_bulan UNION ALL
-            SELECT 11 AS bulan_id, 'November' AS nama_bulan UNION ALL
-            SELECT 12 AS bulan_id, 'December' AS nama_bulan
+            SELECT 1 AS bulan_id, "January" AS nama_bulan UNION ALL
+            SELECT 2 AS bulan_id, "February" AS nama_bulan UNION ALL
+            SELECT 3 AS bulan_id, "March" AS nama_bulan UNION ALL
+            SELECT 4 AS bulan_id, "April" AS nama_bulan UNION ALL
+            SELECT 5 AS bulan_id, "May" AS nama_bulan UNION ALL
+            SELECT 6 AS bulan_id, "June" AS nama_bulan UNION ALL
+            SELECT 7 AS bulan_id, "July" AS nama_bulan UNION ALL
+            SELECT 8 AS bulan_id, "August" AS nama_bulan UNION ALL
+            SELECT 9 AS bulan_id, "September" AS nama_bulan UNION ALL
+            SELECT 10 AS bulan_id, "October" AS nama_bulan UNION ALL
+            SELECT 11 AS bulan_id, "November" AS nama_bulan UNION ALL
+            SELECT 12 AS bulan_id, "December" AS nama_bulan
         ) AS bulan
         LEFT JOIN (
             SELECT
@@ -48,7 +47,6 @@ class laporanController extends Controller
                 0 AS pendapatan_reguler,
                 0 AS pendapatan_paket
             FROM transaksi_aktivasi AS ta
-            WHERE YEAR(ta.tanggal_aktivasi) = $year
             UNION ALL
             SELECT
                 MONTH(tdr.tanggal_deposit) AS bulan_id,
@@ -57,11 +55,9 @@ class laporanController extends Controller
                 tdp.nominal_uang AS pendapatan_paket
             FROM transaksi_deposit_reguler AS tdr
             INNER JOIN transaksi_deposit_paket AS tdp ON tdr.tanggal_deposit = tdp.tanggal_deposit
-            WHERE YEAR(tdr.tanggal_deposit) = $year
         ) AS transaksi ON bulan.bulan_id = transaksi.bulan_id
         GROUP BY bulan.bulan_id, bulan.nama_bulan
-        ORDER BY bulan.bulan_id
-    ");
+        ORDER BY bulan.bulan_id');
 
 
 

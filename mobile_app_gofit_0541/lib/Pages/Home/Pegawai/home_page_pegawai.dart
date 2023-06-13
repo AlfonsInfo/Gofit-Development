@@ -122,13 +122,13 @@ class _HomePagePegawaiState extends State<HomePagePegawai> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
-                      onPressed: (jd.jamMulai != null) ? null : (){
+                      onPressed: (jd.jamMulai != '') ? null : (){
                         showAlertDialog(context, 'Are you sure to start classes now ?', startClassFunction);
                       }, 
                       child: const Text('Start Class')),
                   ),
                   ElevatedButton(
-                    onPressed: (jd.jamSelesai == null && jd.jamMulai != null) ? (){
+                    onPressed: (jd.jamSelesai == '' && jd.jamMulai != '') ? (){
                         showAlertDialog(context, 'Are you sure to end classes now ?', endClassFunction);
                     } : null,
                     child: const Text('End Class')),

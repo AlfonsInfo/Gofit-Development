@@ -63,6 +63,7 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
             this.currentDate =  this.getCurrentDateTime();
             const request = await this.$http.get(url, {params : params})
             this.dataLaporan = request.data.data
+            console.log(this.dataLaporan);
             console.log('tanggal' , this.currentDate)
             if(this.countInit == 0)
             {
@@ -131,7 +132,7 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
             <select id="bulan" v-model="selectedMonth">
                 <option v-for="(bulan, index) in months" :key="index" :value="index+1">{{ bulan }}</option>
             </select>
-        <button class="btn btn-primary m-2" @click="getDataKelasBulanan('Ambil Kembali Data',selectedMonth)">Ambil Data</button>
+        <button class="btn btn-primary m-2" @click="getDataKinerjaInstruktur('Ambil Kembali Data',selectedMonth)">Ambil Data</button>
     </div>
       <div class="text-dark table-custom mt-5 ms-5 me-5 p-2 d-inline-block">
         <!-- <bu class="btn btn-primary">Presensi Gym</bu   tton> -->
@@ -155,8 +156,8 @@ import { HomeNavbar, useRouter,  $toast, defineComponent, BackButton ,ref } from
                 <tbody>
                     <tr v-for="(row,key) in dataLaporan" :key="key">
                         <td>{{row.nama_instruktur}}</td>
-                        <td>{{row.jumlah_hadir}}</td>
-                        <td>{{row.jumlah_izin}}</td>
+                        <td>{{row.presensi}}</td>
+                        <td>{{row.ijin}}</td>
                         <td>{{ row.akumulasi_terlambat }}</td>
                     </tr>
                 </tbody>

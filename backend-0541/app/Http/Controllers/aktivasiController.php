@@ -66,7 +66,7 @@ class aktivasiController extends Controller
         $transaksi_member = transaksi_member::create([
             'jenis_transaksi' => 'transaksi-aktivasi',
             'id_pegawai' => $request->id_pegawai,
-        'id_member' => $request->id_member,
+            'id_member' => $request->id_member,
         ]);
 
         //* Dapatkan data transaksi yang baru saja dibuat diatas

@@ -77,12 +77,12 @@ class depositPaketController extends Controller
             'no_struk' => $transaksi_deposit_paket['no_struk_transaksi'],
             'tanggal_kadeluarsa' => Carbon::now()->addMonth($masa_berlaku)
         ]);
-
-        $member->total_deposit_paket = $nominal_deposit;
+        $promo = promo::find($id_promo);
+        
+        $member->total_deposit_paket = $nominal_deposit + $promo->bonus_promo;
         $member->tgl_kadeluarsa_paket = Carbon::now()->addMonth($masa_berlaku);
         $member->save();
 
-        $promo = promo::find($id_promo);
         
         //! Catat Riwayat / Log
         riwayatMemberController::storeHistory($request->id_member,'Transaksi Deposit Paket',$transaksi_deposit_paket['no_struk_transaksi']);

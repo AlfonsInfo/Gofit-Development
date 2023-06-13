@@ -15,7 +15,8 @@ class functionalMenu{
 export const getImageUrl = (path) => {
   return new URL(`../../src/assets/${path}`, import.meta.url).href;
 };
- 
+    
+
 
 export const functionalKasir = [
   new functionalMenu('Olah Member',
@@ -31,7 +32,7 @@ export const functionalAdmin = [
   new functionalMenu('Olah Data Instruktur','Fitur Olah Data Instruktur (Menambahkan, Menampilkan, Mengubah, Menghapus) data instruktur','../../src/assets/image/instruktor.jpg','instruktur')
 ]
 export const functionalMO = [
-  new functionalMenu('Olah Jadwal Umum','Fitur pengolah data Jadwal Secara Umum, Manajer Operasional bisa menambahkankan jadwal , mengupdate jadwal, menampilkan dan menghapus jadwal','../../src/assets/image/schedule.jpg','jadwal-umum'),
+  new functionalMenu('Olah Jadwal Umum','Fitur pengolah data Jadwal Secara Umum, Manajer Operasional bisa menambahkankan jadwal , mengupdate jadwal, menampilkan dan menghapus jadwal','../../assets/image/schedule.jpg','jadwal-umum'),
   new functionalMenu('Olah Jadwal Harian','Fitur Generate Jadwal untuk setiap 1 minggu, Fitur ini dibutuhkan untuk mendukung operasional gym setiap minggu','../../src/assets/image/daily-schedule.jpg','jadwal-harian'),
   new functionalMenu('Perijinan Instruktur','Fitur pengolah data perijinan instruktur, MO bisa memantau perijinan instruktur, melakukan konfirmasi perijinan.','../../src/assets/image/perijinan.jpeg','ijin-instruktur','ijin-instruktur'),
   new functionalMenu('Laporan','Fitur Laporan digunakan untuk memantau operasional Gym secara keseluruhan.','../../src/assets/image/report.jpg','laporan')

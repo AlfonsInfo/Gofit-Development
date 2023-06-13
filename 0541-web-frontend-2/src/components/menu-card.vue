@@ -1,6 +1,7 @@
 <script>
 import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router';
+import { getImageUrl } from '../data/staticData';
 
 
 export default defineComponent({
@@ -19,6 +20,7 @@ export default defineComponent({
           console.log('click')
           console.log($event)
         }
+
         
         return{
             navigateToPage,

@@ -332,7 +332,7 @@
         if(way == 'table'){
           console.log(data.deposit_uang)
           this.FormPrint.id_member = data.id_member
-          this.FormPrint.no_struk_transaksi = data.no_struk_transaksi
+          this.FormPrint.no_struk_transaksi = data.transaksi_deposit_reguler.no_struk_transaksi
           this.FormPrint.nama_member = data.member.nama_member
           this.FormPrint.id_pegawai = data.id_pegawai
           this.FormPrint.nama_pegawai = data.pegawai.nama_pegawai
@@ -355,7 +355,7 @@
           this.FormPrint.id_pegawai = data.id_pegawai
           this.FormPrint.nama_pegawai = data.pegawai.nama_pegawai
           this.FormPrint.id_member = data.id_member
-          this.FormPrint.no_struk_transaksi = data.no_struk_transaksi
+          this.FormPrint.no_struk_transaksi = data.transaksi_deposit_paket.no_struk
           this.FormPrint.tanggal_depo_paket = CustomDateTimeFormatter.dateTimeSlash(data.deposit_kelas_paket.created_at, '/', 'T') 
           this.FormPrint.nama_member = data.member.nama_member
           this.FormPrint.nominal_uang = data.deposit_kelas_paket.nominal_uang
